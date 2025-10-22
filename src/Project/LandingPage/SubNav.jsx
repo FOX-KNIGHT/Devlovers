@@ -1,35 +1,44 @@
-// src/Project/LandingPage/SubNav.jsx
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 function SubNav({ setCurrentPage }) {
-    // Initialize active tab based on the desired default view (Hackathons/Hackathon page)
     const [activeTab, setActiveTab] = useState('Hackathons');
 
-    const navItems = [
+    const navItems = useMemo(() => [
         { label: 'Hackathons', icon: 'fas fa-laptop-code', pageName: 'Hackathon' },
         { label: 'Devlovers', icon: 'fas fa-users', pageName: 'Devlovers' },
         { label: 'About', icon: 'fas fa-info-circle', pageName: 'About' },
-    ];
+    ], []);
 
-    const handleNavClick = (item) => {
-        // 1. Update local state to set the 'active' class
+    const handleNavClick = useCallback((item) => {
         setActiveTab(item.label);
-        // 2. Notify parent component to change the main page content
         setCurrentPage(item.pageName);
-    };
+    }, [setCurrentPage]);
+
+    const handleKeyPress = useCallback((e, item) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleNavClick(item);
+        }
+    }, [handleNavClick]);
 
     return (
-        <div className="sub-nav-bar">
+        <div className="sub-nav-bar" role="navigation" aria-label="Main navigation">
             <div className="menu">
                 {navItems.map(item => (
                     <a
                         key={item.label}
-                        // Use the 'active' class for the blue highlight
                         className={`menu-list ${activeTab === item.label ? 'active' : ''}`}
                         href="#"
-                        onClick={(e) => { e.preventDefault(); handleNavClick(item); }}
+                        onClick={(e) => { 
+                            e.preventDefault(); 
+                            handleNavClick(item); 
+                        }}
+                        onKeyPress={(e) => handleKeyPress(e, item)}
+                        role="tab"
+                        aria-selected={activeTab === item.label}
+                        tabIndex={0}
                     >
-                        <i className={item.icon}></i>
+                        <i className={item.icon} aria-hidden="true"></i>
                         <span className="menu-label">{item.label}</span>
                     </a>
                 ))}
@@ -38,4 +47,4 @@ function SubNav({ setCurrentPage }) {
     );
 }
 
-export default SubNav;
+export default React.memo(SubNav);

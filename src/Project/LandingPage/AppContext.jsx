@@ -1,94 +1,176 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useMemo, useCallback } from 'react';
+import data from './data.js';
 
 const AppContext = createContext();
 
-const initialNotifications = [
-    { id: 1, message: 'New hackathon "CodeFest" has been announced!', time: '15m ago', unread: true, icon: 'fas fa-trophy' },
-    { id: 2, message: 'Your project "DevLink" has a new team member.', time: '1h ago', unread: true, icon: 'fas fa-user-plus' },
-    { id: 3, message: 'Reminder: "Global Hack Week" starts tomorrow.', time: '6h ago', unread: true, icon: 'fas fa-calendar-alt' },
-    { id: 4, message: 'You have been invited to join "Project X".', time: '1d ago', unread: false, icon: 'fas fa-envelope' },
-    { id: 5, message: 'Welcome to Devlovers! Complete your profile.', time: '2d ago', unread: false, icon: 'fas fa-handshake' },
-];
-
-
 export const AppProvider = ({ children }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
-  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: '' });
-  const [user, setUser] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const [notifications, setNotifications] = useState(initialNotifications);
+    // Theme state
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        const savedTheme = localStorage.getItem('theme');
+        return savedTheme === 'dark';
+    });
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+    // Auth state
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
 
-  const markAllNotificationsAsRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, unread: false })));
-  };
+    // UI state
+    const [isSidebarDesktopCollapsed, setIsSidebarDesktopCollapsed] = useState(false);
+    const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
+    const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    
+    // Notification state
+    const [notifications, setNotifications] = useState(data.notifications);
+    const [toast, setToast] = useState({ message: '', show: false });
 
-  const markNotificationAsRead = (id) => {
-    setNotifications(notifications.map(n => n.id === id ? { ...n, unread: false } : n));
-  };
+    // Breakpoints
+    const MOBILE_BREAKPOINT = 768;
+    const TABLET_BREAKPOINT = 1024;
 
-  const showToast = (message) => {
-    setToast({ show: true, message });
-    setTimeout(() => setToast({ show: false, message: '' }), 3000);
-  };
+    // Memoized unread count
+    const unreadCount = useMemo(() => 
+        notifications.filter(n => n.unread).length, 
+        [notifications]
+    );
 
-  const simulateLogin = (username) => {
-    setUser({ name: username });
-    setIsSignInModalOpen(false);
-    showToast(`Welcome, ${username}!`);
-  };
+    // Apply theme and auth classes to body
+    useEffect(() => {
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        document.body.classList.toggle('logged-in', isLoggedIn);
+        document.body.classList.toggle('logged-out', !isLoggedIn);
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    }, [isDarkMode, isLoggedIn]);
 
-  const simulateLogout = () => {
-    setUser(null);
-    showToast('You have been logged out.');
-  };
+    // Handle window resize
+    const handleResize = useCallback(() => {
+        const width = window.innerWidth;
+        const isMobile = width <= MOBILE_BREAKPOINT;
+        const isTablet = width > MOBILE_BREAKPOINT && width <= TABLET_BREAKPOINT;
 
-  const toggleTheme = () => {
-    setIsDarkMode(prevMode => !prevMode);
-  };
+        if (isTablet) {
+            setIsSidebarDesktopCollapsed(true);
+        } else if (width > TABLET_BREAKPOINT) {
+            setIsSidebarDesktopCollapsed(false);
+        }
+        
+        if (!isMobile) {
+            setIsMobileSidebarVisible(false);
+            setIsMobileSearchOpen(false);
+        }
+    }, []);
 
-  const handleSidebarToggle = useCallback(() => {
-    const isMobileView = window.innerWidth <= 768;
-    if (isMobileView) {
-      setIsMobileSidebarVisible(prev => !prev);
-    } else {
-      setIsSidebarCollapsed(prev => !prev);
-    }
-  }, []);
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initial check
+        return () => window.removeEventListener('resize', handleResize);
+    }, [handleResize]);
 
+    // Toast notification
+    const showToast = useCallback((message, duration = 3000) => {
+        setToast({ message, show: true });
+        setTimeout(() => setToast({ message: '', show: false }), duration);
+    }, []);
 
-  const value = {
-    isSidebarCollapsed,
-    setIsSidebarCollapsed,
-    isMobileSidebarVisible,
-    setIsMobileSidebarVisible,
-    isSignInModalOpen,
-    setIsSignInModalOpen,
-    toast,
-    setToast,
-    showToast,
-    user,
-    simulateLogin,
-    isLoggedIn: !!user,
-    isDarkMode,
-    toggleTheme,
-    handleSidebarToggle,
-    simulateLogout,
-    isMobileSearchOpen,
-    setIsMobileSearchOpen,
-    notifications,
-    unreadCount,
-    markAllNotificationsAsRead,
-    markNotificationAsRead,
-  };
+    // Theme toggle
+    const toggleTheme = useCallback(() => {
+        setIsDarkMode(prev => {
+            const newMode = !prev;
+            showToast(newMode ? '🌙 Dark mode enabled' : '☀️ Light mode enabled');
+            return newMode;
+        });
+    }, [showToast]);
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+    // Sidebar toggle
+    const handleSidebarToggle = useCallback(() => {
+        if (window.innerWidth <= MOBILE_BREAKPOINT) {
+            setIsMobileSidebarVisible(prev => !prev);
+        } else {
+            setIsSidebarDesktopCollapsed(prev => !prev);
+        }
+    }, []);
+
+    // Login simulation
+    const simulateLogin = useCallback((provider) => {
+        const username = provider === 'Email' ? 'User' : `${provider} User`;
+        setUser({ name: username, provider });
+        setIsLoggedIn(true);
+        setIsSignInModalOpen(false);
+        setNotifications(data.notifications);
+        showToast(`✅ Welcome, ${username}!`);
+    }, [showToast]);
+
+    // Logout simulation
+    const simulateLogout = useCallback(() => {
+        setUser(null);
+        setIsLoggedIn(false);
+        showToast('👋 Logged out successfully');
+    }, [showToast]);
+
+    // Mark all notifications as read
+    const markAllNotificationsAsRead = useCallback(() => {
+        const count = notifications.filter(n => n.unread).length;
+        if (count > 0) {
+            setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+            showToast(`✅ Marked ${count} notification${count > 1 ? 's' : ''} as read`);
+        } else {
+            showToast('ℹ️ No unread notifications', 2000);
+        }
+    }, [notifications, showToast]);
+
+    // Mark single notification as read
+    const markNotificationAsRead = useCallback((id) => {
+        setNotifications(prev => {
+            const notification = prev.find(n => n.id === id);
+            if (notification?.unread) {
+                showToast('✅ Notification marked as read');
+            }
+            return prev.map(n => n.id === id ? { ...n, unread: false } : n);
+        });
+    }, [showToast]);
+
+    // Memoized context value
+    const contextValue = useMemo(() => ({
+        // State
+        isDarkMode,
+        isLoggedIn,
+        user,
+        isSidebarCollapsed: isSidebarDesktopCollapsed,
+        isMobileSidebarVisible,
+        isSignInModalOpen,
+        isMobileSearchOpen,
+        toast,
+        notifications,
+        unreadCount,
+
+        // Actions
+        toggleTheme,
+        handleSidebarToggle,
+        setIsSignInModalOpen,
+        setIsMobileSearchOpen,
+        simulateLogin,
+        simulateLogout,
+        showToast,
+        markAllNotificationsAsRead,
+        markNotificationAsRead,
+    }), [
+        isDarkMode, isLoggedIn, user, isSidebarDesktopCollapsed, isMobileSidebarVisible,
+        isSignInModalOpen, isMobileSearchOpen, toast, notifications, unreadCount,
+        toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, showToast,
+        markAllNotificationsAsRead, markNotificationAsRead
+    ]);
+
+    return (
+        <AppContext.Provider value={contextValue}>
+            {children}
+        </AppContext.Provider>
+    );
 };
 
 export const useAppContext = () => {
-  return useContext(AppContext);
+    const context = useContext(AppContext);
+    if (!context) {
+        throw new Error('useAppContext must be used within AppProvider');
+    }
+    return context;
 };

@@ -1,0 +1,56 @@
+/* Placeholder for your actual styles */
+:root {
+    /* Define CSS variables used in the component */
+    --color-danger: #e74c3c;
+    --color-border: #ccc;
+    --color-text-primary: #333;
+    /* Add other theme variables as needed */
+}
+
+/* Style for the "Close" button in the mobile overlay */
+.close-mobile-search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 200px; /* Example size */
+  margin: 20px auto 0;
+  color: var(--color-danger); 
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.close-mobile-search-btn svg { /* Target Font Awesome SVG for spacing */
+  margin-right: 8px;
+}
+
+/* Ensure consistent spacing in the profile dropdown */
+.profile-dropdown a {
+    display: flex;
+    align-items: center;
+}
+
+.profile-dropdown a svg,
+.profile-header svg {
+    margin-right: 10px;
+    width: 16px; /* Standard icon size */
+}
+
+/* Re-implementing the inline styles for the profile header as a class */
+.profile-dropdown .profile-header {
+  padding: 12px 15px; 
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-primary);
+}
+
+/* Optional: Style the Sign In button icon */
+.sign-in-btn svg {
+    margin-right: 5px;
+}

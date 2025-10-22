@@ -1,8 +1,16 @@
-// src/Project/LandingPage/Header.jsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faSearch, faSignInAlt, faSun, faMoon, faBell, faUserCircle, 
+  faBars, faTimes, faChevronLeft, faChevronRight, 
+  faTachometerAlt, faAddressCard, faFolderOpen, faCog, faSignOutAlt, faUser 
+} from '@fortawesome/free-solid-svg-icons';
+
 import { useAuthDropdown } from '../../hooks/useAuthDropdown.js';
 import NotificationDropdown from './NotificationDropdown.jsx';
 import { useAppContext } from './AppContext.jsx';
+
+import './Header.css'; 
 
 function Header({ setCurrentPage }) {
   const {
@@ -16,10 +24,13 @@ function Header({ setCurrentPage }) {
     setIsMobileSearchOpen,
     isMobileSearchOpen,
     isMobileSidebarVisible, 
-    isSidebarCollapsed, 
+    isSidebarCollapsed,
+    user,
   } = useAppContext();
 
   const [searchInput, setSearchInput] = useState('');
+  const [isMobileView, setIsMobileView] = useState(false);
+  const mobileSearchInputRef = useRef(null);
   
   const {
     isProfileDropdownVisible,
@@ -30,118 +41,318 @@ function Header({ setCurrentPage }) {
     closeAllDropdowns 
   } = useAuthDropdown();
 
-  const handleSearchInput = (e) => {
-    setSearchInput(e.target.value);
-  };
+  // Handle responsive view detection
+  useEffect(() => {
+    const checkMobileView = () => {
+      setIsMobileView(window.innerWidth <= 768);
+    };
+    
+    checkMobileView();
+    window.addEventListener('resize', checkMobileView);
+    
+    return () => window.removeEventListener('resize', checkMobileView);
+  }, []);
+
+  // Auto-focus mobile search input when opened
+  useEffect(() => {
+    if (isMobileSearchOpen && mobileSearchInputRef.current) {
+      mobileSearchInputRef.current.focus();
+    }
+  }, [isMobileSearchOpen]);
+
+  // Close mobile search on escape key
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.key === 'Escape' && isMobileSearchOpen) {
+        setIsMobileSearchOpen(false);
+        setSearchInput('');
+      }
+    };
+
+    if (isMobileSearchOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+      return () => document.removeEventListener('keydown', handleEscapeKey);
+    }
+  }, [isMobileSearchOpen, setIsMobileSearchOpen]);
+
+  // Handle search input change with debouncing capability
+  const handleSearchInput = useCallback((e) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    
+    // Optional: Add real-time search suggestions here
+    // debounce(() => fetchSearchSuggestions(value), 300);
+  }, []);
   
-  const closeMobileSearch = (e) => {
-    e.preventDefault();
+  // Close mobile search
+  const closeMobileSearch = useCallback((e) => {
+    e?.preventDefault();
     setIsMobileSearchOpen(false);
     setSearchInput('');
-  }
+  }, [setIsMobileSearchOpen]);
   
-  const openMobileSearch = () => {
+  // Open mobile search
+  const openMobileSearch = useCallback(() => {
     setIsMobileSearchOpen(true);
-  }
+  }, [setIsMobileSearchOpen]);
 
-  /* ENHANCEMENT 1: Updated menuIconClass logic to align with CSS/JS expectations:
-    - Mobile (<= 768px): fa-bars (closed) / fa-times (open)
-    - Tablet/Desktop (> 768px): fa-angle-left (expanded) / fa-angle-right (collapsed)
-    The provided HTML/JS uses `fa-bars` for expanded desktop, but the CSS/JS
-    logic implies `fa-arrow-right`/`fa-angle-right` for collapsed and `fa-bars`/`fa-angle-left` for expanded/open.
-    The CSS logic uses `fa-angle-left` for expanded and `fa-angle-right` for collapsed *inside* the sidebar on desktop/tablet,
-    but the main navbar toggle uses `fa-bars` and `fa-times` for mobile, and the provided CSS uses `fa-bars` or `fa-arrow-right`
-    in the JS logic for desktop. We'll use the CSS/JS's intended final icons for simplicity: 
-    Mobile: fa-bars/fa-times. Desktop: fa-angle-left (expanded) / fa-angle-right (collapsed).
-  */
-  const menuIconClass = useMemo(() => {
-    const isMobileView = window.innerWidth <= 768;
+  // Handle search submit with validation
+  const handleSearchSubmit = useCallback((e) => {
+    e.preventDefault();
+    const trimmedSearch = searchInput.trim();
     
-    if (isMobileView) {
-      // Mobile view uses 'fas fa-bars' to open the overlay, 'fas fa-times' to close
-      return isMobileSidebarVisible ? 'fas fa-times' : 'fas fa-bars';
-    } else {
-      // Desktop/Tablet view uses 'fas fa-angle-left' for expanded, 'fas fa-angle-right' for collapsed
-      return isSidebarCollapsed ? 'fas fa-angle-right' : 'fas fa-angle-left';
+    if (trimmedSearch) {
+      console.log('Searching for:', trimmedSearch);
+      // Close mobile search after submission
+      if (isMobileSearchOpen) {
+        closeMobileSearch();
+      }
+      // Add actual search functionality here
+      // e.g., navigate to search results page or trigger search API
     }
-  }, [isMobileSidebarVisible, isSidebarCollapsed]);
+  }, [searchInput, isMobileSearchOpen, closeMobileSearch]);
 
-  const handleLogoutClick = (e) => {
+  // Memoize menu icon based on viewport and sidebar state
+  const menuIcon = useMemo(() => {
+    if (isMobileView) {
+      return isMobileSidebarVisible ? faTimes : faBars;
+    }
+    return isSidebarCollapsed ? faChevronRight : faChevronLeft;
+  }, [isMobileView, isMobileSidebarVisible, isSidebarCollapsed]);
+
+  // Handle logout with confirmation (optional)
+  const handleLogoutClick = useCallback((e) => {
     e.preventDefault();
     closeAllDropdowns();
+    
+    // Optional: Add confirmation dialog
+    // if (window.confirm('Are you sure you want to log out?')) {
+    //   simulateLogout();
+    // }
+    
     simulateLogout();
-  };
+  }, [closeAllDropdowns, simulateLogout]);
+
+  // Handle logo click - navigate to home
+  const handleLogoClick = useCallback(() => {
+    setCurrentPage('Hackathon');
+    closeAllDropdowns();
+  }, [setCurrentPage, closeAllDropdowns]);
+
+  // Handle keyboard navigation for interactive elements
+  const handleKeyPress = useCallback((callback) => (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      callback(e);
+    }
+  }, []);
+
+  // Profile menu navigation handler
+  const handleProfileMenuClick = useCallback((e, action) => {
+    e.preventDefault();
+    closeAllDropdowns();
+    
+    // Handle different menu actions
+    switch(action) {
+      case 'dashboard':
+        setCurrentPage('Dashboard');
+        break;
+      case 'profile':
+        setCurrentPage('Profile');
+        break;
+      case 'projects':
+        setCurrentPage('Projects');
+        break;
+      case 'settings':
+        setCurrentPage('Settings');
+        break;
+      default:
+        break;
+    }
+  }, [closeAllDropdowns, setCurrentPage]);
   
   return (
     <>
-      <header>
-        <nav className="nav-bar">
+      <header className="site-header">
+        <nav className="nav-bar" role="navigation" aria-label="Main navigation">
           <div className="header-left">
-            {/* 1. Menu Toggle (for Sidebar visibility/collapse) */}
-            <div className="menu-toggle" id="menu-toggle" onClick={handleSidebarToggle}>
-              <i className={menuIconClass}></i>
-            </div>
-            <div className="logo" onClick={() => setCurrentPage('Hackathon')}>
+            <button 
+              className="menu-toggle" 
+              onClick={handleSidebarToggle}
+              onKeyPress={handleKeyPress(handleSidebarToggle)}
+              aria-label={isMobileView 
+                ? (isMobileSidebarVisible ? 'Close sidebar' : 'Open sidebar')
+                : (isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar')
+              }
+              aria-expanded={isMobileView ? isMobileSidebarVisible : !isSidebarCollapsed}
+            >
+              <FontAwesomeIcon icon={menuIcon} aria-hidden="true" />
+            </button>
+            
+            <button 
+              className="logo" 
+              onClick={handleLogoClick}
+              onKeyPress={handleKeyPress(handleLogoClick)}
+              aria-label="Go to home page"
+            >
               <p>Devlovers</p>
-            </div>
+            </button>
           </div>
 
           {/* Desktop Search Bar */}
-          <div className="search-bar" id="desktop-search-bar">
-            <i className="fas fa-search"></i>
+          <form 
+            className="search-bar" 
+            id="desktop-search-bar"
+            onSubmit={handleSearchSubmit}
+            role="search"
+          >
+            <FontAwesomeIcon icon={faSearch} aria-hidden="true" />
             <input 
-              type="text" 
+              type="search" 
               id="search-input" 
               placeholder="Search hackathons, projects..." 
               onChange={handleSearchInput}
               value={searchInput}
+              aria-label="Search hackathons and projects"
+              autoComplete="off"
             />
-          </div>
+          </form>
 
           <div className="header-right" ref={dropdownRef}>
             
-            {/* Conditional Sign In Button */}
+            {/* Sign In Button */}
             {!isLoggedIn && (
-              <button className="sign-in-btn" id="signin-button" onClick={() => setIsSignInModalOpen(true)}>Sign In</button>
+              <button 
+                className="sign-in-btn" 
+                onClick={() => setIsSignInModalOpen(true)}
+                aria-label="Sign in to your account"
+              >
+                <FontAwesomeIcon icon={faSignInAlt} aria-hidden="true" /> 
+                <span>Sign In</span>
+              </button>
             )}
             
             {/* Mobile Search Toggle */}
-            <div className="mobile-search-toggle" id="mobile-search-toggle" onClick={openMobileSearch}>
-              <i className="fas fa-search"></i>
-            </div>
+            <button 
+              className="mobile-search-toggle" 
+              onClick={openMobileSearch}
+              onKeyPress={handleKeyPress(openMobileSearch)}
+              aria-label="Open search"
+            >
+              <FontAwesomeIcon icon={faSearch} aria-hidden="true" />
+            </button>
 
-            {/* 3. Theme Toggle (Day/Night Mode) */}
-            <div className="theme-toggle" id="theme-toggle" onClick={toggleTheme}>
-              <i className={`fas ${isDarkMode ? 'fa-sun' : 'fa-moon'}`}></i>
-            </div>
+            {/* Theme Toggle */}
+            <button 
+              className="theme-toggle" 
+              onClick={toggleTheme}
+              onKeyPress={handleKeyPress(toggleTheme)}
+              aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDarkMode ? 'Light mode' : 'Dark mode'}
+            >
+              <FontAwesomeIcon 
+                icon={isDarkMode ? faSun : faMoon} 
+                aria-hidden="true"
+              />
+            </button>
 
-            {/* Authenticated Icons (Notification & Profile) */}
+            {/* Authenticated Icons */}
             {isLoggedIn && (
               <div className="auth-icons">
-                {/* 2. Notification Dropdown */}
-                <div className="notification-container" id="notification-container">
-                  <div className="notification" id="notification-icon" onClick={toggleNotificationDropdown}>
-                    <i className="fas fa-bell"></i>
-                    {/* The unreadCount logic matches the required HTML/CSS structure for the badge */}
-                    {unreadCount > 0 && <span className="notification-badge" id="notification-badge">{unreadCount}</span>}
-                  </div>
+                {/* Notification Dropdown */}
+                <div className="notification-container">
+                  <button 
+                    className="notification" 
+                    onClick={toggleNotificationDropdown}
+                    onKeyPress={handleKeyPress(toggleNotificationDropdown)}
+                    aria-label={`Notifications ${unreadCount > 0 ? `(${unreadCount} unread)` : ''}`}
+                    aria-expanded={isNotificationDropdownVisible}
+                    aria-haspopup="true"
+                  >
+                    <FontAwesomeIcon icon={faBell} aria-hidden="true" />
+                    {unreadCount > 0 && (
+                      <span 
+                        className="notification-badge" 
+                        aria-label={`${unreadCount} unread notifications`}
+                      >
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
                   <NotificationDropdown
                     isVisible={isNotificationDropdownVisible}
                   />
                 </div>
-                {/* 4. Profile Dropdown */}
-                <div className="profile-container" id="profile-container">
-                  <div className="profile-icon" id="profile-icon" onClick={toggleProfileDropdown}>
-                    <i className="fas fa-user-circle"></i>
-                  </div>
-                  <div className={`profile-dropdown ${isProfileDropdownVisible ? 'visible' : ''}`} id="profile-dropdown-menu">
-                    <a href="#dashboard" onClick={closeAllDropdowns}><i className="fas fa-tachometer-alt"></i> Dashboard</a>
-                    <a href="#profile" onClick={closeAllDropdowns}><i className="fas fa-address-card"></i> My Profile</a>
-                    <a href="#projects" onClick={closeAllDropdowns}><i className="fas fa-folder-open"></i> My Projects</a>
-                    <a href="#settings" onClick={closeAllDropdowns}><i className="fas fa-cog"></i> Account Settings</a>
-                    <a href="#logout" id="logout-link" onClick={handleLogoutClick}>
-                      <i className="fas fa-sign-out-alt"></i> Log Out
-                    </a>
+
+                {/* Profile Dropdown */}
+                <div className="profile-container">
+                  <button 
+                    className="profile-icon" 
+                    onClick={toggleProfileDropdown}
+                    onKeyPress={handleKeyPress(toggleProfileDropdown)}
+                    aria-label="Profile menu"
+                    aria-expanded={isProfileDropdownVisible}
+                    aria-haspopup="true"
+                  >
+                    <FontAwesomeIcon icon={faUserCircle} aria-hidden="true" />
+                  </button>
+                  
+                  <div 
+                    className={`profile-dropdown ${isProfileDropdownVisible ? 'visible' : ''}`} 
+                    role="menu"
+                    aria-hidden={!isProfileDropdownVisible}
+                  >
+                    {user && (
+                      <div className="profile-header" role="presentation">
+                        <FontAwesomeIcon icon={faUser} aria-hidden="true" /> 
+                        <span>{user.name}</span>
+                      </div>
+                    )}
+                    
+                    <button 
+                      onClick={(e) => handleProfileMenuClick(e, 'dashboard')} 
+                      role="menuitem"
+                      className="profile-menu-item"
+                    >
+                      <FontAwesomeIcon icon={faTachometerAlt} aria-hidden="true" /> 
+                      <span>Dashboard</span>
+                    </button>
+                    
+                    <button 
+                      onClick={(e) => handleProfileMenuClick(e, 'profile')} 
+                      role="menuitem"
+                      className="profile-menu-item"
+                    >
+                      <FontAwesomeIcon icon={faAddressCard} aria-hidden="true" /> 
+                      <span>My Profile</span>
+                    </button>
+                    
+                    <button 
+                      onClick={(e) => handleProfileMenuClick(e, 'projects')} 
+                      role="menuitem"
+                      className="profile-menu-item"
+                    >
+                      <FontAwesomeIcon icon={faFolderOpen} aria-hidden="true" /> 
+                      <span>My Projects</span>
+                    </button>
+                    
+                    <button 
+                      onClick={(e) => handleProfileMenuClick(e, 'settings')} 
+                      role="menuitem"
+                      className="profile-menu-item"
+                    >
+                      <FontAwesomeIcon icon={faCog} aria-hidden="true" /> 
+                      <span>Account Settings</span>
+                    </button>
+                    
+                    <button 
+                      onClick={handleLogoutClick}
+                      role="menuitem"
+                      className="profile-menu-item logout-item"
+                    >
+                      <FontAwesomeIcon icon={faSignOutAlt} aria-hidden="true" /> 
+                      <span>Log Out</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -151,25 +362,33 @@ function Header({ setCurrentPage }) {
       </header>
       
       {/* Mobile Search Overlay */}
-      <div className={`mobile-search-overlay ${isMobileSearchOpen ? 'visible' : ''}`} id="mobile-search-overlay">
-        <div className="search-bar">
-          <i className="fas fa-search"></i>
+      <div 
+        className={`mobile-search-overlay ${isMobileSearchOpen ? 'visible' : ''}`} 
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile search"
+      >
+        <form className="search-bar" onSubmit={handleSearchSubmit} role="search">
+          <FontAwesomeIcon icon={faSearch} aria-hidden="true" />
           <input 
-            type="text" 
-            id="mobile-search-input" 
+            type="search" 
+            ref={mobileSearchInputRef}
             placeholder="Search hackathons, projects..." 
             onChange={handleSearchInput}
             value={searchInput}
+            aria-label="Search hackathons and projects"
+            autoComplete="off"
           />
-        </div>
-        <a 
-          href="#" 
-          id="close-mobile-search" 
+        </form>
+        
+        <button 
           onClick={closeMobileSearch}
-          style={{ display: 'block', textAlign: 'center', marginTop: '20px', color: 'var(--color-danger)', fontWeight: '600' }}
+          className="close-mobile-search-btn"
+          aria-label="Close search"
         >
-          Close
-        </a>
+          <FontAwesomeIcon icon={faTimes} aria-hidden="true" /> 
+          <span>Close</span>
+        </button>
       </div>
     </>
   );
