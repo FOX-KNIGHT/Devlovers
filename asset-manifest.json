@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/FOX-KNIGHT/Devlovers/static/css/main.b0910ef7.css",
-    "main.js": "/FOX-KNIGHT/Devlovers/static/js/main.8e7553dc.js",
-    "static/js/453.311b3dbc.chunk.js": "/FOX-KNIGHT/Devlovers/static/js/453.311b3dbc.chunk.js",
-    "index.html": "/FOX-KNIGHT/Devlovers/index.html",
-    "main.b0910ef7.css.map": "/FOX-KNIGHT/Devlovers/static/css/main.b0910ef7.css.map",
-    "main.8e7553dc.js.map": "/FOX-KNIGHT/Devlovers/static/js/main.8e7553dc.js.map",
-    "453.311b3dbc.chunk.js.map": "/FOX-KNIGHT/Devlovers/static/js/453.311b3dbc.chunk.js.map"
+    "main.css": "/Devlovers/static/css/main.b0910ef7.css",
+    "main.js": "/Devlovers/static/js/main.d398f185.js",
+    "static/js/453.311b3dbc.chunk.js": "/Devlovers/static/js/453.311b3dbc.chunk.js",
+    "index.html": "/Devlovers/index.html",
+    "main.b0910ef7.css.map": "/Devlovers/static/css/main.b0910ef7.css.map",
+    "main.d398f185.js.map": "/Devlovers/static/js/main.d398f185.js.map",
+    "453.311b3dbc.chunk.js.map": "/Devlovers/static/js/453.311b3dbc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b0910ef7.css",
-    "static/js/main.8e7553dc.js"
+    "static/js/main.d398f185.js"
   ]
 }
