@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/FOX-KNIGHT/Devlover/static/css/main.b0910ef7.css",
+    "main.js": "/FOX-KNIGHT/Devlover/static/js/main.b73d88d6.js",
+    "static/js/453.311b3dbc.chunk.js": "/FOX-KNIGHT/Devlover/static/js/453.311b3dbc.chunk.js",
+    "index.html": "/FOX-KNIGHT/Devlover/index.html",
+    "main.b0910ef7.css.map": "/FOX-KNIGHT/Devlover/static/css/main.b0910ef7.css.map",
+    "main.b73d88d6.js.map": "/FOX-KNIGHT/Devlover/static/js/main.b73d88d6.js.map",
+    "453.311b3dbc.chunk.js.map": "/FOX-KNIGHT/Devlover/static/js/453.311b3dbc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b0910ef7.css",
+    "static/js/main.b73d88d6.js"
+  ]
+}
