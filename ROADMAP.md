@@ -8,7 +8,7 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 
 | Phase | Description | Status | Test Coverage |
 | :--- | :--- | :--- | :--- |
-| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **30 / 30 Passing** |
+| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 / 36 Passing** |
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | ⏳ Planned | Pending |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Planned | Pending |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Pending |
@@ -24,7 +24,7 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 ### 1. Framework & Core Runtime
 - [x] **Next.js 16.4.6 (React 19)**: Configured with App Router, server-rendered layouts, dynamic metadata, and webpack compilation.
 - [x] **Strict ESM Migration**: Full `"type": "module"` support across configs and test suites.
-- [x] **Clean Dependency Graph**: Purged obsolete CRA remnants (`react-scripts`, `public/index.html`, orphan dropdowns).
+- [x] **Clean Dependency Graph**: Purged obsolete CRA remnants (`react-scripts`, `public/index.html`, orphan dropdowns, and conflicting legacy `public/robots.txt`).
 
 ### 2. Design Tokens & Aesthetic Identity (Void System)
 - [x] **Tailwind CSS v4 Integration**: Pure CSS `@import "tailwindcss";` pipeline with `@layer base`.
@@ -49,7 +49,7 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 ### 4. Audio Engine & PWA Native Layer
 - [x] **Synthesized Web Audio Engine**: Zero-asset procedural UI audio effects (sine and triangle oscillator synthesis for click and success chimes).
 - [x] **PWA Application Badging API**: Native OS dock / taskbar badge synchronization based on real-time unread notifications count.
-- [x] **Modular Notification Dropdown**: Dedicated Radix UI popover with unread indicator pings, single-item read toggles, and batch clear actions.
+- [x] **Enhanced Notification Dropdown**: Dedicated Radix UI popover with category-aware icons (feedback, deadline, joined, system, submission), unread filter tabs, single-item read toggles, and batch clear actions.
 - [x] **Reactive Feed Sorting & Track Channel Filtering**: Dynamic sorting by Newest, Oldest, High Bounty, and Deadline Soon, plus bidirectional channel filters and active sprint telemetry banners.
 - [x] **Evaluation Rubric Breakdown**: Real-time visualization of 100% weighted judging criteria (Innovation, Technical Depth, Execution, Impact) on challenge cards.
 - [x] **Relational Schema Contract**: Explicit `hackathonId` and `hackathonSlug` relations across mock datasets, verified by contract tests.
@@ -59,10 +59,13 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 - [x] **Squad Matchmaker Modal**: Interactive squad matchmaking dialog featuring compatibility ratings, open role badges, one-click squad join requests, and offline squad draft creation.
 - [x] **Active Tech Stack Tag Filtering**: Interactive tech stack chips on challenge cards with global state filtering, active HUD indicator, and instant clear capability.
 - [x] **Prize Pool Distribution Popover**: Interactive prize tier breakdown (1st: 60%, 2nd: 25%, 3rd: 10%, Sponsor: 5%) dynamically formatted in the user's active currency.
+- [x] **Sprint Bookmark / Saved Sprints Engine**: Offline persistent bookmarks with instant card bookmark toggles, toast notifications, audio chimes, and a dedicated "Bookmarked" filter in the challenge feed.
+- [x] **Developer Leaderboard & Hall of Fame (`LeaderboardView.jsx`)**: Global rankings podium (Gold/Silver/Bronze), XP points, bounties won, wins counter, team captain handles, and search filter by tech specialty.
 - [x] **Direct Sprint Deep-Link Sharing**: One-click sprint link copy to clipboard with toast notification and audio feedback.
 
 ### 5. Automated Verification & CI/CD
-- [x] **Zero-Dependency Test Suite**: 30 unit tests using Node 20's native `node:test` and `node:assert/strict` covering platform services, timers, formatters, squad matchmaking contracts, and schema relations.
+- [x] **Zero-Dependency Test Suite**: 36 unit tests across 8 test suites using Node 20's native `node:test` and `node:assert/strict` covering platform services, timers, formatters, squad matchmaking contracts, rankings, and live browser endpoints.
+- [x] **Automated Live Browser & Visual Audit**: End-to-end audit test suite (`tests/browser-audit.test.mjs`) verifying HTTP 200 responses, semantic landmarks, OpenGraph image tags, sitemap XML, PWA manifest, and dynamic crawler directives.
 - [x] **ESLint Linting**: Direct `eslint .` command in `package.json`.
 - [x] **GitHub Actions Workflow**: Automated pipeline executing dependency install, linting, unit tests, and production build on every PR and push to `main`.
 - [x] **Metadata & SEO**: Dynamically generated OpenGraph images (`next/og`), `robots.txt`, and XML `sitemap.js`.

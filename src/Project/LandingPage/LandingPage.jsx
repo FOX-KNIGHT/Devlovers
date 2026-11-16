@@ -34,7 +34,8 @@ function LandingPage({ setCurrentPage }) {
         { label: t('filters.upcoming'), value: 'upcoming' },
         { label: t('filters.ongoing'), value: 'ongoing' },
         { label: t('filters.remote'), value: 'remote' },
-        { label: t('filters.prize'), value: 'prize' }
+        { label: t('filters.prize'), value: 'prize' },
+        { label: t('filters.bookmarked'), value: 'bookmarked' }
     ], [t]);
 
     // Handle filter change

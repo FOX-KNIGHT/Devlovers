@@ -2,6 +2,7 @@
   "nav": {
     "hackathons": "ハッカソン",
     "community": "コミュニティ",
+    "leaderboard": "リーダーボード",
     "mission": "ミッションと規約",
     "search": "クイック検索...",
     "signIn": "ログイン",
@@ -21,7 +22,8 @@
     "upcoming": "近日開催",
     "ongoing": "開催中",
     "remote": "リモートのみ",
-    "prize": "高額賞金 ($25k+)"
+    "prize": "高額賞金 ($25k+)",
+    "bookmarked": "保存済み"
   },
   "post": {
     "by": "主催:",

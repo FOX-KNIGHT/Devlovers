@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Trophy, Flame, Users, Info, X, Radio } from 'lucide-react';
+import { Trophy, Flame, Users, Info, X, Radio, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function MobileDrawer({
@@ -48,6 +48,21 @@ export function MobileDrawer({
             >
               <Trophy className="h-4 w-4 text-cyan-400" />
               <span>Hackathon Challenges</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onSelectPage('Leaderboard');
+                onOpenChange(false);
+              }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition ${
+                currentPage === 'Leaderboard'
+                  ? 'bg-cyan-500/20 text-cyan-300 font-semibold'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Award className="h-4 w-4 text-amber-400" />
+              <span>Developer Leaderboard</span>
             </button>
 
             <button

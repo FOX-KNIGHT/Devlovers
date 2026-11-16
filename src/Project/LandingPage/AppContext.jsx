@@ -36,6 +36,7 @@ export const AppProvider = ({ children }) => {
     // Global Internationalization & Preferences
     const [currency, setCurrencyState] = useState('USD');
     const [useUTC, setUseUTC] = useState(false);
+    const [bookmarkedSprints, setBookmarkedSprints] = useState([]);
 
     // Sync saved preferences from localStorage safely in effect
     useEffect(() => {
@@ -43,6 +44,26 @@ export const AppProvider = ({ children }) => {
         if (savedCurrency) setCurrencyState(savedCurrency);
         const savedUTC = localStorage.getItem('devlovers_utc');
         if (savedUTC) setUseUTC(savedUTC === 'true');
+        try {
+            const savedBookmarks = localStorage.getItem('devlovers_bookmarked_sprints');
+            if (savedBookmarks) setBookmarkedSprints(JSON.parse(savedBookmarks));
+        } catch (e) {
+            console.error('Failed to load bookmarks', e);
+        }
+    }, []);
+
+    const toggleBookmark = useCallback((sprintId) => {
+        setBookmarkedSprints((prev) => {
+            const exists = prev.includes(sprintId);
+            const next = exists ? prev.filter((id) => id !== sprintId) : [...prev, sprintId];
+            try {
+                localStorage.setItem('devlovers_bookmarked_sprints', JSON.stringify(next));
+            } catch (e) {
+                console.error(e);
+            }
+            sonnerToast(exists ? 'Sprint removed from bookmarks' : 'Sprint saved to bookmarks! 🔖');
+            return next;
+        });
     }, []);
 
     const setCurrency = useCallback((cur) => {
@@ -220,6 +241,8 @@ export const AppProvider = ({ children }) => {
         setCurrency,
         useUTC,
         toggleUTC,
+        bookmarkedSprints,
+        toggleBookmark,
 
         toggleTheme,
         handleSidebarToggle,
@@ -234,7 +257,7 @@ export const AppProvider = ({ children }) => {
         isDarkMode, isLoggedIn, user, isSidebarDesktopCollapsed, isMobileSidebarVisible,
         setIsMobileSidebarVisible, activeHackathon, selectHackathon, activeSort, activeTechFilter,
         isSignInModalOpen, isMobileSearchOpen, toastState, notifications, unreadCount,
-        currency, setCurrency, useUTC, toggleUTC,
+        currency, setCurrency, useUTC, toggleUTC, bookmarkedSprints, toggleBookmark,
         toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, showToast,
         markAllNotificationsAsRead, markNotificationAsRead
     ]);

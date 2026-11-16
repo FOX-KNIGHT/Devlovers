@@ -8,7 +8,7 @@ import { Sparkles } from 'lucide-react';
 import { useAppContext } from './AppContext.jsx';
 
 function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
-  const { activeSort, activeHackathon, activeTechFilter } = useAppContext();
+  const { activeSort, activeHackathon, activeTechFilter, bookmarkedSprints } = useAppContext();
 
   const filteredPosts = useMemo(() => {
     const list = data.feedPosts.filter(post => {
@@ -27,6 +27,7 @@ function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
       }
 
       if (currentFilter === 'all') return true;
+      if (currentFilter === 'bookmarked') return bookmarkedSprints?.includes(post.id);
       const statusUpper = post.status?.toUpperCase();
       if (currentFilter === 'upcoming') return statusUpper === 'UPCOMING';
       if (currentFilter === 'ongoing') return statusUpper === 'ACTIVE' || statusUpper === 'ONGOING';
@@ -53,7 +54,7 @@ function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
       }
       return 0;
     });
-  }, [currentFilter, activeSort, activeHackathon, activeTechFilter]);
+  }, [currentFilter, activeSort, activeHackathon, activeTechFilter, bookmarkedSprints]);
 
   if (filteredPosts.length === 0) {
     return (

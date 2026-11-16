@@ -13,6 +13,7 @@ import {
   Globe,
   Code2,
   Share2,
+  Bookmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TiltCard } from '@/components/ui/tilt-card';
@@ -27,7 +28,7 @@ import { useI18n } from '@/lib/i18n/context';
 import { toast } from 'sonner';
 
 function FeedPost({ post, showSignInModal }) {
-  const { currency, useUTC, setActiveTechFilter } = useAppContext();
+  const { currency, useUTC, setActiveTechFilter, bookmarkedSprints, toggleBookmark } = useAppContext();
   const { t } = useI18n();
   const [registered, setRegistered] = useState(false);
   const [localUTCToggle, setLocalUTCToggle] = useState(false);
@@ -111,41 +112,60 @@ function FeedPost({ post, showSignInModal }) {
             </span>
           </div>
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 font-mono text-cyan-300 text-xs font-semibold shrink-0 hover:bg-cyan-500/20 transition cursor-pointer"
-                title="Click to view prize breakdown"
-              >
-                <Trophy className="h-3.5 w-3.5 text-cyan-400" />
-                <span>{displayPrize}</span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-64 p-3 border-white/10 bg-[#0C0F1D]/98 shadow-2xl backdrop-blur-xl">
-              <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-2 border-b border-white/5 pb-1">
-                Prize Distribution
-              </div>
-              <div className="space-y-1.5 text-xs font-mono">
-                <div className="flex items-center justify-between text-amber-300">
-                  <span>🥇 1st Place (60%)</span>
-                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.6) / 100, currency)}</span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 font-mono text-cyan-300 text-xs font-semibold shrink-0 hover:bg-cyan-500/20 transition cursor-pointer"
+                  title="Click to view prize breakdown"
+                >
+                  <Trophy className="h-3.5 w-3.5 text-cyan-400" />
+                  <span>{displayPrize}</span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-64 p-3 border-white/10 bg-[#0C0F1D]/98 shadow-2xl backdrop-blur-xl">
+                <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-2 border-b border-white/5 pb-1">
+                  Prize Distribution
                 </div>
-                <div className="flex items-center justify-between text-slate-300">
-                  <span>🥈 2nd Place (25%)</span>
-                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.25) / 100, currency)}</span>
+                <div className="space-y-1.5 text-xs font-mono">
+                  <div className="flex items-center justify-between text-amber-300">
+                    <span>🥇 1st Place (60%)</span>
+                    <span>{formatPrize(((post.prize_cents || 2500000) * 0.6) / 100, currency)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300">
+                    <span>🥈 2nd Place (25%)</span>
+                    <span>{formatPrize(((post.prize_cents || 2500000) * 0.25) / 100, currency)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span>🥉 3rd Place (10%)</span>
+                    <span>{formatPrize(((post.prize_cents || 2500000) * 0.1) / 100, currency)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-cyan-400 pt-1 border-t border-white/5 text-[11px]">
+                    <span>🌟 Sponsor Track (5%)</span>
+                    <span>{formatPrize(((post.prize_cents || 2500000) * 0.05) / 100, currency)}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-slate-400">
-                  <span>🥉 3rd Place (10%)</span>
-                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.1) / 100, currency)}</span>
-                </div>
-                <div className="flex items-center justify-between text-cyan-400 pt-1 border-t border-white/5 text-[11px]">
-                  <span>🌟 Sponsor Track (5%)</span>
-                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.05) / 100, currency)}</span>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+              </PopoverContent>
+            </Popover>
+
+            <button
+              type="button"
+              onClick={() => {
+                soundFx.playClick();
+                toggleBookmark(post.id);
+              }}
+              className={`p-1.5 rounded-lg border transition cursor-pointer ${
+                bookmarkedSprints?.includes(post.id)
+                  ? 'bg-amber-500/20 border-amber-400/50 text-amber-400'
+                  : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:border-white/20'
+              }`}
+              title={bookmarkedSprints?.includes(post.id) ? 'Remove from bookmarks' : 'Bookmark sprint'}
+              aria-label="Bookmark sprint"
+            >
+              <Bookmark className={`h-3.5 w-3.5 ${bookmarkedSprints?.includes(post.id) ? 'fill-current' : ''}`} />
+            </button>
+          </div>
         </div>
 
         {/* Challenge Title */}

@@ -83,4 +83,27 @@ describe('mock data schema contract', () => {
       assert.match(squad.compatibility, /^\d{1,3}%$/, 'compatibility is a percentage string');
     }
   });
+
+  test('leaderboard array conforms to rankings and prize specifications', () => {
+    assert.ok(Array.isArray(data.leaderboard), 'leaderboard is an array');
+    assert.ok(data.leaderboard.length >= 3, 'has at least top 3 podium entries');
+
+    let prevRank = 0;
+    for (const item of data.leaderboard) {
+      assert.strictEqual(typeof item.rank, 'number');
+      assert.ok(item.rank > prevRank, 'ranks are strictly monotonically increasing');
+      prevRank = item.rank;
+
+      assert.strictEqual(typeof item.team, 'string');
+      assert.strictEqual(typeof item.captain, 'string');
+      assert.match(item.handle, /^@/, 'handle starts with @');
+      assert.strictEqual(typeof item.bounties_won_cents, 'number');
+      assert.ok(Number.isInteger(item.bounties_won_cents), 'bounties_won_cents is integer cents');
+      assert.ok(item.bounties_won_cents > 0, 'bounties_won_cents is positive');
+      assert.strictEqual(typeof item.points, 'number');
+      assert.strictEqual(typeof item.wins, 'number');
+      assert.strictEqual(typeof item.specialty, 'string');
+      assert.strictEqual(typeof item.badge, 'string');
+    }
+  });
 });

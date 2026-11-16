@@ -2,6 +2,7 @@
   "nav": {
     "hackathons": "Hackathons",
     "community": "Community",
+    "leaderboard": "Leaderboard",
     "mission": "Mission & Rules",
     "search": "Quick search...",
     "signIn": "Sign In",
@@ -21,7 +22,8 @@
     "upcoming": "Upcoming",
     "ongoing": "Ongoing",
     "remote": "Remote Only",
-    "prize": "High Bounty ($25k+)"
+    "prize": "High Bounty ($25k+)",
+    "bookmarked": "Bookmarked"
   },
   "post": {
     "by": "by",

@@ -2,18 +2,23 @@
 
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Users, Info } from 'lucide-react';
+import { Trophy, Users, Info, Award } from 'lucide-react';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { useI18n } from '@/lib/i18n/context';
+import data from './data.js';
 
 function SubNav({ currentPage, setCurrentPage }) {
   const { t } = useI18n();
 
-  const navItems = useMemo(() => [
-    { label: t('nav.hackathons'), icon: Trophy, pageName: 'Hackathon', count: '6 Live' },
-    { label: t('nav.community'), icon: Users, pageName: 'Devlovers', count: '10k+' },
-    { label: t('nav.mission'), icon: Info, pageName: 'About' },
-  ], [t]);
+  const navItems = useMemo(() => {
+    const liveCount = data.hackathons.filter((h) => h.status === 'ACTIVE').length;
+    return [
+      { label: t('nav.hackathons'), icon: Trophy, pageName: 'Hackathon', count: `${liveCount} Live` },
+      { label: t('nav.leaderboard'), icon: Award, pageName: 'Leaderboard', count: 'Top 5' },
+      { label: t('nav.community'), icon: Users, pageName: 'Devlovers', count: '10k+' },
+      { label: t('nav.mission'), icon: Info, pageName: 'About' },
+    ];
+  }, [t]);
 
   const handleNavClick = (pageName) => {
     soundFx.playClick();

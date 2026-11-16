@@ -2,6 +2,7 @@
   "nav": {
     "hackathons": "Hackatones",
     "community": "Comunidad",
+    "leaderboard": "Clasificación",
     "mission": "Misión y Reglas",
     "search": "Búsqueda rápida...",
     "signIn": "Iniciar Sesión",
@@ -21,7 +22,8 @@
     "upcoming": "Próximos",
     "ongoing": "En Curso",
     "remote": "Solo Remoto",
-    "prize": "Alto Premio ($25k+)"
+    "prize": "Alto Premio ($25k+)",
+    "bookmarked": "Guardados"
   },
   "post": {
     "by": "por",
