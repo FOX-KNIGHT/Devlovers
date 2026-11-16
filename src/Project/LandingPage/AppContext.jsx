@@ -43,14 +43,23 @@ export const AppProvider = ({ children }) => {
     const [bookmarkedSprints, setBookmarkedSprints] = useState([]);
 
     // Live data loader from Phase 1 REST API
-    const refreshHackathons = useCallback(async () => {
+    const refreshData = useCallback(async () => {
         try {
-            const res = await fetch('/api/hackathons');
-            if (res.ok) {
-                const json = await res.json();
+            const [hackathonsRes, notifsRes] = await Promise.all([
+                fetch('/api/hackathons'),
+                fetch('/api/notifications')
+            ]);
+            if (hackathonsRes.ok) {
+                const json = await hackathonsRes.json();
                 if (json.success && Array.isArray(json.data) && json.data.length > 0) {
                     setHackathons(json.data);
                     setFeedPosts(json.data);
+                }
+            }
+            if (notifsRes.ok) {
+                const notifsJson = await notifsRes.json();
+                if (notifsJson.success && Array.isArray(notifsJson.data) && notifsJson.data.length > 0) {
+                    setNotifications(notifsJson.data);
                 }
             }
         } catch (e) {
@@ -58,9 +67,11 @@ export const AppProvider = ({ children }) => {
         }
     }, []);
 
+    const refreshHackathons = refreshData;
+
     useEffect(() => {
-        refreshHackathons();
-    }, [refreshHackathons]);
+        refreshData();
+    }, [refreshData]);
 
     // Sync saved preferences from localStorage safely in effect
     useEffect(() => {
@@ -219,6 +230,11 @@ export const AppProvider = ({ children }) => {
         if (count > 0) {
             setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
             showToast(`✅ Marked ${count} notification${count > 1 ? 's' : ''} as read`);
+            fetch('/api/notifications', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ all: true })
+            }).catch(() => {});
         } else {
             showToast('ℹ️ No unread notifications', 2000);
         }
@@ -230,6 +246,11 @@ export const AppProvider = ({ children }) => {
             const notification = prev.find(n => n.id === id);
             if (notification?.unread) {
                 showToast('✅ Notification marked as read');
+                fetch('/api/notifications', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                }).catch(() => {});
             }
             return prev.map(n => n.id === id ? { ...n, unread: false } : n);
         });
@@ -253,7 +274,8 @@ export const AppProvider = ({ children }) => {
         setActiveHackathon: selectHackathon,
         hackathons,
         feedPosts,
-        refreshHackathons,
+        refreshData,
+        refreshHackathons: refreshData,
         activeSort,
         setActiveSort: setActiveSortState,
         activeTechFilter,

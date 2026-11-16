@@ -15,6 +15,13 @@
       "when": 1794857085798,
       "tag": "0001_windy_magdalene",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794857417793,
+      "tag": "0002_abandoned_hawkeye",
+      "breakpoints": true
     }
   ]
 }

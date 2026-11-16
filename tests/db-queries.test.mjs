@@ -9,6 +9,12 @@ import { getUserById, createUser } from '../src/db/queries/users.js';
 import { submitEvaluation, calculateZScores } from '../src/db/queries/evaluations.js';
 import { createConversation, sendMessage, getConversationMessages } from '../src/db/queries/messages.js';
 import { logAuditEvent, getAuditLogs } from '../src/db/queries/audit.js';
+import {
+  getNotifications,
+  createNotification,
+  markNotificationRead,
+  markAllNotificationsRead,
+} from '../src/db/queries/notifications.js';
 
 test('database query repositories', async (t) => {
   await t.test('getHackathons returns all hackathons by default', async () => {
@@ -180,5 +186,25 @@ test('database query repositories', async (t) => {
     const recentLogs = await getAuditLogs(10);
     assert.ok(Array.isArray(recentLogs));
     assert.ok(recentLogs.length >= 1);
+  });
+
+  await t.test('notifications queries manage notifications and read states', async () => {
+    const list = await getNotifications();
+    assert.ok(Array.isArray(list));
+    assert.ok(list.length > 0);
+
+    const newNotif = await createNotification({
+      userId: 'user-1',
+      message: 'Sprint review completed',
+      category: 'feedback',
+    });
+    assert.ok(newNotif.id);
+    assert.equal(newNotif.unread, true);
+
+    const markRes = await markNotificationRead(newNotif.id);
+    assert.equal(markRes.success, true);
+
+    const markAllRes = await markAllNotificationsRead();
+    assert.equal(markAllRes.success, true);
   });
 });

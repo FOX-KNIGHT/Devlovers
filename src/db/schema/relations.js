@@ -8,6 +8,7 @@ import { likes, comments, bookmarks } from './social.js';
 import { sponsorCredits } from './sponsors.js';
 import { conversations, conversationMembers, messages } from './messages.js';
 import { auditLogs } from './audit.js';
+import { notifications } from './notifications.js';
 
 export const hackathonsRelations = relations(hackathons, ({ many }) => ({
   squads: many(squads),
@@ -28,6 +29,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   sentMessages: many(messages),
   conversationMemberships: many(conversationMembers),
   auditLogs: many(auditLogs),
+  notifications: many(notifications),
 }));
 
 export const squadsRelations = relations(squads, ({ one, many }) => ({
@@ -159,6 +161,13 @@ export const messagesRelations = relations(messages, ({ one }) => ({
 export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
   actor: one(users, {
     fields: [auditLogs.actorId],
+    references: [users.id],
+  }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
     references: [users.id],
   }),
 }));

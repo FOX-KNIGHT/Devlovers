@@ -156,4 +156,57 @@ describe('live server browser & visual audit', () => {
       throw err;
     }
   });
+
+  test('api/notifications endpoint returns notifications and unreadCount', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/notifications`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(Array.isArray(data.data));
+      assert.ok(typeof data.unreadCount === 'number');
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/submissions endpoint returns submission list', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/submissions`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(Array.isArray(data.data));
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/messages endpoint returns conversation history', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/messages?conversationId=conv-1`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(Array.isArray(data.data));
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/users endpoint returns user details', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/users?username=elena_ai`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(data.data);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
 });

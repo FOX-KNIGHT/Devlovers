@@ -2,9 +2,9 @@
 
 > **Status: 100% COMPLETE & VERIFIED**  
 > **Commit Hash**: Working Tree Clean on branch `main`  
-> **Test Suite**: 64 / 64 Passing across 8 test suites (`npm test`)  
-> **Build Status**: Exit Code 0 with static pages and dynamic REST APIs (`npm run build`)  
-> **Live API Endpoints**: Active and serving at `http://localhost:3000/api/...`
+> **Test Suite**: 69 / 69 Passing across 8 test suites (`npm test`)  
+> **Build Status**: Exit Code 0 with 16 pages and dynamic REST APIs (`npm run build`)  
+> **Live API Endpoints**: 11 active REST API endpoints serving at `http://localhost:3000/api/...`
 
 ---
 
@@ -25,8 +25,9 @@
 | **Schema: Telemetry**| Event Analytics & Country Tracking | `src/db/schema/analytics.js` | Real-time views, registrations, and country codes |
 | **Schema: Messaging**| Conversations & Direct Messages | `src/db/schema/messages.js` | `conversations`, `conversation_members`, and `messages` |
 | **Schema: Audit** | Host & Admin Audit Trail | `src/db/schema/audit.js` | Immutable `audit_logs` tracking actor actions |
-| **Relations** | Bidirectional Drizzle Relations Map | `src/db/schema/relations.js` | Many-to-one, one-to-many across all 15 tables |
-| **Migrations** | Drizzle Kit SQL Migration Generator | `drizzle/0000_skinny_shotgun.sql`<br>`drizzle/0001_windy_magdalene.sql` | 15 tables, 21 foreign keys, 4 enum types |
+| **Schema: Alerts** | System & User Notifications | `src/db/schema/notifications.js`| Real-time alerts, categories, unread flags |
+| **Relations** | Bidirectional Drizzle Relations Map | `src/db/schema/relations.js` | Many-to-one, one-to-many across all 16 tables |
+| **Migrations** | Drizzle Kit SQL Migration Generator | `drizzle/0000_skinny_shotgun.sql`<br>`drizzle/0001_windy_magdalene.sql`<br>`drizzle/0002_abandoned_hawkeye.sql` | 16 tables, 22 foreign keys, 4 enum types |
 | **Migration Runner** | Programmatic Migration Script | `src/db/migrate.js` | `npm run db:migrate` migrates live PostgreSQL |
 | **Database Seeder** | Realistic Seed Population Script | `src/db/seed.js` | `npm run db:seed` seeds users, hackathons, criteria |
 | **Client Fallback** | Hybrid Live / Offline Storage Engine | `src/db/client.js` | Connects to Postgres when live; falls back gracefully offline |
@@ -39,17 +40,15 @@
 | **Queries: Judging**| Z-Score Calculation Engine | `src/db/queries/evaluations.js` | Mathematical formula $Z = (X - \mu) / \sigma$ normalization |
 | **Queries: Messaging**| Team Chat & DM Repositories | `src/db/queries/messages.js` | `createConversation()`, `sendMessage()`, `getConversationMessages()` |
 | **Queries: Audit** | Audit Logging & Compliance Ledger | `src/db/queries/audit.js` | `logAuditEvent()`, `getAuditLogs()` |
-| **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx` | Revalidates `/api/hackathons` & `/api/leaderboard` with offline cache |
-| **REST API** | GET / POST Hackathons API Route | `src/app/api/hackathons/route.js` | Filterable challenge list with status codes |
-| **REST API** | GET Hackathon by Slug API Route | `src/app/api/hackathons/[slug]/route.js` | Detailed sprint record with squads and perks |
-| **REST API** | GET / POST Squads API Route | `src/app/api/squads/route.js` | Matchmaker registry endpoint |
-| **REST API** | GET Leaderboard API Route | `src/app/api/leaderboard/route.js` | Global developer podium endpoint |
-| **REST API** | GET / POST Comments API Route | `src/app/api/comments/route.js` | Threaded discussion comments endpoint |
-| **REST API** | POST Likes & Bookmarks API Routes | `src/app/api/likes/route.js`, `bookmarks/route.js`| Real-time social engagement toggles |
+| **Queries: Alerts** | Notification Registry & Read States | `src/db/queries/notifications.js` | `getNotifications()`, `createNotification()`, `markNotificationRead()` |
+| **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx` | Revalidates `/api/hackathons`, `/api/leaderboard`, `/api/notifications` |
+| **REST API** | Sprints, Squads, Rankings | `src/app/api/hackathons/`, `[slug]`, `squads/`, `leaderboard/` | Core challenge directory endpoints |
+| **REST API** | Social, Bookmarks, Likes | `src/app/api/comments/`, `likes/`, `bookmarks/` | Participant social engagement endpoints |
+| **REST API** | Notifications, Submissions, DMs, Users | `src/app/api/notifications/`, `submissions/`, `messages/`, `users/`, `evaluations/` | Complete operational App Router endpoints |
 
 ---
 
-## 🧪 Automated Test Suite (64 / 64 Tests Passing)
+## 🧪 Automated Test Suite (69 / 69 Tests Passing)
 
 ```bash
 $ npm test
@@ -58,10 +57,24 @@ $ npm test
 > node --test tests/
 
 ▶ PWA Badging API (4 tests) - PASS
-▶ live server browser & visual audit (10 tests) - PASS
+▶ live server browser & visual audit (14 tests) - PASS
+  ✔ root page (/) returns 200 and renders full semantic HTML with OpenGraph tags
+  ✔ robots.txt returns 200 and allows indexing with sitemap reference
+  ✔ sitemap.xml returns 200 with valid XML urlset
+  ✔ manifest.json returns valid PWA configuration
+  ✔ opengraph-image endpoint returns 200 and valid image/png
+  ✔ api/hackathons endpoint returns valid JSON with hackathon list
+  ✔ api/hackathons/[slug] endpoint returns specific sprint details
+  ✔ api/leaderboard endpoint returns rankings
+  ✔ api/squads endpoint returns squad listings
+  ✔ api/comments endpoint returns comments listings
+  ✔ api/notifications endpoint returns notifications and unreadCount
+  ✔ api/submissions endpoint returns submission list
+  ✔ api/messages endpoint returns conversation history
+  ✔ api/users endpoint returns user details
 ▶ useCountdown timer calculations (4 tests) - PASS
 ▶ mock data schema contract (6 tests) - PASS
-▶ database query repositories (15 tests) - PASS
+▶ database query repositories (16 tests) - PASS
   ✔ getHackathons returns all hackathons by default
   ✔ getHackathons filters by upcoming status
   ✔ getHackathons filters by high prize bounties
@@ -77,8 +90,9 @@ $ npm test
   ✔ evaluations calculate z-scores for scoring normalization
   ✔ direct message queries support conversations and messages
   ✔ audit logging captures platform events and actor actions
+  ✔ notifications queries manage notifications and read states
 ▶ Drizzle ORM schema tables and enums (5 tests) - PASS
-  ✔ exports all expected tables (15 tables)
+  ✔ exports all expected tables (16 tables)
   ✔ exports all enum types (4 enums)
   ✔ hackathons table contains required columns
   ✔ users table contains required columns
@@ -88,7 +102,7 @@ $ npm test
 ▶ i18n dictionaries parity (3 tests) - PASS
 ▶ offline-drafts storage engine (5 tests) - PASS
 
-ℹ tests 64 | suites 8 | pass 64 | fail 0
+ℹ tests 69 | suites 8 | pass 69 | fail 0
 ```
 
 ---
@@ -111,7 +125,10 @@ src/
 │   │   ├── social.js            # Likes, comments, bookmarks tables
 │   │   ├── sponsors.js          # Sponsor credits table
 │   │   ├── analytics.js         # Events telemetry table
-│   │   ├── relations.js         # Bidirectional Drizzle relations
+│   │   ├── messages.js          # Conversations and messages tables
+│   │   ├── audit.js             # Audit logs table
+│   │   ├── notifications.js     # System & user notifications table
+│   │   ├── relations.js         # Bidirectional Drizzle relations across 16 tables
 │   │   └── index.js             # Unified schema export
 │   └── queries/
 │       ├── hackathons.js        # Sprints listing, filtering, detail
@@ -120,21 +137,23 @@ src/
 │       ├── evaluations.js       # Judging and Z-Score engine
 │       ├── leaderboard.js       # Global rankings
 │       ├── social.js            # Likes, comments, bookmarks
-│       └── users.js             # Profiles
-├── app/
-│   └── api/
-│       ├── hackathons/
-│       │   ├── route.js         # GET / POST hackathons
-│       │   └── [slug]/route.js  # GET single sprint
-│       ├── squads/route.js      # GET / POST squads
-│       ├── leaderboard/route.js # GET leaderboard
-│       ├── comments/route.js    # GET / POST comments
-│       ├── likes/route.js       # POST toggle like
-│       └── bookmarks/route.js   # POST toggle bookmark
-drizzle/
-├── 0000_skinny_shotgun.sql      # Initial PostgreSQL migration (11 tables, 15 FKs)
-├── meta/
-│   ├── _journal.json            # Drizzle Kit migration journal
-│   └── 0000_snapshot.json       # Migration snapshot
-└── drizzle.config.js            # Drizzle CLI configuration
+│       ├── users.js             # Profiles
+│       ├── messages.js          # Team chat and conversations
+│       ├── audit.js             # Audit logs
+│       └── notifications.js     # Notifications and unread counts
+└── app/
+    └── api/
+        ├── hackathons/
+        │   ├── route.js         # GET / POST hackathons
+        │   └── [slug]/route.js  # GET single sprint
+        ├── squads/route.js      # GET / POST squads
+        ├── leaderboard/route.js # GET leaderboard
+        ├── comments/route.js    # GET / POST comments
+        ├── likes/route.js       # POST toggle like
+        ├── bookmarks/route.js   # POST toggle bookmark
+        ├── notifications/route.js # GET / POST / PATCH notifications
+        ├── submissions/route.js # GET / POST submissions
+        ├── messages/route.js    # GET / POST messages & conversations
+        ├── evaluations/route.js # POST evaluations & Z-scores
+        └── users/route.js       # GET / POST user profiles
 ```

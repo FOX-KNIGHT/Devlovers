@@ -9,4 +9,5 @@ export * from './sponsors.js';
 export * from './analytics.js';
 export * from './messages.js';
 export * from './audit.js';
+export * from './notifications.js';
 export * from './relations.js';

@@ -19,6 +19,7 @@ test('Drizzle ORM schema tables and enums', async (t) => {
     assert.ok(schema.conversationMembers, 'conversationMembers table should be defined');
     assert.ok(schema.messages, 'messages table should be defined');
     assert.ok(schema.auditLogs, 'auditLogs table should be defined');
+    assert.ok(schema.notifications, 'notifications table should be defined');
   });
 
   await t.test('exports all enum types', () => {
