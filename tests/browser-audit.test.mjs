@@ -129,4 +129,31 @@ describe('live server browser & visual audit', () => {
       throw err;
     }
   });
+
+  test('api/squads endpoint returns squad listings', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/squads`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(Array.isArray(data.data));
+      assert.ok(data.count >= 0);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/comments endpoint returns comments listings', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/comments`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(Array.isArray(data.data));
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
 });

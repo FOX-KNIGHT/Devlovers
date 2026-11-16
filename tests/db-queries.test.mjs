@@ -4,6 +4,9 @@ import { getHackathons, getHackathonBySlug, createHackathon } from '../src/db/qu
 import { getSquadsByHackathonSlug, createSquad } from '../src/db/queries/squads.js';
 import { getGlobalLeaderboard } from '../src/db/queries/leaderboard.js';
 import { getSubmissionsByHackathonSlug, createSubmission } from '../src/db/queries/submissions.js';
+import { toggleLike, addComment, toggleBookmark } from '../src/db/queries/social.js';
+import { getUserById, createUser } from '../src/db/queries/users.js';
+import { submitEvaluation, calculateZScores } from '../src/db/queries/evaluations.js';
 
 test('database query repositories', async (t) => {
   await t.test('getHackathons returns all hackathons by default', async () => {
@@ -90,5 +93,58 @@ test('database query repositories', async (t) => {
     assert.ok(sub.id);
     assert.equal(sub.title, 'NeuroMesh');
     assert.equal(sub.status, 'SUBMITTED');
+  });
+
+  await t.test('social queries handle likes, comments, and bookmarks', async () => {
+    const likeRes = await toggleLike({ userId: 'user-1', hackathonId: 'h-1' });
+    assert.ok(typeof likeRes.liked === 'boolean');
+
+    const comment = await addComment({
+      hackathonId: 'h-1',
+      userId: 'user-1',
+      body: 'Stunning sprint challenge!',
+    });
+    assert.ok(comment.id);
+    assert.equal(comment.body, 'Stunning sprint challenge!');
+
+    const bookmarkRes = await toggleBookmark({ userId: 'user-1', hackathonId: 'h-1' });
+    assert.ok(typeof bookmarkRes.bookmarked === 'boolean');
+  });
+
+  await t.test('user queries manage user accounts', async () => {
+    const user = await getUserById('user-1');
+    assert.ok(user);
+    assert.ok(user.username);
+
+    const newUser = await createUser({
+      username: 'agent_coder',
+      email: 'agent@devlovers.com',
+      fullName: 'Agent Coder',
+    });
+    assert.ok(newUser.id);
+    assert.equal(newUser.username, 'agent_coder');
+  });
+
+  await t.test('evaluations calculate z-scores for scoring normalization', async () => {
+    const evalResult = await submitEvaluation({
+      submissionId: 'sub-1',
+      judgeId: 'judge-1',
+      criteriaScores: { innovation: 30, technical_depth: 30 },
+      rawScore: 92,
+      feedback: 'Excellent execution',
+    });
+    assert.ok(evalResult.id);
+    assert.equal(evalResult.rawScore, 92);
+
+    const scores = [
+      { id: 1, rawScore: 80 },
+      { id: 2, rawScore: 90 },
+      { id: 3, rawScore: 100 },
+    ];
+    const normalized = calculateZScores(scores);
+    assert.equal(normalized.length, 3);
+    assert.ok(normalized[0].zScore < 0, 'below mean should have negative z-score');
+    assert.equal(normalized[1].zScore, 0, 'mean should have 0 z-score');
+    assert.ok(normalized[2].zScore > 0, 'above mean should have positive z-score');
   });
 });
