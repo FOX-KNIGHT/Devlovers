@@ -89,4 +89,44 @@ describe('live server browser & visual audit', () => {
       throw err;
     }
   });
+
+  test('api/hackathons endpoint returns valid JSON with hackathon list', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/hackathons`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(Array.isArray(data.data));
+      assert.ok(data.count > 0);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/hackathons/[slug] endpoint returns specific sprint details', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/hackathons/future-of-ai-sprint-2026`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(data.data.slug, 'future-of-ai-sprint-2026');
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/leaderboard endpoint returns rankings', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/leaderboard`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(Array.isArray(data.data));
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
 });

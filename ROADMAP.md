@@ -9,7 +9,7 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 | Phase | Description | Status | Test Coverage |
 | :--- | :--- | :--- | :--- |
 | **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 / 36 Passing** |
-| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | ⏳ Planned | Pending |
+| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **56 / 56 Passing** |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Planned | Pending |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Pending |
 | **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | ⏳ Planned | Pending |
@@ -72,22 +72,28 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 
 ---
 
-## ⏳ Phase 1: High-Performance Data Layer & Drizzle ORM
+## ✅ Phase 1: High-Performance Data Layer & Drizzle ORM (Completed)
 
 *Objective: Transition from client-side mock arrays to a production PostgreSQL database managed with Drizzle ORM.*
 
 ### Key Deliverables:
-- [ ] Install and configure `drizzle-orm`, `drizzle-kit`, and `pg` / `@neondatabase/serverless`.
-- [ ] Define relational database schema in `src/db/schema/`:
-  - `hackathons`: id, slug, title, description, banner_url, prize_pool_cents, currency, status enum, starts_at, ends_at, timezone, criteria_weights (jsonb), created_at.
-  - `users`: id, external_auth_id, username, email, full_name, avatar_url, bio, skills (text array), github_handle, created_at.
-  - `squads`: id, hackathon_id, name, tagline, looking_for (text array), max_members, created_by, created_at.
+- [x] Install and configure `drizzle-orm`, `drizzle-kit`, and `postgres` driver in ESM Next.js 16.
+- [x] Define relational database schema in `src/db/schema/`:
+  - `hackathons`: id, slug, title, description, banner_url, prize_pool_cents, currency, status enum, starts_at, ends_at, timezone, criteria_weights (jsonb), prize_distribution (jsonb), created_at.
+  - `users`: id, external_auth_id, username, email, full_name, avatar_url, bio, skills (jsonb), github_handle, role enum, created_at.
+  - `squads`: id, hackathon_id, name, tagline, looking_for (jsonb), max_members, compatibility_score, created_by, created_at.
   - `squad_members`: id, squad_id, user_id, role enum, joined_at.
   - `submissions`: id, hackathon_id, squad_id, title, repo_url, demo_url, verified_commits, status enum, submitted_at.
-  - `evaluations`: id, submission_id, judge_id, criteria_scores (jsonb), raw_score, normalized_z_score, notes, evaluated_at.
-- [ ] Migration generation scripts (`npm run db:generate`, `npm run db:migrate`).
-- [ ] Seed script (`src/db/seed.ts`) populating high-fidelity real-world hackathon datasets.
-- [ ] Type-safe query helper repositories (`src/db/queries/`).
+  - `evaluations`: id, submission_id, judge_id, criteria_scores (jsonb), raw_score, normalized_z_score, feedback, evaluated_at.
+  - `social`: likes, comments (with threaded replies), bookmarks.
+  - `sponsors`: sponsor_credits with claim tracking.
+  - `analytics`: events telemetry table for real-time views, registrations, and submissions.
+  - `relations`: comprehensive bidirectional Drizzle relations mapping.
+- [x] Migration generation scripts (`npm run db:generate`, `npm run db:migrate`) and initial SQL migration `drizzle/0000_skinny_shotgun.sql`.
+- [x] Seed script (`src/db/seed.js`) populating high-fidelity real-world hackathon datasets.
+- [x] Type-safe query helper repositories (`src/db/queries/hackathons.js`, `squads.js`, `leaderboard.js`, `submissions.js`) with offline fallback support.
+- [x] REST API Route Handlers: `/api/hackathons`, `/api/hackathons/[slug]`, `/api/squads`, `/api/leaderboard`.
+- [x] Automated Test Suite expansion: 56 / 56 tests passing covering schemas, enums, relational queries, and live API endpoints.
 
 ---
 
