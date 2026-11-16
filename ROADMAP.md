@@ -100,7 +100,7 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 - [x] REST API Route Handlers: `/api/hackathons`, `/api/hackathons/[slug]`, `/api/squads`, `/api/leaderboard`, `/api/comments`, `/api/likes`, `/api/bookmarks`, `/api/notifications`, `/api/submissions`, `/api/messages`, `/api/evaluations`, `/api/users`, `/api/registrations`.
 - [x] UI Reactive Hydration: `AppContext.jsx`, `FeedPost.jsx`, and `LeaderboardView.jsx` dynamically revalidate against live REST APIs with instant offline caching.
 - [x] Project Showcase & Submission Flow: Interactive Submissions Matrix (`ProjectShowcaseView.jsx`), real-time search, verified git commit pills, like triggers, and Project Submission Modal (`SubmitProjectModal.jsx`) connected to `/api/submissions`.
-- [x] Automated Test Suite expansion: 73 / 73 tests passing covering schemas, enums, relational queries, submissions contracts, and live API endpoints.
+- [x] Automated Test Suite expansion: 77 / 77 tests passing covering schemas, enums, relational queries, submissions contracts, and live API endpoints across all 13 REST route handlers.
 
 ---
 

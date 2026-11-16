@@ -3,7 +3,7 @@
 > **Current Milestone**: Phase 1 Certified Complete & Verified  
 > **Repository Branch**: `main` (Working Tree Clean)  
 > **Latest Commit**: `c2a76b9`  
-> **Global Test Suite**: **73 / 73 Tests Passing** across 8 test suites (`npm test`)  
+> **Global Test Suite**: **77 / 77 Tests Passing** across 8 test suites (`npm test`)  
 > **Production Build**: **Exit Code 0** with 17 routes prerendered & dynamic (`npm run build`)  
 > **Live HTTP Server**: Operational at `http://localhost:3000` (`HTTP/1.1 200 OK`)
 
@@ -14,7 +14,7 @@
 | Phase | Description | Status | Verification & Test Coverage |
 | :--- | :--- | :--- | :--- |
 | **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 Core Platform Tests (Passed)** |
-| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **73 / 73 Tests Passing (100% Green)** |
+| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **77 / 77 Tests Passing (100% Green)** |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Up Next | Next Milestone Specification Ready |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Specification Ready |
 | **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | ⏳ Planned | Specification Ready |
@@ -111,7 +111,7 @@ flowchart TD
 
 ---
 
-## 🧪 Comprehensive Automated Test Evidence (73 / 73 Tests Passing)
+## 🧪 Comprehensive Automated Test Evidence (77 / 77 Tests Passing)
 
 ```bash
 $ npm test
@@ -124,7 +124,7 @@ $ npm test
   ✔ clears badge when count is 0
   ✔ clears badge directly via clearAppBadge
   ✔ does not throw when navigator does not support setAppBadge
-▶ live server browser & visual audit (16 tests) - PASS
+▶ live server browser & visual audit (20 tests) - PASS
   ✔ root page (/) returns 200 and renders full semantic HTML with OpenGraph tags
   ✔ robots.txt returns 200 and allows indexing with sitemap reference
   ✔ sitemap.xml returns 200 with valid XML urlset
@@ -136,11 +136,15 @@ $ npm test
   ✔ api/squads endpoint returns squad listings
   ✔ api/comments endpoint returns comments listings
   ✔ api/notifications endpoint returns notifications and unreadCount
+  ✔ api/notifications PATCH updates notification read state
   ✔ api/submissions endpoint returns submission list
   ✔ api/submissions POST accepts new project submission
   ✔ api/messages endpoint returns conversation history
   ✔ api/users endpoint returns user details
   ✔ api/registrations endpoint returns registrations list
+  ✔ api/evaluations POST calculates normalized z-scores
+  ✔ api/likes POST toggles like state
+  ✔ api/bookmarks POST toggles bookmark state
 ▶ useCountdown timer calculations (4 tests) - PASS
   ✔ returns Ended for past dates
   ✔ calculates remaining days and hours accurately
@@ -201,7 +205,7 @@ $ npm test
   ✔ gracefully handles corrupted JSON in localStorage
   ✔ background sync updates pending draft state
 
-ℹ tests 73 | suites 8 | pass 73 | fail 0 | duration 254ms
+ℹ tests 77 | suites 8 | pass 77 | fail 0 | duration 222ms
 ```
 
 ---

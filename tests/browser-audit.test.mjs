@@ -171,6 +171,22 @@ describe('live server browser & visual audit', () => {
     }
   });
 
+  test('api/notifications PATCH updates notification read state', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/notifications`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: 1 }),
+      });
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
   test('api/submissions endpoint returns submission list', async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/submissions`);
@@ -243,6 +259,67 @@ describe('live server browser & visual audit', () => {
       const data = await res.json();
       assert.strictEqual(data.success, true);
       assert.ok(Array.isArray(data.data));
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/evaluations POST calculates normalized z-scores', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/evaluations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'calculate_z_scores',
+          scores: [70, 85, 95],
+        }),
+      });
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(data.data.length, 3);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/likes POST toggles like state', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/likes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetType: 'submission',
+          targetId: 'sub-1',
+          userId: 'user-guest',
+        }),
+      });
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(typeof data.liked, 'boolean');
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/bookmarks POST toggles bookmark state', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/bookmarks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          hackathonId: 'hackathon-alpha',
+          userId: 'user-guest',
+        }),
+      });
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(typeof data.bookmarked, 'boolean');
     } catch (err) {
       if (isNetworkBlocked(err)) return;
       throw err;

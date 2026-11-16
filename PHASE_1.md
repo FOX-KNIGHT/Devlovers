@@ -53,7 +53,7 @@
 
 ---
 
-## 🧪 Automated Test Suite (73 / 73 Tests Passing)
+## 🧪 Automated Test Suite (77 / 77 Tests Passing)
 
 ```bash
 $ npm test
@@ -62,7 +62,7 @@ $ npm test
 > node --test tests/
 
 ▶ PWA Badging API (4 tests) - PASS
-▶ live server browser & visual audit (16 tests) - PASS
+▶ live server browser & visual audit (20 tests) - PASS
   ✔ root page (/) returns 200 and renders full semantic HTML with OpenGraph tags
   ✔ robots.txt returns 200 and allows indexing with sitemap reference
   ✔ sitemap.xml returns 200 with valid XML urlset
@@ -74,11 +74,15 @@ $ npm test
   ✔ api/squads endpoint returns squad listings
   ✔ api/comments endpoint returns comments listings
   ✔ api/notifications endpoint returns notifications and unreadCount
+  ✔ api/notifications PATCH updates notification read state
   ✔ api/submissions endpoint returns submission list
   ✔ api/submissions POST accepts new project submission
   ✔ api/messages endpoint returns conversation history
   ✔ api/users endpoint returns user details
   ✔ api/registrations endpoint returns registrations list
+  ✔ api/evaluations POST calculates normalized z-scores
+  ✔ api/likes POST toggles like state
+  ✔ api/bookmarks POST toggles bookmark state
 ▶ useCountdown timer calculations (4 tests) - PASS
 ▶ mock data schema contract (7 tests) - PASS
   ✔ submissions array conforms to showcase specifications
@@ -111,7 +115,7 @@ $ npm test
 ▶ i18n dictionaries parity (3 tests) - PASS
 ▶ offline-drafts storage engine (5 tests) - PASS
 
-ℹ tests 73 | suites 8 | pass 73 | fail 0
+ℹ tests 77 | suites 8 | pass 77 | fail 0
 ```
 
 ---
