@@ -16,7 +16,7 @@ Built on **Next.js 16 (React 19)**, **Tailwind CSS v4**, **shadcn/ui**, **Framer
 - **Platform Layer**: Universal PWA with standalone window chrome & App Badging API
 - **Data Layer (Phase 1)**: Drizzle ORM, PostgreSQL (18 relational tables, 4 enums), Drizzle Kit migrations, and Next.js App Router REST API endpoints
 - **Auth & Security (Phase 2)**: Supabase Auth (`@supabase/supabase-js`, `@supabase/ssr`), Edge middleware route protection (`/dashboard`, `/squads/create`, `/admin`, `/submit`), multi-modal authentication (GitHub, Google, Magic Link, Password), and PostgreSQL Row Level Security (RLS) across all 18 tables with blind evaluation anti-bias judging
-- **Testing & Verification**: 94 automated tests passing across 13 suites (`node:test`), ESLint 10 flat config (`eslint.config.mjs`)
+- **Testing & Verification**: 95 automated tests passing across 13 suites (`node:test`), ESLint 10 flat config (`eslint.config.mjs`)
 - **Upcoming (Phase 3–5)**: Remote Stateless MCP Server, MCP Apps & Vercel AI SDK Dock, Production Hardening
 
 ---
@@ -36,7 +36,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ### 3. Run Automated Tests & Lint
 ```bash
-npm test         # 94 / 94 tests passing across 13 suites
+npm test         # 95 / 95 tests passing across 13 suites
 npm run lint     # ESLint 10 flat config verification
 ```
 

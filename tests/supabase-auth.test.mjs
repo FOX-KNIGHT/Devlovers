@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import { getSupabaseBrowserClient } from '../src/lib/supabase/client.js';
 import { updateSession } from '../src/lib/supabase/middleware.js';
+import { proxy, middleware } from '../src/proxy.js';
 import {
   signInWithOAuth,
   signInWithMagicLink,
@@ -68,7 +69,7 @@ describe('Supabase Auth & Row Level Security (Phase 2)', () => {
           url: `http://localhost:3000${p}`,
           cookies: {
             getAll: () => [],
-            set: () => {},
+            set: () => { },
           },
         };
 
@@ -93,7 +94,7 @@ describe('Supabase Auth & Row Level Security (Phase 2)', () => {
           url: `http://localhost:3000${p}`,
           cookies: {
             getAll: () => [],
-            set: () => {},
+            set: () => { },
           },
         };
 
@@ -113,12 +114,31 @@ describe('Supabase Auth & Row Level Security (Phase 2)', () => {
         url: 'http://localhost:3000/dashboard',
         cookies: {
           getAll: () => [{ name: 'sb-localhost-auth-token', value: 'mock-jwt-token' }],
-          set: () => {},
+          set: () => { },
         },
       };
       const res = await updateSession(mockReq);
       assert.ok(res);
       assert.strictEqual(res.status, 200, 'Authenticated session should pass through to /dashboard with status 200');
+    });
+
+    it('Next.js 16 Edge proxy exports proxy and middleware functions', async () => {
+      assert.strictEqual(typeof proxy, 'function', 'src/proxy.js must export proxy function');
+      assert.strictEqual(typeof middleware, 'function', 'src/proxy.js must export middleware function for backward-compatibility');
+
+      const mockReq = {
+        nextUrl: {
+          pathname: '/dashboard',
+          searchParams: new URLSearchParams(),
+        },
+        url: 'http://localhost:3000/dashboard',
+        cookies: {
+          getAll: () => [],
+          set: () => { },
+        },
+      };
+      const res = await proxy(mockReq);
+      assert.strictEqual(res.status, 307, 'proxy should redirect unauthenticated request to /dashboard');
     });
   });
 

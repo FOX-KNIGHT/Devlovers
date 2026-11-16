@@ -1,8 +1,11 @@
 import { updateSession } from './lib/supabase/middleware.js';
 
-export async function middleware(request) {
+export async function proxy(request) {
   return await updateSession(request);
 }
+
+// Backward-compatible alias
+export const middleware = proxy;
 
 export const config = {
   matcher: [

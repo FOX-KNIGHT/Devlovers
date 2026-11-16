@@ -1,8 +1,8 @@
 # 🔐 Phase 2: Supabase Auth & Row Level Security (RLS) — Complete Tracking Record
 
 > **Status: 100% COMPLETE & VERIFIED**  
-> **Commit Hash**: Working tree clean on `main`  
-> **Test Suite**: 94 / 94 Passing across 13 test suites (`npm test`)  
+> **Commit Hash**: `d02f2c8` (working tree clean on `main`)  
+> **Test Suite**: 95 / 95 Passing across 13 test suites (`npm test`)  
 > **Build Status**: Exit Code 0 with 19 static/dynamic routes (`npm run build`)  
 > **Dependencies**: `@supabase/supabase-js@^2.109.0`, `@supabase/ssr@^0.12.7`
 
@@ -16,7 +16,7 @@
 | **Browser Client** | Singleton Client with Graceful Mock Fallback | `src/lib/supabase/client.js` | `getSupabaseBrowserClient()` handles `signInWithOAuth`, `signInWithOtp`, `signOut`, `getSession`, `onAuthStateChange` |
 | **Server Client** | SSR Cookie Store Client | `src/lib/supabase/server.js` | `createClient()` uses `cookies()` with `getAll`/`setAll` for Next.js 16 App Router |
 | **Session Updater** | Edge Session Sync & Route Protection | `src/lib/supabase/middleware.js` | `updateSession(request)` protects sensitive routes (`/dashboard`, `/squads/create`, `/admin`, `/submit`) |
-| **Root Middleware** | Next.js Edge Middleware Engine | `src/middleware.js` | Intercepts navigation while bypassing static assets, images, SEO paths |
+| **Root Edge Proxy** | Next.js 16 Edge Proxy Engine | `src/proxy.js` | Intercepts navigation while bypassing static assets, images, SEO paths (`proxy` and `middleware` exports) |
 | **Server Actions** | Full Auth Action Suite | `src/app/auth/actions.js` | `signInWithOAuth`, `signInWithMagicLink`, `signInWithPassword`, `signUpWithPassword`, `signOut`, `getCurrentUser` |
 | **OAuth Callback** | Code Exchange & User Profile Sync | `src/app/auth/callback/route.js` | `GET /auth/callback` exchanges code for session and automatically upserts user profile into PostgreSQL `users` table |
 | **OTP Confirmation**| Magic Link / Email Verification | `src/app/auth/confirm/route.js` | `GET /auth/confirm` verifies `token_hash` for passwordless login flows |
@@ -25,7 +25,7 @@
 | **RLS Migration** | Granular SQL Policies on all 18 Tables | `drizzle/0004_rls_policies.sql` | `ALTER TABLE ... ENABLE ROW LEVEL SECURITY;` + policies for all 18 tables |
 | **SQL Functions** | Auth Identity & Role Helper Functions | `drizzle/0004_rls_policies.sql` | `current_user_id()`, `is_admin()`, `is_judge()` in PostgreSQL |
 | **Blind Evaluations**| Anti-Bias Judging RLS Policy | `drizzle/0004_rls_policies.sql` | Evaluations hidden from public until sprint status is `FINISHED`; judges only view their own evaluations |
-| **Automated Tests** | 15 Dedicated Phase 2 Unit Tests | `tests/supabase-auth.test.mjs` | Client lifecycle, server actions, route redirects, and SQL policies verification |
+| **Automated Tests** | 18 Dedicated Phase 2 Unit Tests | `tests/supabase-auth.test.mjs` | Client lifecycle, server actions, route redirects, Next.js 16 Edge proxy, and SQL policies verification |
 
 ---
 
@@ -91,7 +91,7 @@ flowchart TD
 
 ---
 
-## 🧪 Automated Test Suite (94 / 94 Tests Passing)
+## 🧪 Automated Test Suite (95 / 95 Tests Passing)
 
 ```bash
 $ npm test
@@ -109,7 +109,7 @@ $ npm test
 ▶ formatDeadline (4 tests) - PASS
 ▶ i18n dictionaries parity (3 tests) - PASS
 ▶ offline-drafts storage engine (5 tests) - PASS
-▶ Supabase Auth & Row Level Security (Phase 2) (17 tests) - PASS
+▶ Supabase Auth & Row Level Security (Phase 2) (18 tests) - PASS
   ▶ Supabase Browser Client
     ✔ initializes browser client with auth interface
     ✔ returns consistent client singleton
@@ -118,6 +118,7 @@ $ npm test
     ✔ redirects unauthenticated users requesting protected routes (/dashboard, /squads/create, /admin, /submit)
     ✔ allows public routes to pass through with 200/next response
     ✔ allows authenticated session cookie to access protected route
+    ✔ Next.js 16 Edge proxy exports proxy and middleware functions
   ▶ Auth Server Actions
     ✔ signInWithOAuth returns auth configuration or redirect URL
     ✔ signInWithMagicLink validates email and handles dispatch
@@ -132,9 +133,9 @@ $ npm test
     ✔ contains granular policies for sensitive tables (blind evaluations, squad isolation, DMs, alerts)
     ✔ defines policies for social, tracks, and squad memberships
 
-ℹ tests 94
+ℹ tests 95
 ℹ suites 13
-ℹ pass 94
+ℹ pass 95
 ℹ fail 0
 ```
 

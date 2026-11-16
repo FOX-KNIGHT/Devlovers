@@ -10,8 +10,8 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 | :--- | :--- | :--- | :--- |
 | **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 / 36 Passing** |
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **77 / 77 Passing** |
-| **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Planned | Pending |
-| **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Pending |
+| **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | **✅ 100% COMPLETE** | **95 / 95 Passing** |
+| **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Up Next | Next Milestone Specification Ready |
 | **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | ⏳ Planned | Pending |
 | **Phase 5** | **Production Hardening, Observability & Launch** | ⏳ Planned | Pending |
 
@@ -114,7 +114,7 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 - [x] Implement OAuth providers (GitHub Developer OAuth & Google OAuth) + Passwordless Magic Link in `SignInModal.jsx` and `src/app/auth/actions.js`.
 - [x] Server Action authentication flows (`signInWithOAuth`, `signInWithMagicLink`, `signInWithPassword`, `signUpWithPassword`, `signOut`, `getCurrentUser`).
 - [x] App Router Auth Handlers: `GET /auth/callback` (session code exchange + auto user profile sync) and `GET /auth/confirm` (OTP verification).
-- [x] Next.js Edge Middleware for protected routes (`/dashboard`, `/squads/create`, `/admin`, `/submit`) in `src/middleware.js` and `src/lib/supabase/middleware.js`.
+- [x] Next.js 16 Edge Proxy for protected routes (`/dashboard`, `/squads/create`, `/admin`, `/submit`) in `src/proxy.js` and `src/lib/supabase/middleware.js`.
 - [x] Postgres Row Level Security (RLS) policies migration (`drizzle/0004_rls_policies.sql`) across all 18 tables:
   - Public read access for published hackathons, tracks, squads, comments, likes.
   - Authenticated-only squad creation, joining, and membership updates.
@@ -123,7 +123,7 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
   - Private messaging and conversation member isolation.
   - User notifications owner isolation (`user_id = current_user_id()`).
   - Helper security functions: `current_user_id()`, `is_admin()`, `is_judge()`.
-- [x] Automated Test Suite expansion: 94 / 94 tests passing including 17 dedicated Phase 2 unit tests covering client singletons, server actions, route protection redirects, and SQL RLS policies.
+- [x] Automated Test Suite expansion: 95 / 95 tests passing including 18 dedicated Phase 2 unit tests covering client singletons, server actions, route protection redirects, Next.js 16 Edge proxy, and SQL RLS policies.
 - [x] Production build clean: `npm run build` exits with code 0 across 19 static and dynamic routes.
 
 ---
