@@ -27,7 +27,16 @@ import { useI18n } from '@/lib/i18n/context';
 import { toast } from 'sonner';
 
 function FeedPost({ post, showSignInModal: _showSignInModal }) {
-  const { currency, useUTC, setActiveTechFilter, bookmarkedSprints, toggleBookmark } = useAppContext();
+  const {
+    currency,
+    useUTC,
+    setActiveTechFilter,
+    bookmarkedSprints,
+    toggleBookmark,
+    isLoggedIn,
+    user,
+    setIsSignInModalOpen,
+  } = useAppContext();
   const { t } = useI18n();
   const [registered, setRegistered] = useState(false);
   const [localUTCToggle, setLocalUTCToggle] = useState(false);
@@ -51,6 +60,14 @@ function FeedPost({ post, showSignInModal: _showSignInModal }) {
 
   const handleRegisterClick = (e) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      soundFx.playClick();
+      setIsSignInModalOpen(true);
+      toast.info('Sign in to register', {
+        description: 'Authentication is required to participate in official sprints.',
+      });
+      return;
+    }
     soundFx.playSuccess();
     setRegistered(true);
     saveOfflineDraft(`registration_${post.id}`, {
@@ -60,7 +77,10 @@ function FeedPost({ post, showSignInModal: _showSignInModal }) {
     fetch('/api/registrations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hackathonId: String(post.id || post.hackathonId), userId: 'user-guest' }),
+      body: JSON.stringify({
+        hackathonId: String(post.id || post.hackathonId),
+        userId: user?.id || 'user-guest',
+      }),
     }).catch(() => {});
     toast.success(`Registered for ${post.title}!`, {
       description: 'Squad invite code and sponsor API access unlocked (cached offline).',

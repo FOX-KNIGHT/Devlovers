@@ -13,6 +13,7 @@ import { Sparkles, Send, Globe, ShieldCheck } from 'lucide-react';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { saveOfflineDraft } from '@/lib/storage/offline-drafts';
 import { toast } from 'sonner';
+import { useAppContext } from '@/Project/LandingPage/AppContext';
 
 function GithubIcon(props) {
   return (
@@ -23,6 +24,7 @@ function GithubIcon(props) {
 }
 
 export function SubmitProjectModal({ open, onOpenChange, hackathon, onSuccess }) {
+  const { user } = useAppContext();
   const [title, setTitle] = useState('');
   const [tagline, setTagline] = useState('');
   const [repoUrl, setRepoUrl] = useState('');
@@ -60,6 +62,8 @@ export function SubmitProjectModal({ open, onOpenChange, hackathon, onSuccess })
       status: 'VERIFIED',
       score: 95.0,
       likes: 1,
+      author: user?.name || user?.email || 'Anonymous Builder',
+      userId: user?.id || null,
     };
 
     try {

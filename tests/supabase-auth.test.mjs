@@ -103,6 +103,23 @@ describe('Supabase Auth & Row Level Security (Phase 2)', () => {
         assert.strictEqual(res.status, 200, `Public path ${p} should pass through with status 200`);
       }
     });
+
+    it('allows authenticated session cookie to access protected route', async () => {
+      const mockReq = {
+        nextUrl: {
+          pathname: '/dashboard',
+          searchParams: new URLSearchParams(),
+        },
+        url: 'http://localhost:3000/dashboard',
+        cookies: {
+          getAll: () => [{ name: 'sb-localhost-auth-token', value: 'mock-jwt-token' }],
+          set: () => {},
+        },
+      };
+      const res = await updateSession(mockReq);
+      assert.ok(res);
+      assert.strictEqual(res.status, 200, 'Authenticated session should pass through to /dashboard with status 200');
+    });
   });
 
   describe('Auth Server Actions', () => {
@@ -121,20 +138,32 @@ describe('Supabase Auth & Row Level Security (Phase 2)', () => {
       assert.strictEqual(missingEmail.success, false);
       assert.strictEqual(missingEmail.error, 'Email is required');
 
+      const invalidEmail = await signInWithMagicLink('notanemail');
+      assert.strictEqual(invalidEmail.success, false);
+      assert.strictEqual(invalidEmail.error, 'Valid email address is required');
+
       const validEmail = await signInWithMagicLink('founder@devlovers.org');
       assert.strictEqual(validEmail.success, true);
     });
 
-    it('signInWithPassword validates required fields', async () => {
+    it('signInWithPassword validates required fields and handles authentication', async () => {
       const invalid = await signInWithPassword('', '');
       assert.strictEqual(invalid.success, false);
       assert.strictEqual(invalid.error, 'Email and password are required');
+
+      const valid = await signInWithPassword('dev@devlovers.org', 'hunter2-secure');
+      assert.strictEqual(valid.success, true);
+      assert.ok(valid.user);
+      assert.strictEqual(valid.user.email, 'dev@devlovers.org');
     });
 
-    it('signUpWithPassword validates required fields', async () => {
+    it('signUpWithPassword validates required fields and handles creation', async () => {
       const invalid = await signUpWithPassword('', '');
       assert.strictEqual(invalid.success, false);
       assert.strictEqual(invalid.error, 'Email and password are required');
+
+      const valid = await signUpWithPassword('newuser@devlovers.org', 'my-strong-password');
+      assert.strictEqual(valid.success, true);
     });
 
     it('signOut executes cleanly and returns success', async () => {
@@ -212,6 +241,15 @@ describe('Supabase Auth & Row Level Security (Phase 2)', () => {
       // User notifications isolation
       assert.ok(sql.includes('CREATE POLICY "notifications_owner_select"'), 'Must define notifications_owner_select policy');
       assert.ok(sql.includes('CREATE POLICY "notifications_owner_update"'), 'Must define notifications_owner_update policy');
+    });
+
+    it('defines policies for social, tracks, and squad memberships', () => {
+      const sql = fs.readFileSync(migrationFile, 'utf8');
+      assert.ok(sql.includes('CREATE POLICY "comments_public_read"'), 'Must define comments_public_read');
+      assert.ok(sql.includes('CREATE POLICY "likes_public_read"'), 'Must define likes_public_read');
+      assert.ok(sql.includes('CREATE POLICY "tracks_public_read"'), 'Must define tracks_public_read');
+      assert.ok(sql.includes('CREATE POLICY "squad_members_join_insert"'), 'Must define squad_members_join_insert');
+      assert.ok(sql.includes('CREATE POLICY "squad_members_leave_delete"'), 'Must define squad_members_leave_delete');
     });
   });
 });

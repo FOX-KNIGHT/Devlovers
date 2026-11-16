@@ -2,7 +2,7 @@
 
 > **Current Milestone**: Phase 2 Certified Complete & Verified  
 > **Repository Branch**: `main` (Working Tree Clean)  
-> **Global Test Suite**: **92 / 92 Tests Passing** across 13 test suites (`npm test`)  
+> **Global Test Suite**: **94 / 94 Tests Passing** across 13 test suites (`npm test`)  
 > **Production Build**: **Exit Code 0** with 19 routes prerendered & dynamic (`npm run build`)  
 > **Live HTTP Server**: Operational at `http://localhost:3000` (`HTTP/1.1 200 OK`)
 
@@ -14,7 +14,7 @@
 | :--- | :--- | :--- | :--- |
 | **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 Core Platform Tests (Passed)** |
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **77 / 77 Tests Passing (100% Green)** |
-| **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | **✅ 100% COMPLETE** | **92 / 92 Tests Passing (100% Green)** |
+| **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | **✅ 100% COMPLETE** | **94 / 94 Tests Passing (100% Green)** |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Up Next | Next Milestone Specification Ready |
 | **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | ⏳ Planned | Specification Ready |
 | **Phase 5** | **Production Hardening, Observability & Launch** | ⏳ Planned | Specification Ready |
@@ -353,7 +353,7 @@ Phase 2 established production authentication, SSR session synchronization, Next
 | **RLS SQL Policies** | `drizzle/0004_rls_policies.sql` | `ENABLE ROW LEVEL SECURITY;` + granular policies across all 18 tables |
 | **Security Functions** | `drizzle/0004_rls_policies.sql` | `current_user_id()`, `is_admin()`, `is_judge()` in PostgreSQL |
 | **Blind Evaluations** | `drizzle/0004_rls_policies.sql` | Evaluations hidden from public until sprint status is `FINISHED`; judges view only own evaluations |
-| **Automated Tests** | `tests/supabase-auth.test.mjs` | 15 dedicated Phase 2 unit tests (92 / 92 tests passing globally) |
+| **Automated Tests** | `tests/supabase-auth.test.mjs` | 17 dedicated Phase 2 unit tests (94 / 94 tests passing globally) |
 
 ---
 

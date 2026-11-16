@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Mail, ShieldAlert } from 'lucide-react';
+import { Sparkles, Mail, Lock, KeyRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
@@ -33,6 +33,9 @@ function GoogleIcon(props) {
 
 function SignInModal({ isVisible, hideModal, onLogin }) {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [authMode, setAuthMode] = useState('magic'); // 'magic' | 'password'
+  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleOAuth = async (provider) => {
@@ -70,37 +73,82 @@ function SignInModal({ isVisible, hideModal, onLogin }) {
 
     soundFx.playClick();
     setLoading(true);
-    try {
-      const supabase = getSupabaseBrowserClient();
-      if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
-          },
-        });
-        if (error) throw error;
+
+    if (authMode === 'magic') {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+          const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: {
+              emailRedirectTo: `${window.location.origin}/auth/callback`,
+            },
+          });
+          if (error) throw error;
+          toast.success(`Check your inbox!`, {
+            description: `Magic link dispatched to ${email}`,
+          });
+          setEmail('');
+          setLoading(false);
+          hideModal();
+          return;
+        }
+      } catch (err) {
+        console.warn('Supabase OTP notice:', err?.message || err);
+      }
+
+      setTimeout(() => {
+        onLogin('Email');
+        hideModal();
+        setLoading(false);
         toast.success(`Check your inbox!`, {
           description: `Magic link dispatched to ${email}`,
         });
         setEmail('');
+      }, 400);
+    } else {
+      // Password mode
+      if (!password) {
+        toast.error('Password is required');
         setLoading(false);
-        hideModal();
         return;
       }
-    } catch (err) {
-      console.warn('Supabase OTP notice:', err?.message || err);
-    }
 
-    setTimeout(() => {
-      onLogin('Email');
-      hideModal();
-      setLoading(false);
-      toast.success(`Check your inbox!`, {
-        description: `Magic link dispatched to ${email}`,
-      });
-      setEmail('');
-    }, 400);
+      try {
+        const supabase = getSupabaseBrowserClient();
+        if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+          if (isSignUp) {
+            const { error } = await supabase.auth.signUp({ email, password });
+            if (error) throw error;
+            toast.success('Account created!', {
+              description: 'Check your email to confirm registration or sign in directly.',
+            });
+          } else {
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            toast.success('Welcome back to Devlovers!');
+          }
+          setEmail('');
+          setPassword('');
+          setLoading(false);
+          hideModal();
+          return;
+        }
+      } catch (err) {
+        console.warn('Supabase password auth notice:', err?.message || err);
+      }
+
+      setTimeout(() => {
+        onLogin(isSignUp ? 'New User' : 'Email');
+        hideModal();
+        setLoading(false);
+        toast.success(isSignUp ? 'Account created successfully!' : 'Welcome back to Devlovers!', {
+          description: `Signed in as ${email}`,
+        });
+        setEmail('');
+        setPassword('');
+      }, 400);
+    }
   };
 
   return (
@@ -145,28 +193,95 @@ function SignInModal({ isVisible, hideModal, onLogin }) {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-[#0C0F1D] px-2 text-slate-500 font-mono text-[10px]">
-                Or magic link
+                Or email credentials
               </span>
             </div>
           </div>
 
+          {/* Mode Switcher Tabs */}
+          <div className="flex rounded-lg bg-[#141A2E]/60 p-1 border border-white/10 text-xs">
+            <button
+              type="button"
+              onClick={() => {
+                soundFx.playClick();
+                setAuthMode('magic');
+              }}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md font-medium transition ${
+                authMode === 'magic'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Mail className="h-3.5 w-3.5" />
+              <span>Magic Link</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                soundFx.playClick();
+                setAuthMode('password');
+              }}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md font-medium transition ${
+                authMode === 'password'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <KeyRound className="h-3.5 w-3.5" />
+              <span>Password</span>
+            </button>
+          </div>
+
           <form onSubmit={handleEmailSubmit} className="space-y-3">
-            <input
-              type="email"
-              placeholder="developer@company.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-              required
-              className="w-full h-11 rounded-lg bg-[#141A2E]/80 border border-white/10 px-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
-            />
+            <div className="space-y-1">
+              <input
+                type="email"
+                placeholder="developer@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                required
+                className="w-full h-11 rounded-lg bg-[#141A2E]/80 border border-white/10 px-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+              />
+            </div>
+
+            {authMode === 'password' && (
+              <div className="space-y-1">
+                <input
+                  type="password"
+                  placeholder="••••••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  required
+                  minLength={6}
+                  className="w-full h-11 rounded-lg bg-[#141A2E]/80 border border-white/10 px-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                />
+                <div className="flex justify-end pt-0.5">
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(!isSignUp)}
+                    className="text-[11px] text-cyan-400 hover:underline cursor-pointer"
+                  >
+                    {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+                  </button>
+                </div>
+              </div>
+            )}
+
             <Button
               type="submit"
               variant="cyber"
               disabled={loading}
               className="w-full h-11 text-xs font-semibold"
             >
-              {loading ? 'Authenticating...' : 'Send Magic Link'}
+              {loading
+                ? 'Authenticating...'
+                : authMode === 'magic'
+                ? 'Send Magic Link'
+                : isSignUp
+                ? 'Create Devlovers Account'
+                : 'Sign In with Password'}
             </Button>
           </form>
         </div>

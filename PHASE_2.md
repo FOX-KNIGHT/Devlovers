@@ -2,7 +2,7 @@
 
 > **Status: 100% COMPLETE & VERIFIED**  
 > **Commit Hash**: Working tree clean on `main`  
-> **Test Suite**: 92 / 92 Passing across 13 test suites (`npm test`)  
+> **Test Suite**: 94 / 94 Passing across 13 test suites (`npm test`)  
 > **Build Status**: Exit Code 0 with 19 static/dynamic routes (`npm run build`)  
 > **Dependencies**: `@supabase/supabase-js@^2.109.0`, `@supabase/ssr@^0.12.7`
 
@@ -91,7 +91,7 @@ flowchart TD
 
 ---
 
-## 🧪 Automated Test Suite (92 / 92 Tests Passing)
+## 🧪 Automated Test Suite (94 / 94 Tests Passing)
 
 ```bash
 $ npm test
@@ -109,7 +109,7 @@ $ npm test
 ▶ formatDeadline (4 tests) - PASS
 ▶ i18n dictionaries parity (3 tests) - PASS
 ▶ offline-drafts storage engine (5 tests) - PASS
-▶ Supabase Auth & Row Level Security (Phase 2) (15 tests) - PASS
+▶ Supabase Auth & Row Level Security (Phase 2) (17 tests) - PASS
   ▶ Supabase Browser Client
     ✔ initializes browser client with auth interface
     ✔ returns consistent client singleton
@@ -117,11 +117,12 @@ $ npm test
   ▶ Route Protection & Middleware
     ✔ redirects unauthenticated users requesting protected routes (/dashboard, /squads/create, /admin, /submit)
     ✔ allows public routes to pass through with 200/next response
+    ✔ allows authenticated session cookie to access protected route
   ▶ Auth Server Actions
     ✔ signInWithOAuth returns auth configuration or redirect URL
     ✔ signInWithMagicLink validates email and handles dispatch
-    ✔ signInWithPassword validates required fields
-    ✔ signUpWithPassword validates required fields
+    ✔ signInWithPassword validates required fields and handles authentication
+    ✔ signUpWithPassword validates required fields and handles creation
     ✔ signOut executes cleanly and returns success
     ✔ getCurrentUser resolves cleanly without throwing
   ▶ PostgreSQL Row Level Security (RLS) SQL Specification
@@ -129,10 +130,11 @@ $ npm test
     ✔ enables RLS on all 18 tables
     ✔ defines security functions (current_user_id, is_admin, is_judge)
     ✔ contains granular policies for sensitive tables (blind evaluations, squad isolation, DMs, alerts)
+    ✔ defines policies for social, tracks, and squad memberships
 
-ℹ tests 92
+ℹ tests 94
 ℹ suites 13
-ℹ pass 92
+ℹ pass 94
 ℹ fail 0
 ```
 

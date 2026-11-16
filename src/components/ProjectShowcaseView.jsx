@@ -17,6 +17,7 @@ import { SubmitProjectModal } from './SubmitProjectModal.jsx';
 import data from '@/Project/LandingPage/data.js';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { toast } from 'sonner';
+import { useAppContext } from '@/Project/LandingPage/AppContext';
 
 function GithubIcon(props) {
   return (
@@ -27,6 +28,7 @@ function GithubIcon(props) {
 }
 
 export function ProjectShowcaseView() {
+  const { isLoggedIn, setIsSignInModalOpen } = useAppContext();
   const [submissions, setSubmissions] = useState(data.submissions || []);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -126,6 +128,13 @@ export function ProjectShowcaseView() {
             size="lg"
             onClick={() => {
               soundFx.playClick();
+              if (!isLoggedIn) {
+                setIsSignInModalOpen(true);
+                toast.info('Sign in to submit project', {
+                  description: 'You must be signed in to submit a project for evaluation.',
+                });
+                return;
+              }
               setIsSubmitModalOpen(true);
             }}
             className="shrink-0 gap-2 font-semibold shadow-[0_0_20px_rgba(0,245,255,0.3)]"

@@ -123,7 +123,7 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
   - Private messaging and conversation member isolation.
   - User notifications owner isolation (`user_id = current_user_id()`).
   - Helper security functions: `current_user_id()`, `is_admin()`, `is_judge()`.
-- [x] Automated Test Suite expansion: 92 / 92 tests passing including 15 dedicated Phase 2 unit tests covering client singletons, server actions, route protection redirects, and SQL RLS policies.
+- [x] Automated Test Suite expansion: 94 / 94 tests passing including 17 dedicated Phase 2 unit tests covering client singletons, server actions, route protection redirects, and SQL RLS policies.
 - [x] Production build clean: `npm run build` exits with code 0 across 19 static and dynamic routes.
 
 ---

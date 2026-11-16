@@ -14,8 +14,10 @@ import { soundFx } from '@/lib/audio/sound-fx';
 import { saveOfflineDraft } from '@/lib/storage/offline-drafts';
 import data from '@/Project/LandingPage/data.js';
 import { toast } from 'sonner';
+import { useAppContext } from '@/Project/LandingPage/AppContext';
 
 export function SquadModal({ open, onOpenChange, post }) {
+  const { isLoggedIn, user, setIsSignInModalOpen } = useAppContext();
   const [joinedSquads, setJoinedSquads] = useState({});
   const [isCreatingDraft, setIsCreatingDraft] = useState(false);
   const [squadName, setSquadName] = useState('');
@@ -32,12 +34,21 @@ export function SquadModal({ open, onOpenChange, post }) {
   }, [post?.hackathonId]);
 
   const handleJoinSquad = (squad) => {
+    if (!isLoggedIn) {
+      soundFx.playClick();
+      setIsSignInModalOpen(true);
+      toast.info('Sign in to join squad', {
+        description: 'You must be signed in to apply to squads or form a team.',
+      });
+      return;
+    }
     soundFx.playSuccess();
     setJoinedSquads((prev) => ({ ...prev, [squad.id]: true }));
     saveOfflineDraft(`squad_join_${squad.id}`, {
       squadId: squad.id,
       squadName: squad.name,
       hackathonTitle: post?.title,
+      userId: user?.id || 'guest',
       timestamp: new Date().toISOString(),
     });
     toast.success(`Request sent to join ${squad.name}!`, {
@@ -47,6 +58,14 @@ export function SquadModal({ open, onOpenChange, post }) {
 
   const handleCreateSquad = (e) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      soundFx.playClick();
+      setIsSignInModalOpen(true);
+      toast.info('Sign in to form squad', {
+        description: 'You must be signed in to create and lead a squad.',
+      });
+      return;
+    }
     if (!squadName.trim()) return;
 
     soundFx.playSuccess();
@@ -55,6 +74,8 @@ export function SquadModal({ open, onOpenChange, post }) {
       pitch,
       rolesNeeded: rolesInput.split(',').map((r) => r.trim()).filter(Boolean),
       hackathonTitle: post?.title,
+      leaderId: user?.id || null,
+      leaderName: user?.name || user?.email || 'Anonymous Leader',
       createdAt: new Date().toISOString(),
     });
 
