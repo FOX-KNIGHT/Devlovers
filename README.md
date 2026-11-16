@@ -14,7 +14,9 @@ Built on **Next.js 16 (React 19)**, **Tailwind CSS v4**, **shadcn/ui**, **Framer
 - **Audio Engine**: Synthesized Web Audio UI sound effects (zero audio assets)
 - **Internationalization**: Multi-language i18n engine (English, Spanish, Japanese) with RTL layout preparedness
 - **Platform Layer**: Universal PWA with standalone window chrome & App Badging API
-- **Upcoming (Phase 1–5)**: Drizzle ORM, Supabase Auth + RLS, Remote Stateless MCP Server, MCP Apps
+- **Data Layer (Phase 1)**: Drizzle ORM, PostgreSQL (18 relational tables, 4 enums), Drizzle Kit migrations, and Next.js App Router REST API endpoints
+- **Testing & Verification**: 71 automated tests across 8 suites (`node:test`), ESLint 10 flat config (`eslint.config.mjs`)
+- **Upcoming (Phase 2–5)**: Supabase Auth + RLS, Remote Stateless MCP Server, MCP Apps, Production Hardening
 
 ---
 
@@ -31,7 +33,20 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-### 3. Build for Production
+### 3. Run Automated Tests & Lint
+```bash
+npm test         # 71 / 71 tests passing across 8 suites
+npm run lint     # ESLint 10 flat config verification
+```
+
+### 4. Database Migrations & Seeding (Drizzle ORM)
+```bash
+npm run db:generate   # Generate SQL migrations
+npm run db:migrate    # Apply migrations to PostgreSQL
+npm run db:seed       # Populate realistic hackathons, squads, and rubrics
+```
+
+### 5. Build for Production
 ```bash
 npm run build
 npm start
