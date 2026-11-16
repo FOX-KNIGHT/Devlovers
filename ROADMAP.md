@@ -8,7 +8,7 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 
 | Phase | Description | Status | Test Coverage |
 | :--- | :--- | :--- | :--- |
-| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **29 / 29 Passing** |
+| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **30 / 30 Passing** |
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | ⏳ Planned | Pending |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Planned | Pending |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Pending |
@@ -62,7 +62,7 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 - [x] **Direct Sprint Deep-Link Sharing**: One-click sprint link copy to clipboard with toast notification and audio feedback.
 
 ### 5. Automated Verification & CI/CD
-- [x] **Zero-Dependency Test Suite**: 29 unit tests using Node 20's native `node:test` and `node:assert/strict` covering platform services, timers, formatters, and schema contracts.
+- [x] **Zero-Dependency Test Suite**: 30 unit tests using Node 20's native `node:test` and `node:assert/strict` covering platform services, timers, formatters, squad matchmaking contracts, and schema relations.
 - [x] **ESLint Linting**: Direct `eslint .` command in `package.json`.
 - [x] **GitHub Actions Workflow**: Automated pipeline executing dependency install, linting, unit tests, and production build on every PR and push to `main`.
 - [x] **Metadata & SEO**: Dynamically generated OpenGraph images (`next/og`), `robots.txt`, and XML `sitemap.js`.

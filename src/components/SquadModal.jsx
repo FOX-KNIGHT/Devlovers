@@ -12,37 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Users, ShieldCheck, Plus, Sparkles, Send } from 'lucide-react';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { saveOfflineDraft } from '@/lib/storage/offline-drafts';
+import data from '@/Project/LandingPage/data.js';
 import { toast } from 'sonner';
-
-const SAMPLE_SQUADS = [
-  {
-    id: 'squad-1',
-    name: 'Neural Collective',
-    leader: 'Elena Rostova',
-    rolesNeeded: ['Agent Orchestration', 'PyTorch / CUDA', 'Next.js 16 UI'],
-    membersCount: 2,
-    maxMembers: 4,
-    compatibility: '98%',
-  },
-  {
-    id: 'squad-2',
-    name: 'ZeroCarbon Builders',
-    leader: 'Marco Silva',
-    rolesNeeded: ['Rust / Wasm', 'Edge Architecture', 'GreenTech Research'],
-    membersCount: 3,
-    maxMembers: 4,
-    compatibility: '94%',
-  },
-  {
-    id: 'squad-3',
-    name: 'DeFi Autonomous Vanguard',
-    leader: 'Siddhant Jena',
-    rolesNeeded: ['Smart Contracts', 'Solidity / Foundry', 'ZK Verifier'],
-    membersCount: 1,
-    maxMembers: 3,
-    compatibility: '91%',
-  },
-];
 
 export function SquadModal({ open, onOpenChange, post }) {
   const [joinedSquads, setJoinedSquads] = useState({});
@@ -50,6 +21,15 @@ export function SquadModal({ open, onOpenChange, post }) {
   const [squadName, setSquadName] = useState('');
   const [pitch, setPitch] = useState('');
   const [rolesInput, setRolesInput] = useState('');
+
+  const relevantSquads = React.useMemo(() => {
+    const all = data.squads || [];
+    if (post?.hackathonId) {
+      const filtered = all.filter((s) => s.hackathonId === post.hackathonId);
+      if (filtered.length > 0) return filtered;
+    }
+    return all;
+  }, [post?.hackathonId]);
 
   const handleJoinSquad = (squad) => {
     soundFx.playSuccess();
@@ -114,7 +94,7 @@ export function SquadModal({ open, onOpenChange, post }) {
             className="text-xs h-8 font-semibold"
           >
             <Users className="h-3.5 w-3.5 mr-1.5" />
-            Open Squads ({SAMPLE_SQUADS.length})
+            Open Squads ({relevantSquads.length})
           </Button>
           <Button
             size="sm"
@@ -130,7 +110,7 @@ export function SquadModal({ open, onOpenChange, post }) {
         {/* Open Squads List */}
         {!isCreatingDraft ? (
           <div className="space-y-3 pt-3">
-            {SAMPLE_SQUADS.map((squad) => {
+            {relevantSquads.map((squad) => {
               const hasJoined = joinedSquads[squad.id];
 
               return (

@@ -62,4 +62,25 @@ describe('mock data schema contract', () => {
       assert.strictEqual(typeof item.details, 'string');
     }
   });
+
+  test('squads array conforms to matchmaking relational specifications', () => {
+    assert.ok(Array.isArray(data.squads), 'squads is an array');
+    assert.ok(data.squads.length > 0, 'has at least one squad');
+
+    const validHackathonIds = new Set(data.hackathons.map((h) => h.id));
+
+    for (const squad of data.squads) {
+      assert.strictEqual(typeof squad.id, 'string');
+      assert.strictEqual(typeof squad.hackathonId, 'number');
+      assert.ok(validHackathonIds.has(squad.hackathonId), `squad ${squad.id} references valid hackathon`);
+      assert.strictEqual(typeof squad.name, 'string');
+      assert.strictEqual(typeof squad.leader, 'string');
+      assert.ok(Array.isArray(squad.rolesNeeded), 'rolesNeeded is an array');
+      assert.ok(squad.rolesNeeded.length > 0, 'rolesNeeded has at least one role');
+      assert.strictEqual(typeof squad.membersCount, 'number');
+      assert.strictEqual(typeof squad.maxMembers, 'number');
+      assert.ok(squad.membersCount <= squad.maxMembers, 'membersCount does not exceed maxMembers');
+      assert.match(squad.compatibility, /^\d{1,3}%$/, 'compatibility is a percentage string');
+    }
+  });
 });
