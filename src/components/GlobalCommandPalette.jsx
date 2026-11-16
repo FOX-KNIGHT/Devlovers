@@ -22,6 +22,7 @@ import {
   Search,
   Clock,
   Volume2,
+  Bot,
 } from 'lucide-react';
 import data from '@/Project/LandingPage/data';
 import { useAppContext } from '@/Project/LandingPage/AppContext';
@@ -33,7 +34,7 @@ export function GlobalCommandPalette({ onSelectPage }) {
   const [open, setOpen] = useState(false);
   const { t } = useI18n();
   const { theme, setTheme } = useTheme();
-  const { toggleUTC, useUTC } = useAppContext();
+  const { toggleUTC, useUTC, setIsMcpInspectorOpen } = useAppContext();
   const [isMac, setIsMac] = useState(true);
 
   useEffect(() => {
@@ -97,6 +98,21 @@ export function GlobalCommandPalette({ onSelectPage }) {
               <Info className="mr-2 h-4 w-4 text-violet-400" />
               <span>About Platform</span>
               <CommandShortcut>G A</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+
+          <CommandGroup heading="AI Agent Protocol & MCP">
+            <CommandItem
+              onSelect={() =>
+                handleSelect(() => {
+                  soundFx.playClick();
+                  setIsMcpInspectorOpen(true);
+                })
+              }
+            >
+              <Bot className="mr-2 h-4 w-4 text-cyan-400" />
+              <span>Open Model Context Protocol (MCP) Inspector</span>
+              <CommandShortcut>G M</CommandShortcut>
             </CommandItem>
           </CommandGroup>
 

@@ -325,4 +325,44 @@ describe('live server browser & visual audit', () => {
       throw err;
     }
   });
+
+  test('api/mcp GET returns operational metadata and capabilities', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/mcp`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.name, 'devlovers-mcp-server');
+      assert.strictEqual(data.status, 'OPERATIONAL');
+      assert.ok(data.capabilities.toolsCount >= 6);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/mcp POST executes JSON-RPC 2.0 tool call', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/mcp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 'audit-live-1',
+          method: 'tools/call',
+          params: {
+            name: 'list_active_hackathons',
+            arguments: { limit: 2 },
+          },
+        }),
+      });
+      assert.strictEqual(res.status, 200);
+      assert.ok(res.headers.get('x-ratelimit-remaining'));
+      const data = await res.json();
+      assert.strictEqual(data.id, 'audit-live-1');
+      assert.strictEqual(data.result.isError, false);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
 });

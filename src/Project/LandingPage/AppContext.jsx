@@ -71,6 +71,7 @@ export const AppProvider = ({ children }) => {
     const [isMobileSidebarVisible, setIsMobileSidebarVisible] = useState(false);
     const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    const [isMcpInspectorOpen, setIsMcpInspectorOpen] = useState(false);
 
     // Notification state
     const [notifications, setNotifications] = useState(data.notifications);
@@ -340,6 +341,7 @@ export const AppProvider = ({ children }) => {
         setActiveTechFilter,
         isSignInModalOpen,
         isMobileSearchOpen,
+        isMcpInspectorOpen,
         toast: toastState,
         notifications,
         unreadCount,
@@ -355,6 +357,7 @@ export const AppProvider = ({ children }) => {
         handleSidebarToggle,
         setIsSignInModalOpen,
         setIsMobileSearchOpen,
+        setIsMcpInspectorOpen,
         simulateLogin,
         simulateLogout,
         signOut,
@@ -364,7 +367,7 @@ export const AppProvider = ({ children }) => {
     }), [
         isDarkMode, isLoggedIn, user, isSidebarDesktopCollapsed, isMobileSidebarVisible,
         setIsMobileSidebarVisible, activeHackathon, selectHackathon, hackathons, feedPosts, refreshHackathons, activeSort, activeTechFilter,
-        isSignInModalOpen, isMobileSearchOpen, toastState, notifications, unreadCount,
+        isSignInModalOpen, isMobileSearchOpen, isMcpInspectorOpen, toastState, notifications, unreadCount,
         currency, setCurrency, useUTC, toggleUTC, bookmarkedSprints, toggleBookmark,
         toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, signOut, showToast,
         markAllNotificationsAsRead, markNotificationAsRead

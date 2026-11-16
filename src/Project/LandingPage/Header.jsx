@@ -12,6 +12,7 @@ import {
   Trophy,
   Volume2,
   VolumeX,
+  Bot,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -31,6 +32,7 @@ function Header({ setCurrentPage }) {
     simulateLogout,
     isSidebarCollapsed,
     user,
+    setIsMcpInspectorOpen,
   } = useAppContext();
 
   const { theme, setTheme } = useTheme();
@@ -154,6 +156,21 @@ function Header({ setCurrentPage }) {
 
           {/* Notifications Dropdown */}
           <NotificationDropdown />
+
+          {/* MCP Server Inspector */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              soundFx.playClick();
+              setIsMcpInspectorOpen(true);
+            }}
+            title="Model Context Protocol (MCP) Server Inspector"
+            aria-label="MCP Server Console"
+            className="text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 h-9 w-9 border border-white/5"
+          >
+            <Bot className="h-4 w-4 text-cyan-400" />
+          </Button>
 
           {/* Auth State */}
           {isLoggedIn && user ? (

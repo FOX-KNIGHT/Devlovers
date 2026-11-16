@@ -11,6 +11,7 @@ import { AboutView } from './components/AboutView.jsx';
 import { LeaderboardView } from './components/LeaderboardView.jsx';
 import { ProjectShowcaseView } from './components/ProjectShowcaseView.jsx';
 import { MobileDrawer } from './components/MobileDrawer.jsx';
+import { McpInspectorModal } from './components/McpInspectorModal.jsx';
 import data from './Project/LandingPage/data.js';
 
 const AppContent = () => {
@@ -22,6 +23,8 @@ const AppContent = () => {
     isSignInModalOpen,
     simulateLogin,
     setIsSignInModalOpen,
+    isMcpInspectorOpen,
+    setIsMcpInspectorOpen,
   } = useAppContext();
 
   const [currentPage, setCurrentPage] = useState('Hackathon');
@@ -89,6 +92,10 @@ const AppContent = () => {
         isVisible={isSignInModalOpen}
         hideModal={() => setIsSignInModalOpen(false)}
         onLogin={simulateLogin}
+      />
+      <McpInspectorModal
+        open={isMcpInspectorOpen}
+        onOpenChange={setIsMcpInspectorOpen}
       />
       <MobileDrawer
         open={isMobileSidebarVisible}

@@ -128,19 +128,32 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 
 ---
 
-## ⏳ Phase 3: Remote Stateless MCP Server (Agentic Protocol)
+## ✅ Phase 3: Remote Stateless MCP Server (Agentic Protocol) (Completed)
 
 *Objective: Provide a secure Model Context Protocol server exposing hackathon capabilities to AI agents.*
 
 ### Key Deliverables:
-- [ ] Deploy remote stateless MCP server adhering to JSON-RPC 2.0 / MCP spec.
-- [ ] MCP Tools:
-  - `list_active_hackathons`: Query hackathons by category, prize threshold, and tech stack.
-  - `match_squad`: Semantic squad matching based on developer skill vector and squad open roles.
-  - `verify_github_commits`: Verify commits occurred strictly between sprint window `starts_at` and `ends_at`.
-  - `evaluate_submission_rubric`: Automated preliminary scoring of project README, deployment status, and originality.
-- [ ] MCP Resources & Prompts for automated judging audits and squad pitch generation.
-- [ ] Bearer token authentication and per-minute rate limiting for agent consumers.
+- [x] Deploy remote stateless pure-ESM MCP server adhering strictly to JSON-RPC 2.0 and MCP spec (`protocolVersion: "2024-11-05"`).
+- [x] Next.js 16 App Router Route Handlers at `/api/mcp` supporting `POST` (single & batch JSON-RPC dispatcher), `GET` (server metadata & capabilities), and `OPTIONS` (CORS preflight).
+- [x] MCP Tools Discovery & Execution:
+  - `list_active_hackathons`: Query hackathons by category, prize bounty threshold, tech stack, and status.
+  - `match_squad`: Semantic squad matching based on developer skill vector, compatibility scores, and open roles.
+  - `verify_github_commits`: Verify commits occurred strictly between sprint window `starts_at` and `ends_at`, flagging out-of-bounds / pre-existing commits.
+  - `evaluate_submission_rubric`: Automated preliminary weighted scoring across Innovation (30%), Technical Depth (30%), Execution (20%), and Impact (20%) with compliance checks.
+  - `get_sprint_details`: Query full sprint specifications, prize tiers, tracks, and sponsor perks.
+  - `get_developer_leaderboard`: Global developer hall of fame rankings, total prize earnings, and achievements.
+- [x] MCP Resources:
+  - `hackathons://active`: Live JSON directory of active sprints.
+  - `rubrics://standard`: Standard 4-pillar evaluation criteria and anti-bias blind judging rules.
+  - `squads://open`: Active squads seeking team members.
+- [x] MCP Prompts:
+  - `audit_submission`: Guided judicial review prompt for AI evaluation agents.
+  - `squad_pitch`: High-converting squad recruitment pitch generator.
+  - `summarize_hackathon`: Developer-focused executive briefing of sprint rules and bounties.
+- [x] Sliding Window Per-Client Rate Limiting (60 req/min with `X-RateLimit-*` headers) and Bearer Token / API Key authentication (`validateMcpAuth`).
+- [x] Developer UI Inspector: Interactive Cyber Void MCP Inspector Modal (`src/components/McpInspectorModal.jsx`) wired to Header AI Bot icon and Global Command Palette (`G M`).
+- [x] Automated Test Suite expansion: 122 / 122 tests passing across 20 suites (`node:test`), including 28 dedicated Phase 3 unit tests.
+- [x] Production build clean: `npm run build` exits with code 0 across 20 static and dynamic routes.
 
 ---
 
@@ -169,4 +182,4 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 
 ---
 
-*Last Updated: 2026-11-17 — Phase 0, Phase 1 & Phase 2 Certified Complete & Verified on main*
+*Last Updated: 2026-11-17 — Phase 0, Phase 1, Phase 2 & Phase 3 Certified Complete & Verified on main*

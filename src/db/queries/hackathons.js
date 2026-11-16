@@ -106,7 +106,16 @@ export async function getHackathonBySlug(slug) {
     }
   }
 
-  return data.feedPosts.find((p) => p.slug === slug || p.id === Number(slug)) || null;
+  // Fallback matching slug, id, or common squad aliases
+  const aliasMap = {
+    'hackathon-alpha': 'future-of-ai-sprint-2026',
+    'hackathon-beta': 'sustainable-web-challenge-2026',
+    'climate-action-hack': 'mobile-app-marathon-2026',
+    'global-tech-sprint': 'blockchain-innovation-summit-2027',
+  };
+  const targetSlug = aliasMap[slug] || slug;
+
+  return data.feedPosts.find((p) => p.slug === targetSlug || p.slug === slug || p.id === Number(slug)) || null;
 }
 
 /**
