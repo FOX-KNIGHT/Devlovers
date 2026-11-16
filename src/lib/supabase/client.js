@@ -32,7 +32,7 @@ function createMockClient() {
         listeners.forEach((cb) => cb('SIGNED_IN', currentSession));
         return { data: { url: options?.redirectTo || '/' }, error: null };
       },
-      async signInWithOtp({ email }) {
+      async signInWithOtp({ email: _email } = {}) {
         return { data: { user: null, session: null }, error: null };
       },
       async signOut() {

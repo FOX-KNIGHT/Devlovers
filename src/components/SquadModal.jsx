@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Users, ShieldCheck, Plus, Sparkles, Send } from 'lucide-react';
+import { Users, ShieldCheck, Plus, Send } from 'lucide-react';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { saveOfflineDraft } from '@/lib/storage/offline-drafts';
 import data from '@/Project/LandingPage/data.js';

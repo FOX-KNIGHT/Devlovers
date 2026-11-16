@@ -9,7 +9,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Mail, Lock, KeyRound } from 'lucide-react';
+import { Sparkles, Mail, KeyRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
