@@ -63,4 +63,10 @@ describe('offline-drafts storage engine', () => {
     assert.deepStrictEqual(all, {});
     assert.strictEqual(getOfflineDraft('sprint-1'), null);
   });
+
+  test('background sync updates pending draft state', async () => {
+    saveOfflineDraft('sprint-sync-1', { name: 'Auto Sync Sprint' });
+    const draft = getOfflineDraft('sprint-sync-1');
+    assert.strictEqual(draft.syncPending, true);
+  });
 });

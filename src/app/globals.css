@@ -135,7 +135,7 @@ body {
 
 /* HUD telemetry tag */
 .hud-tag {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   font-size: 0.725rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -144,6 +144,29 @@ body {
   background: rgba(0, 245, 255, 0.08);
   border: 1px solid rgba(0, 245, 255, 0.25);
   color: var(--color-laser-cyan);
+}
+
+/* JetBrains Mono tabular numbers */
+.font-jetbrains,
+.tabular-numbers {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Safe Area Insets for standalone PWA window chrome & mobile gestures */
+.safe-area-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.safe-area-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.safe-area-inset {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 /* Pulsing radar radar ping */

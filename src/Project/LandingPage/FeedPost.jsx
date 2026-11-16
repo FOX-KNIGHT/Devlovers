@@ -117,7 +117,7 @@ function FeedPost({ post, showSignInModal }) {
               <PopoverTrigger asChild>
                 <button
                   type="button"
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 font-mono text-cyan-300 text-xs font-semibold shrink-0 hover:bg-cyan-500/20 transition cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 font-jetbrains text-cyan-300 text-xs font-semibold shrink-0 hover:bg-cyan-500/20 transition cursor-pointer"
                   title="Click to view prize breakdown"
                 >
                   <Trophy className="h-3.5 w-3.5 text-cyan-400" />
@@ -231,7 +231,7 @@ function FeedPost({ post, showSignInModal }) {
                   <div className="text-[10px] text-slate-400 capitalize truncate">
                     {criterion.replace(/_/g, ' ')}
                   </div>
-                  <div className="text-xs font-mono font-bold text-cyan-300 mt-0.5">
+                  <div className="text-xs font-jetbrains font-bold text-cyan-300 mt-0.5">
                     {weight}%
                   </div>
                 </div>

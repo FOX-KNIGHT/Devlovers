@@ -9,6 +9,7 @@ export function saveOfflineDraft(hackathonId, draftData) {
     const existing = getOfflineDrafts();
     existing[hackathonId] = {
       ...draftData,
+      syncPending: true,
       updatedAt: new Date().toISOString(),
     };
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(existing));
@@ -51,4 +52,44 @@ export function removeOfflineDraft(hackathonId) {
   } catch (e) {
     console.error('Failed to remove draft offline:', e);
   }
+}
+
+/**
+ * Background Sync: Automatically synchronize pending drafts when connection is restored
+ */
+export async function syncOfflineDrafts(syncEndpoint = '/api/squads') {
+  if (typeof window === 'undefined') return { synced: 0 };
+  if (!navigator.onLine) return { synced: 0, offline: true };
+
+  const drafts = getOfflineDrafts();
+  const draftIds = Object.keys(drafts);
+  let syncedCount = 0;
+
+  for (const id of draftIds) {
+    const draft = drafts[id];
+    if (draft?.syncPending) {
+      try {
+        const res = await fetch(syncEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(draft),
+        });
+        if (res.ok) {
+          draft.syncPending = false;
+          saveOfflineDraft(id, draft);
+          syncedCount++;
+        }
+      } catch (err) {
+        console.warn('Background sync deferred:', err.message);
+      }
+    }
+  }
+
+  return { synced: syncedCount };
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('online', () => {
+    syncOfflineDrafts();
+  });
 }

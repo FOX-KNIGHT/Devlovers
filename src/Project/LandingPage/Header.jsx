@@ -56,7 +56,7 @@ function Header({ setCurrentPage }) {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[var(--color-void)]/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[var(--color-void)]/85 backdrop-blur-xl safe-area-top">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6">
         {/* Left: Menu toggle + Cyber Logo */}
         <div className="flex items-center gap-3">

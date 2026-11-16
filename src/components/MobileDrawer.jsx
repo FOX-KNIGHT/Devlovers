@@ -17,7 +17,7 @@ export function MobileDrawer({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="fixed inset-y-0 left-0 z-50 h-full w-4/5 max-w-sm rounded-none border-r border-white/10 bg-[#0C0F1D]/98 p-6 shadow-2xl backdrop-blur-2xl transition ease-in-out">
+      <DialogContent className="fixed inset-y-0 left-0 z-50 h-full w-4/5 max-w-sm rounded-none border-r border-white/10 bg-[#0C0F1D]/98 p-6 shadow-2xl backdrop-blur-2xl transition ease-in-out safe-area-inset">
         <DialogHeader className="flex flex-row items-center justify-between border-b border-white/10 pb-4">
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
