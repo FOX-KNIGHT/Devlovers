@@ -106,6 +106,9 @@ test('database query repositories', async (t) => {
     assert.ok(sub.id);
     assert.equal(sub.title, 'NeuroMesh');
     assert.equal(sub.status, 'SUBMITTED');
+
+    const subs = await getSubmissionsByHackathonSlug('hackathon-alpha');
+    assert.ok(Array.isArray(subs));
   });
 
   await t.test('social queries handle likes, comments, and bookmarks', async () => {

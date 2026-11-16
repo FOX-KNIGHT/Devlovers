@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CommandDialog,
   CommandInput,
@@ -18,9 +18,7 @@ import {
   Award,
   Moon,
   Sun,
-  Flame,
   Search,
-  Sparkles,
   Clock,
   Volume2,
 } from 'lucide-react';

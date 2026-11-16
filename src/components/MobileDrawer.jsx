@@ -1,9 +1,7 @@
 'use client';
 
-import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Trophy, Flame, Users, Info, X, Radio, Award } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Trophy, Flame, Users, Info, Radio, Award } from 'lucide-react';
 
 export function MobileDrawer({
   open,

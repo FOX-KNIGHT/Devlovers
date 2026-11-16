@@ -1,16 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import {
   Trophy,
   Calendar,
   Users,
   Clock,
   Sparkles,
-  ExternalLink,
   ShieldCheck,
-  Globe,
   Code2,
   Share2,
   Bookmark,
@@ -27,7 +24,7 @@ import { useAppContext } from '@/Project/LandingPage/AppContext';
 import { useI18n } from '@/lib/i18n/context';
 import { toast } from 'sonner';
 
-function FeedPost({ post, showSignInModal }) {
+function FeedPost({ post, showSignInModal: _showSignInModal }) {
   const { currency, useUTC, setActiveTechFilter, bookmarkedSprints, toggleBookmark } = useAppContext();
   const { t } = useI18n();
   const [registered, setRegistered] = useState(false);

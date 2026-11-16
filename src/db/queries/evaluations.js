@@ -1,5 +1,4 @@
 import { db, schema, isLiveDatabase } from '../client.js';
-import { eq } from 'drizzle-orm';
 
 /**
  * Record a judge's evaluation of a submission

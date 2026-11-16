@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { ShieldCheck, Cpu, Trophy, Terminal, Sparkles, Scale } from 'lucide-react';
+import { ShieldCheck, Cpu, Terminal, Scale } from 'lucide-react';
 
 export function AboutView() {
   const pillars = [

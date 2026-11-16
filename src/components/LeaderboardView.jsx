@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Medal, Sparkles, Search, ShieldCheck, Flame, Users } from 'lucide-react';
+import { Trophy, Search, Users } from 'lucide-react';
 import data from '@/Project/LandingPage/data.js';
 import { formatPrize } from '@/lib/formatters';
 import { useAppContext } from '@/Project/LandingPage/AppContext';
@@ -24,7 +24,7 @@ export function LeaderboardView() {
             setLeaderboardData(json.data);
           }
         }
-      } catch (e) {
+      } catch (_e) {
         // Fall back gracefully
       }
     }

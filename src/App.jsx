@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Header from './Project/LandingPage/Header.jsx';
 import SubNav from './Project/LandingPage/SubNav.jsx';
 import LandingPage from './Project/LandingPage/LandingPage.jsx';
@@ -14,7 +14,6 @@ import data from './Project/LandingPage/data.js';
 
 const AppContent = () => {
   const {
-    isSidebarCollapsed,
     isMobileSidebarVisible,
     setIsMobileSidebarVisible,
     activeHackathon,

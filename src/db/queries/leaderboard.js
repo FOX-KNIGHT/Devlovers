@@ -1,4 +1,4 @@
-import { db, schema, isLiveDatabase } from '../client.js';
+import { db, isLiveDatabase } from '../client.js';
 import data from '../../Project/LandingPage/data.js';
 
 export async function getGlobalLeaderboard(options = {}) {
