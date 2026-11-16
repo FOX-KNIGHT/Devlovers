@@ -38,7 +38,7 @@ export async function POST(request) {
   let payload;
   try {
     payload = await request.json();
-  } catch (_e) {
+  } catch {
     return NextResponse.json(
       createJsonRpcError(null, -32700, 'Parse error: Invalid JSON was received by the server'),
       {

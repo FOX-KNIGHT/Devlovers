@@ -44,7 +44,7 @@ export function McpInspectorModal({ open, onOpenChange }) {
     let parsedArgs = {};
     try {
       parsedArgs = JSON.parse(inputJson);
-    } catch (_err) {
+    } catch {
       toast.error('Invalid JSON in tool arguments');
       setLoading(false);
       return;
