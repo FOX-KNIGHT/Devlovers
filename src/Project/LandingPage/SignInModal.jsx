@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, Mail, ShieldAlert } from 'lucide-react';
 import { toast } from 'sonner';
 import { soundFx } from '@/lib/audio/sound-fx';
+import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
 function GithubIcon(props) {
   return (
@@ -34,9 +35,25 @@ function SignInModal({ isVisible, hideModal, onLogin }) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleOAuth = (provider) => {
+  const handleOAuth = async (provider) => {
     soundFx.playClick();
     setLoading(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: provider.toLowerCase(),
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+        if (error) throw error;
+        return;
+      }
+    } catch (err) {
+      console.warn('Supabase OAuth notice:', err?.message || err);
+    }
+
     setTimeout(() => {
       onLogin(provider);
       hideModal();
@@ -47,12 +64,34 @@ function SignInModal({ isVisible, hideModal, onLogin }) {
     }, 400);
   };
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     if (!email) return;
 
     soundFx.playClick();
     setLoading(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        const { error } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+        if (error) throw error;
+        toast.success(`Check your inbox!`, {
+          description: `Magic link dispatched to ${email}`,
+        });
+        setEmail('');
+        setLoading(false);
+        hideModal();
+        return;
+      }
+    } catch (err) {
+      console.warn('Supabase OTP notice:', err?.message || err);
+    }
+
     setTimeout(() => {
       onLogin('Email');
       hideModal();

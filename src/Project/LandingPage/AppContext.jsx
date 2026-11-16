@@ -5,6 +5,7 @@ import data from './data.js';
 import { useTheme } from 'next-themes';
 import { toast as sonnerToast } from 'sonner';
 import { updateAppBadge, clearAppBadge } from '@/lib/pwa/badge';
+import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
 const AppContext = createContext();
 
@@ -17,6 +18,53 @@ export const AppProvider = ({ children }) => {
     // Auth state
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
+
+    // Sync Supabase Auth session & auth changes
+    useEffect(() => {
+        let subscription;
+        try {
+            const supabase = getSupabaseBrowserClient();
+            if (supabase?.auth) {
+                supabase.auth.getSession().then(({ data: { session } = {} }) => {
+                    if (session?.user) {
+                        const meta = session.user.user_metadata || {};
+                        setUser({
+                            id: session.user.id,
+                            email: session.user.email,
+                            name: meta.full_name || meta.name || meta.user_name || session.user.email?.split('@')[0] || 'Developer',
+                            avatar: meta.avatar_url,
+                            provider: session.user.app_metadata?.provider || 'supabase',
+                        });
+                        setIsLoggedIn(true);
+                    }
+                }).catch(() => {});
+
+                const subRes = supabase.auth.onAuthStateChange((_event, session) => {
+                    if (session?.user) {
+                        const meta = session.user.user_metadata || {};
+                        setUser({
+                            id: session.user.id,
+                            email: session.user.email,
+                            name: meta.full_name || meta.name || meta.user_name || session.user.email?.split('@')[0] || 'Developer',
+                            avatar: meta.avatar_url,
+                            provider: session.user.app_metadata?.provider || 'supabase',
+                        });
+                        setIsLoggedIn(true);
+                    } else if (_event === 'SIGNED_OUT') {
+                        setUser(null);
+                        setIsLoggedIn(false);
+                    }
+                });
+                subscription = subRes?.data?.subscription;
+            }
+        } catch (e) {
+            console.warn('Supabase auth state listener init notice:', e?.message || e);
+        }
+
+        return () => {
+            subscription?.unsubscribe?.();
+        };
+    }, []);
 
     // UI state
     const [isSidebarDesktopCollapsed, setIsSidebarDesktopCollapsed] = useState(false);
@@ -217,12 +265,22 @@ export const AppProvider = ({ children }) => {
         showToast(`✅ Welcome, ${username}!`);
     }, [showToast]);
 
-    // Logout simulation
-    const simulateLogout = useCallback(() => {
+    // Logout simulation and Supabase Sign Out
+    const signOut = useCallback(async () => {
+        try {
+            const supabase = getSupabaseBrowserClient();
+            if (supabase?.auth) {
+                await supabase.auth.signOut();
+            }
+        } catch (e) {
+            console.warn('Sign out notice:', e?.message || e);
+        }
         setUser(null);
         setIsLoggedIn(false);
         showToast('👋 Logged out successfully');
     }, [showToast]);
+
+    const simulateLogout = signOut;
 
     // Mark all notifications as read
     const markAllNotificationsAsRead = useCallback(() => {
@@ -299,6 +357,7 @@ export const AppProvider = ({ children }) => {
         setIsMobileSearchOpen,
         simulateLogin,
         simulateLogout,
+        signOut,
         showToast,
         markAllNotificationsAsRead,
         markNotificationAsRead,
@@ -307,7 +366,7 @@ export const AppProvider = ({ children }) => {
         setIsMobileSidebarVisible, activeHackathon, selectHackathon, hackathons, feedPosts, refreshHackathons, activeSort, activeTechFilter,
         isSignInModalOpen, isMobileSearchOpen, toastState, notifications, unreadCount,
         currency, setCurrency, useUTC, toggleUTC, bookmarkedSprints, toggleBookmark,
-        toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, showToast,
+        toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, signOut, showToast,
         markAllNotificationsAsRead, markNotificationAsRead
     ]);
 

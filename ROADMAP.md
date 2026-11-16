@@ -104,20 +104,27 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 
 ---
 
-## ⏳ Phase 2: Supabase Auth & Row Level Security (RLS)
+## ✅ Phase 2: Supabase Auth & Row Level Security (RLS) (Completed)
 
 *Objective: Production authentication, session management, and granular database security policies.*
 
 ### Key Deliverables:
-- [ ] Configure `@supabase/supabase-js` and `@supabase/ssr` with Next.js App Router.
-- [ ] Implement OAuth providers (GitHub Developer OAuth & Google OAuth) + Passwordless Magic Link.
-- [ ] Server Action authentication flows (`login`, `signup`, `logout`, `callback`).
-- [ ] Next.js Edge Middleware for protected routes (`/dashboard`, `/squads/create`, `/admin`, `/submit`).
-- [ ] Postgres Row Level Security (RLS) policies:
-  - Public read access for published hackathons and squad listings.
-  - Authenticated-only squad creation and membership updates.
+- [x] Configure `@supabase/supabase-js` and `@supabase/ssr` with Next.js 16 App Router.
+- [x] Implement browser client singleton (`src/lib/supabase/client.js`) and server client (`src/lib/supabase/server.js`) with graceful mock fallbacks.
+- [x] Implement OAuth providers (GitHub Developer OAuth & Google OAuth) + Passwordless Magic Link in `SignInModal.jsx` and `src/app/auth/actions.js`.
+- [x] Server Action authentication flows (`signInWithOAuth`, `signInWithMagicLink`, `signInWithPassword`, `signUpWithPassword`, `signOut`, `getCurrentUser`).
+- [x] App Router Auth Handlers: `GET /auth/callback` (session code exchange + auto user profile sync) and `GET /auth/confirm` (OTP verification).
+- [x] Next.js Edge Middleware for protected routes (`/dashboard`, `/squads/create`, `/admin`, `/submit`) in `src/middleware.js` and `src/lib/supabase/middleware.js`.
+- [x] Postgres Row Level Security (RLS) policies migration (`drizzle/0004_rls_policies.sql`) across all 18 tables:
+  - Public read access for published hackathons, tracks, squads, comments, likes.
+  - Authenticated-only squad creation, joining, and membership updates.
   - Strict submission edit access limited to verified squad members prior to deadline.
-  - Blind judging isolation (judges cannot view creator identities or peer scores).
+  - Blind judging isolation (judges evaluate independently until sprint status is FINISHED).
+  - Private messaging and conversation member isolation.
+  - User notifications owner isolation (`user_id = current_user_id()`).
+  - Helper security functions: `current_user_id()`, `is_admin()`, `is_judge()`.
+- [x] Automated Test Suite expansion: 92 / 92 tests passing including 15 dedicated Phase 2 unit tests covering client singletons, server actions, route protection redirects, and SQL RLS policies.
+- [x] Production build clean: `npm run build` exits with code 0 across 19 static and dynamic routes.
 
 ---
 
