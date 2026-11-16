@@ -11,11 +11,13 @@ import {
   Code2,
   Share2,
   Bookmark,
+  UploadCloud,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TiltCard } from '@/components/ui/tilt-card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { SquadModal } from '@/components/SquadModal';
+import { SubmitProjectModal } from '@/components/SubmitProjectModal';
 import { useCountdown } from '@/hooks/useCountdown';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { formatPrize, formatDeadline } from '@/lib/formatters';
@@ -30,6 +32,7 @@ function FeedPost({ post, showSignInModal: _showSignInModal }) {
   const [registered, setRegistered] = useState(false);
   const [localUTCToggle, setLocalUTCToggle] = useState(false);
   const [isSquadModalOpen, setIsSquadModalOpen] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
   const isOngoing = post.status?.toUpperCase() === 'ACTIVE' || post.status?.toLowerCase() === 'ongoing';
   const effectiveShowUTC = localUTCToggle || useUTC;
@@ -312,6 +315,21 @@ function FeedPost({ post, showSignInModal: _showSignInModal }) {
                 t('post.enter')
               )}
             </Button>
+            {registered && (
+              <Button
+                variant="cyber"
+                size="sm"
+                onClick={() => {
+                  soundFx.playClick();
+                  setIsSubmitModalOpen(true);
+                }}
+                className="text-xs font-semibold px-3 h-9 gap-1.5 shadow-cyan-500/20"
+                title="Submit Project"
+              >
+                <UploadCloud className="h-3.5 w-3.5" />
+                Submit
+              </Button>
+            )}
           </div>
         </div>
       </article>
@@ -320,6 +338,11 @@ function FeedPost({ post, showSignInModal: _showSignInModal }) {
         open={isSquadModalOpen}
         onOpenChange={setIsSquadModalOpen}
         post={post}
+      />
+      <SubmitProjectModal
+        open={isSubmitModalOpen}
+        onOpenChange={setIsSubmitModalOpen}
+        hackathon={post}
       />
     </TiltCard>
   );

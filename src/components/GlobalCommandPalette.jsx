@@ -16,6 +16,7 @@ import {
   Users,
   Info,
   Award,
+  Code,
   Moon,
   Sun,
   Search,
@@ -76,6 +77,11 @@ export function GlobalCommandPalette({ onSelectPage }) {
               <Trophy className="mr-2 h-4 w-4 text-cyan-400" />
               <span>Hackathon Challenges</span>
               <CommandShortcut>G H</CommandShortcut>
+            </CommandItem>
+            <CommandItem onSelect={() => handleSelect(() => onSelectPage?.('Projects'))}>
+              <Code className="mr-2 h-4 w-4 text-cyan-400" />
+              <span>Project Showcase</span>
+              <CommandShortcut>G P</CommandShortcut>
             </CommandItem>
             <CommandItem onSelect={() => handleSelect(() => onSelectPage?.('Leaderboard'))}>
               <Award className="mr-2 h-4 w-4 text-amber-400" />

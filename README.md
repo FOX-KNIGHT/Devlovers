@@ -15,7 +15,7 @@ Built on **Next.js 16 (React 19)**, **Tailwind CSS v4**, **shadcn/ui**, **Framer
 - **Internationalization**: Multi-language i18n engine (English, Spanish, Japanese) with RTL layout preparedness
 - **Platform Layer**: Universal PWA with standalone window chrome & App Badging API
 - **Data Layer (Phase 1)**: Drizzle ORM, PostgreSQL (18 relational tables, 4 enums), Drizzle Kit migrations, and Next.js App Router REST API endpoints
-- **Testing & Verification**: 71 automated tests across 8 suites (`node:test`), ESLint 10 flat config (`eslint.config.mjs`)
+- **Testing & Verification**: 73 automated tests across 8 suites (`node:test`), ESLint 10 flat config (`eslint.config.mjs`)
 - **Upcoming (Phase 2–5)**: Supabase Auth + RLS, Remote Stateless MCP Server, MCP Apps, Production Hardening
 
 ---
@@ -35,7 +35,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ### 3. Run Automated Tests & Lint
 ```bash
-npm test         # 71 / 71 tests passing across 8 suites
+npm test         # 73 / 73 tests passing across 8 suites
 npm run lint     # ESLint 10 flat config verification
 ```
 

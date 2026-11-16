@@ -2,8 +2,7 @@
 
 > **Current Milestone**: Phase 1 Certified Complete & Verified  
 > **Repository Branch**: `main` (Working Tree Clean)  
-> **Latest Commit**: `a93c9f2`  
-> **Global Test Suite**: **71 / 71 Tests Passing** across 8 test suites (`npm test`)  
+> **Global Test Suite**: **73 / 73 Tests Passing** across 8 test suites (`npm test`)  
 > **Production Build**: **Exit Code 0** with 17 routes prerendered & dynamic (`npm run build`)  
 > **Live HTTP Server**: Operational at `http://localhost:3000` (`HTTP/1.1 200 OK`)
 
@@ -14,7 +13,7 @@
 | Phase | Description | Status | Verification & Test Coverage |
 | :--- | :--- | :--- | :--- |
 | **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 Core Platform Tests (Passed)** |
-| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **71 / 71 Tests Passing (100% Green)** |
+| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **73 / 73 Tests Passing (100% Green)** |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Up Next | Next Milestone Specification Ready |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Specification Ready |
 | **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | ⏳ Planned | Specification Ready |
@@ -102,14 +101,16 @@ flowchart TD
 | **Queries: Messaging**| Team Chat & DM Repositories | `src/db/queries/messages.js` | `createConversation()`, `sendMessage()`, `getConversationMessages()` |
 | **Queries: Audit** | Audit Logging & Compliance Ledger | `src/db/queries/audit.js` | `logAuditEvent()`, `getAuditLogs()` |
 | **Queries: Alerts** | Notification Registry & Read States | `src/db/queries/notifications.js` | `getNotifications()`, `createNotification()`, `markNotificationRead()` |
-| **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx` | Revalidates `/api/hackathons`, `/api/leaderboard`, `/api/notifications` |
+| **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx`<br>`src/Project/LandingPage/FeedPost.jsx` | Revalidates `/api/hackathons`, `/api/leaderboard`, `/api/notifications`, `/api/registrations` |
+| **Project Showcase** | Submissions Matrix & Live Search | `src/components/ProjectShowcaseView.jsx` | Grid of shipped projects with score badges, verified commits, repo links, and like triggers |
+| **Submission Modal** | Project Submission Modal Flow | `src/components/SubmitProjectModal.jsx` | Modal dialog submitting title, tagline, repo URL, demo URL, tech stack to `/api/submissions` |
 | **REST API** | Sprints, Squads, Rankings | `src/app/api/hackathons/`, `[slug]`, `squads/`, `leaderboard/` | Core challenge directory endpoints |
 | **REST API** | Social, Bookmarks, Likes | `src/app/api/comments/`, `likes/`, `bookmarks/` | Participant social engagement endpoints |
-| **REST API** | Notifications, Submissions, DMs, Users | `src/app/api/notifications/`, `submissions/`, `messages/`, `users/`, `evaluations/` | Complete operational App Router endpoints |
+| **REST API** | Notifications, Submissions, DMs, Users | `src/app/api/notifications/`, `submissions/`, `messages/`, `users/`, `evaluations/`, `registrations/` | Complete operational App Router endpoints |
 
 ---
 
-## 🧪 Comprehensive Automated Test Evidence (69 / 69 Tests Passing)
+## 🧪 Comprehensive Automated Test Evidence (73 / 73 Tests Passing)
 
 ```bash
 $ npm test
@@ -122,7 +123,7 @@ $ npm test
   ✔ clears badge when count is 0
   ✔ clears badge directly via clearAppBadge
   ✔ does not throw when navigator does not support setAppBadge
-▶ live server browser & visual audit (14 tests) - PASS
+▶ live server browser & visual audit (16 tests) - PASS
   ✔ root page (/) returns 200 and renders full semantic HTML with OpenGraph tags
   ✔ robots.txt returns 200 and allows indexing with sitemap reference
   ✔ sitemap.xml returns 200 with valid XML urlset
@@ -135,21 +136,24 @@ $ npm test
   ✔ api/comments endpoint returns comments listings
   ✔ api/notifications endpoint returns notifications and unreadCount
   ✔ api/submissions endpoint returns submission list
+  ✔ api/submissions POST accepts new project submission
   ✔ api/messages endpoint returns conversation history
   ✔ api/users endpoint returns user details
+  ✔ api/registrations endpoint returns registrations list
 ▶ useCountdown timer calculations (4 tests) - PASS
   ✔ returns Ended for past dates
   ✔ calculates remaining days and hours accurately
   ✔ calculates countdown under 24 hours with seconds
   ✔ handles null or missing target gracefully
-▶ mock data schema contract (6 tests) - PASS
+▶ mock data schema contract (7 tests) - PASS
   ✔ hackathons array matches required structure
   ✔ feedPosts array conforms to Drizzle integer cents and jsonb specs
   ✔ notifications array contains unread tracking booleans
   ✔ trending array has valid sprint items
   ✔ squads array conforms to matchmaking relational specifications
   ✔ leaderboard array conforms to rankings and prize specifications
-▶ database query repositories (16 tests) - PASS
+  ✔ submissions array conforms to showcase specifications
+▶ database query repositories (17 tests) - PASS
   ✔ getHackathons returns all hackathons by default
   ✔ getHackathons filters by upcoming status
   ✔ getHackathons filters by high prize bounties
@@ -166,8 +170,9 @@ $ npm test
   ✔ direct message queries support conversations and messages
   ✔ audit logging captures platform events and actor actions
   ✔ notifications queries manage notifications and read states
+  ✔ registrations queries manage participant registrations
 ▶ Drizzle ORM schema tables and enums (5 tests) - PASS
-  ✔ exports all expected tables (16 tables)
+  ✔ exports all expected tables (18 tables)
   ✔ exports all enum types (4 enums)
   ✔ hackathons table contains required columns
   ✔ users table contains required columns
@@ -195,7 +200,7 @@ $ npm test
   ✔ gracefully handles corrupted JSON in localStorage
   ✔ background sync updates pending draft state
 
-ℹ tests 69 | suites 8 | pass 69 | fail 0 | duration 219ms
+ℹ tests 73 | suites 8 | pass 73 | fail 0 | duration 254ms
 ```
 
 ---

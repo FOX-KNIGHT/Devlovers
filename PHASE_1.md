@@ -45,13 +45,15 @@
 | **Queries: Alerts** | Notification Registry & Read States | `src/db/queries/notifications.js` | `getNotifications()`, `createNotification()`, `markNotificationRead()` |
 | **Queries: Registrations**| User Registration Pipeline | `src/db/queries/registrations.js` | `registerUserForHackathon()`, `getHackathonRegistrations()` |
 | **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx`<br>`src/Project/LandingPage/FeedPost.jsx` | Revalidates `/api/hackathons`, `/api/leaderboard`, `/api/notifications`, `/api/registrations` |
+| **Project Showcase** | Submissions Matrix & Live Search | `src/components/ProjectShowcaseView.jsx` | Grid of shipped projects with score badges, verified commits, repo links, and like triggers |
+| **Submission Modal** | Project Submission Modal Flow | `src/components/SubmitProjectModal.jsx` | Modal dialog submitting title, tagline, repo URL, demo URL, tech stack to `/api/submissions` |
 | **REST API** | Sprints, Squads, Rankings | `src/app/api/hackathons/`, `[slug]`, `squads/`, `leaderboard/` | Core challenge directory endpoints |
 | **REST API** | Social, Bookmarks, Likes | `src/app/api/comments/`, `likes/`, `bookmarks/` | Participant social engagement endpoints |
 | **REST API** | Notifications, Submissions, DMs, Users | `src/app/api/notifications/`, `submissions/`, `messages/`, `users/`, `evaluations/`, `registrations/` | Complete operational App Router endpoints |
 
 ---
 
-## 🧪 Automated Test Suite (71 / 71 Tests Passing)
+## 🧪 Automated Test Suite (73 / 73 Tests Passing)
 
 ```bash
 $ npm test
@@ -60,7 +62,7 @@ $ npm test
 > node --test tests/
 
 ▶ PWA Badging API (4 tests) - PASS
-▶ live server browser & visual audit (15 tests) - PASS
+▶ live server browser & visual audit (16 tests) - PASS
   ✔ root page (/) returns 200 and renders full semantic HTML with OpenGraph tags
   ✔ robots.txt returns 200 and allows indexing with sitemap reference
   ✔ sitemap.xml returns 200 with valid XML urlset
@@ -73,11 +75,13 @@ $ npm test
   ✔ api/comments endpoint returns comments listings
   ✔ api/notifications endpoint returns notifications and unreadCount
   ✔ api/submissions endpoint returns submission list
+  ✔ api/submissions POST accepts new project submission
   ✔ api/messages endpoint returns conversation history
   ✔ api/users endpoint returns user details
   ✔ api/registrations endpoint returns registrations list
 ▶ useCountdown timer calculations (4 tests) - PASS
-▶ mock data schema contract (6 tests) - PASS
+▶ mock data schema contract (7 tests) - PASS
+  ✔ submissions array conforms to showcase specifications
 ▶ database query repositories (17 tests) - PASS
   ✔ getHackathons returns all hackathons by default
   ✔ getHackathons filters by upcoming status
@@ -107,7 +111,7 @@ $ npm test
 ▶ i18n dictionaries parity (3 tests) - PASS
 ▶ offline-drafts storage engine (5 tests) - PASS
 
-ℹ tests 71 | suites 8 | pass 71 | fail 0
+ℹ tests 73 | suites 8 | pass 73 | fail 0
 ```
 
 ---

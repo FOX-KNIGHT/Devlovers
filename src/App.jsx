@@ -9,6 +9,7 @@ import { AppProvider, useAppContext } from './Project/LandingPage/AppContext.jsx
 import { DevloversCommunity } from './components/DevloversCommunity.jsx';
 import { AboutView } from './components/AboutView.jsx';
 import { LeaderboardView } from './components/LeaderboardView.jsx';
+import { ProjectShowcaseView } from './components/ProjectShowcaseView.jsx';
 import { MobileDrawer } from './components/MobileDrawer.jsx';
 import data from './Project/LandingPage/data.js';
 
@@ -33,6 +34,14 @@ const AppContent = () => {
     switch (currentPage) {
       case 'Hackathon':
         return <LandingPage setCurrentPage={handlePageChange} />;
+      case 'Projects':
+        return (
+          <div className="main-content flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div className="mx-auto max-w-5xl">
+              <ProjectShowcaseView />
+            </div>
+          </div>
+        );
       case 'Leaderboard':
         return (
           <div className="main-content flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">

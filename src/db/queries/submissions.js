@@ -1,5 +1,6 @@
 import { db, schema, isLiveDatabase } from '../client.js';
 import { eq } from 'drizzle-orm';
+import data from '../../Project/LandingPage/data.js';
 
 export async function getSubmissionsByHackathonSlug(slug) {
   if (isLiveDatabase()) {
@@ -21,7 +22,11 @@ export async function getSubmissionsByHackathonSlug(slug) {
     }
   }
 
-  return [];
+  const all = data.submissions || [];
+  if (slug) {
+    return all.filter((s) => s.hackathonSlug === slug);
+  }
+  return all;
 }
 
 export async function createSubmission(submissionData) {

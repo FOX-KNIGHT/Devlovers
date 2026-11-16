@@ -1,7 +1,7 @@
 'use client';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Trophy, Flame, Users, Info, Radio, Award } from 'lucide-react';
+import { Trophy, Flame, Users, Info, Radio, Award, Code } from 'lucide-react';
 
 export function MobileDrawer({
   open,
@@ -46,6 +46,21 @@ export function MobileDrawer({
             >
               <Trophy className="h-4 w-4 text-cyan-400" />
               <span>Hackathon Challenges</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onSelectPage('Projects');
+                onOpenChange(false);
+              }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition ${
+                currentPage === 'Projects'
+                  ? 'bg-cyan-500/20 text-cyan-300 font-semibold'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Code className="h-4 w-4 text-cyan-400" />
+              <span>Project Showcase</span>
             </button>
 
             <button

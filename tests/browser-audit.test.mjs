@@ -184,6 +184,32 @@ describe('live server browser & visual audit', () => {
     }
   });
 
+  test('api/submissions POST accepts new project submission', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/submissions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          hackathonSlug: 'future-of-ai-sprint-2026',
+          title: 'QuantumEdge Studio',
+          tagline: 'Edge AI inference accelerator',
+          repoUrl: 'https://github.com/devlovers/quantumedge',
+          demoUrl: 'https://quantumedge.devlovers.io',
+          squadName: 'Quantum Coders',
+          submittedBy: '@elena_ai',
+          techStack: ['Rust', 'ONNX', 'Next.js'],
+        }),
+      });
+      assert.strictEqual(res.status, 201);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(data.data.title, 'QuantumEdge Studio');
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
   test('api/messages endpoint returns conversation history', async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/messages?conversationId=conv-1`);

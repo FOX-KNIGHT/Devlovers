@@ -106,4 +106,28 @@ describe('mock data schema contract', () => {
       assert.strictEqual(typeof item.badge, 'string');
     }
   });
+
+  test('submissions array conforms to showcase specifications', () => {
+    assert.ok(Array.isArray(data.submissions), 'submissions is an array');
+    assert.ok(data.submissions.length > 0, 'has at least one submission');
+
+    for (const sub of data.submissions) {
+      assert.strictEqual(typeof sub.id, 'string');
+      assert.strictEqual(typeof sub.hackathonSlug, 'string');
+      assert.strictEqual(typeof sub.title, 'string');
+      assert.strictEqual(typeof sub.tagline, 'string');
+      assert.strictEqual(typeof sub.repoUrl, 'string');
+      assert.match(sub.repoUrl, /^https?:\/\//, 'repoUrl is a valid http(s) URL');
+      assert.strictEqual(typeof sub.demoUrl, 'string');
+      assert.match(sub.demoUrl, /^https?:\/\//, 'demoUrl is a valid http(s) URL');
+      assert.strictEqual(typeof sub.squadName, 'string');
+      assert.strictEqual(typeof sub.submittedBy, 'string');
+      assert.strictEqual(typeof sub.score, 'number');
+      assert.ok(sub.score >= 0 && sub.score <= 100, 'score is between 0 and 100');
+      assert.strictEqual(typeof sub.verifiedCommits, 'boolean');
+      assert.ok(Array.isArray(sub.techStack), 'techStack is an array');
+      assert.ok(sub.techStack.length > 0, 'techStack has at least one technology');
+      assert.strictEqual(typeof sub.likes, 'number');
+    }
+  });
 });
