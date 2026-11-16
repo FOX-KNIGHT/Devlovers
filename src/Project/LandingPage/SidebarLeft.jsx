@@ -17,8 +17,10 @@ function SidebarLeft({
   showToast,
 }) {
   const { t } = useI18n();
-  const { activeSort, setActiveSort } = useAppContext();
+  const { activeSort, setActiveSort, hackathons } = useAppContext();
   const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const hackathonsList = hackathons || data.hackathons;
 
   const sortOptions = ['Newest', 'Oldest', 'High Bounty', 'Deadline Soon'];
 
@@ -122,7 +124,7 @@ function SidebarLeft({
           )}
         </button>
 
-        {data.hackathons.map((h) => {
+        {hackathonsList.map((h) => {
           const isActive = activeHackathon?.id === h.id;
           const isLive = h.status?.toUpperCase() === 'ACTIVE';
 

@@ -7,6 +7,8 @@ import { getSubmissionsByHackathonSlug, createSubmission } from '../src/db/queri
 import { toggleLike, addComment, toggleBookmark } from '../src/db/queries/social.js';
 import { getUserById, createUser } from '../src/db/queries/users.js';
 import { submitEvaluation, calculateZScores } from '../src/db/queries/evaluations.js';
+import { createConversation, sendMessage, getConversationMessages } from '../src/db/queries/messages.js';
+import { logAuditEvent, getAuditLogs } from '../src/db/queries/audit.js';
 
 test('database query repositories', async (t) => {
   await t.test('getHackathons returns all hackathons by default', async () => {
@@ -146,5 +148,37 @@ test('database query repositories', async (t) => {
     assert.ok(normalized[0].zScore < 0, 'below mean should have negative z-score');
     assert.equal(normalized[1].zScore, 0, 'mean should have 0 z-score');
     assert.ok(normalized[2].zScore > 0, 'above mean should have positive z-score');
+  });
+
+  await t.test('direct message queries support conversations and messages', async () => {
+    const conv = await createConversation({ memberIds: ['user-1', 'user-2'] });
+    assert.ok(conv.id);
+
+    const msg = await sendMessage({
+      conversationId: conv.id,
+      senderId: 'user-1',
+      body: 'Let us build something incredible!',
+    });
+    assert.ok(msg.id);
+    assert.equal(msg.body, 'Let us build something incredible!');
+
+    const history = await getConversationMessages(conv.id);
+    assert.ok(Array.isArray(history));
+    assert.ok(history.length >= 1);
+  });
+
+  await t.test('audit logging captures platform events and actor actions', async () => {
+    const log = await logAuditEvent({
+      actorId: 'user-admin',
+      action: 'APPROVE_SUBMISSION',
+      target: 'sub-1',
+      metadata: { reason: 'Meets all rubric standards' },
+    });
+    assert.ok(log.id);
+    assert.equal(log.action, 'APPROVE_SUBMISSION');
+
+    const recentLogs = await getAuditLogs(10);
+    assert.ok(Array.isArray(recentLogs));
+    assert.ok(recentLogs.length >= 1);
   });
 });

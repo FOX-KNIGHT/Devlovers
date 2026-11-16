@@ -9,7 +9,7 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 | Phase | Description | Status | Test Coverage |
 | :--- | :--- | :--- | :--- |
 | **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 / 36 Passing** |
-| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **62 / 62 Passing** |
+| **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **64 / 64 Passing** |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Planned | Pending |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Pending |
 | **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | ⏳ Planned | Pending |
@@ -88,12 +88,15 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
   - `social`: likes, comments (with threaded replies), bookmarks.
   - `sponsors`: sponsor_credits with claim tracking.
   - `analytics`: events telemetry table for real-time views, registrations, and submissions.
-  - `relations`: comprehensive bidirectional Drizzle relations mapping.
-- [x] Migration generation scripts (`npm run db:generate`, `npm run db:migrate`) and initial SQL migration `drizzle/0000_skinny_shotgun.sql`.
+  - `messages`: conversations, conversation_members, and direct messages.
+  - `audit`: audit_logs for host and admin operational traceability.
+  - `relations`: comprehensive bidirectional Drizzle relations mapping across all 15 tables.
+- [x] Migration generation scripts (`npm run db:generate`, `npm run db:migrate`) and SQL migrations (`0000_skinny_shotgun.sql`, `0001_windy_magdalene.sql`).
 - [x] Seed script (`src/db/seed.js`) populating high-fidelity real-world hackathon datasets.
-- [x] Type-safe query helper repositories (`src/db/queries/hackathons.js`, `squads.js`, `leaderboard.js`, `submissions.js`) with offline fallback support.
+- [x] Type-safe query helper repositories (`src/db/queries/hackathons.js`, `squads.js`, `leaderboard.js`, `submissions.js`, `social.js`, `users.js`, `evaluations.js`, `messages.js`, `audit.js`) with offline fallback support.
 - [x] REST API Route Handlers: `/api/hackathons`, `/api/hackathons/[slug]`, `/api/squads`, `/api/leaderboard`, `/api/comments`, `/api/likes`, `/api/bookmarks`.
-- [x] Automated Test Suite expansion: 62 / 62 tests passing covering schemas, enums, relational queries, and live API endpoints.
+- [x] UI Reactive Hydration: `AppContext.jsx` and `LeaderboardView.jsx` dynamically revalidate against live REST APIs with instant offline caching.
+- [x] Automated Test Suite expansion: 64 / 64 tests passing covering schemas, enums, relational queries, and live API endpoints.
 
 ---
 

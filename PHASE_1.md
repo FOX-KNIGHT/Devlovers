@@ -2,7 +2,7 @@
 
 > **Status: 100% COMPLETE & VERIFIED**  
 > **Commit Hash**: Working Tree Clean on branch `main`  
-> **Test Suite**: 62 / 62 Passing across 8 test suites (`npm test`)  
+> **Test Suite**: 64 / 64 Passing across 8 test suites (`npm test`)  
 > **Build Status**: Exit Code 0 with static pages and dynamic REST APIs (`npm run build`)  
 > **Live API Endpoints**: Active and serving at `http://localhost:3000/api/...`
 
@@ -23,8 +23,10 @@
 | **Schema: Social** | Likes, Threaded Comments & Bookmarks | `src/db/schema/social.js` | Cascade deletes, self-referencing replies on comments |
 | **Schema: Sponsors** | Sponsor Credits & Cloud Tokens | `src/db/schema/sponsors.js` | Sponsor perks, credit amounts, and claiming users |
 | **Schema: Telemetry**| Event Analytics & Country Tracking | `src/db/schema/analytics.js` | Real-time views, registrations, and country codes |
-| **Relations** | Bidirectional Drizzle Relations Map | `src/db/schema/relations.js` | Many-to-one, one-to-many across all 11 tables |
-| **Migrations** | Drizzle Kit SQL Migration Generator | `drizzle/0000_skinny_shotgun.sql` | 11 tables, 15 foreign keys, 4 enum types |
+| **Schema: Messaging**| Conversations & Direct Messages | `src/db/schema/messages.js` | `conversations`, `conversation_members`, and `messages` |
+| **Schema: Audit** | Host & Admin Audit Trail | `src/db/schema/audit.js` | Immutable `audit_logs` tracking actor actions |
+| **Relations** | Bidirectional Drizzle Relations Map | `src/db/schema/relations.js` | Many-to-one, one-to-many across all 15 tables |
+| **Migrations** | Drizzle Kit SQL Migration Generator | `drizzle/0000_skinny_shotgun.sql`<br>`drizzle/0001_windy_magdalene.sql` | 15 tables, 21 foreign keys, 4 enum types |
 | **Migration Runner** | Programmatic Migration Script | `src/db/migrate.js` | `npm run db:migrate` migrates live PostgreSQL |
 | **Database Seeder** | Realistic Seed Population Script | `src/db/seed.js` | `npm run db:seed` seeds users, hackathons, criteria |
 | **Client Fallback** | Hybrid Live / Offline Storage Engine | `src/db/client.js` | Connects to Postgres when live; falls back gracefully offline |
@@ -35,6 +37,9 @@
 | **Queries: Social** | Likes, Comments & Bookmarks Helpers | `src/db/queries/social.js` | `toggleLike()`, `addComment()`, `toggleBookmark()` |
 | **Queries: Users** | User Accounts & Profile Management | `src/db/queries/users.js` | `getUserById()`, `getUserByUsername()`, `createUser()` |
 | **Queries: Judging**| Z-Score Calculation Engine | `src/db/queries/evaluations.js` | Mathematical formula $Z = (X - \mu) / \sigma$ normalization |
+| **Queries: Messaging**| Team Chat & DM Repositories | `src/db/queries/messages.js` | `createConversation()`, `sendMessage()`, `getConversationMessages()` |
+| **Queries: Audit** | Audit Logging & Compliance Ledger | `src/db/queries/audit.js` | `logAuditEvent()`, `getAuditLogs()` |
+| **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx` | Revalidates `/api/hackathons` & `/api/leaderboard` with offline cache |
 | **REST API** | GET / POST Hackathons API Route | `src/app/api/hackathons/route.js` | Filterable challenge list with status codes |
 | **REST API** | GET Hackathon by Slug API Route | `src/app/api/hackathons/[slug]/route.js` | Detailed sprint record with squads and perks |
 | **REST API** | GET / POST Squads API Route | `src/app/api/squads/route.js` | Matchmaker registry endpoint |
@@ -44,7 +49,7 @@
 
 ---
 
-## 🧪 Automated Test Suite (62 / 62 Tests Passing)
+## 🧪 Automated Test Suite (64 / 64 Tests Passing)
 
 ```bash
 $ npm test
@@ -54,19 +59,9 @@ $ npm test
 
 ▶ PWA Badging API (4 tests) - PASS
 ▶ live server browser & visual audit (10 tests) - PASS
-  ✔ root page (/) returns 200 and renders full semantic HTML with OpenGraph tags
-  ✔ robots.txt returns 200 and allows indexing with sitemap reference
-  ✔ sitemap.xml returns 200 with valid XML urlset
-  ✔ manifest.json returns valid PWA configuration
-  ✔ opengraph-image endpoint returns 200 and valid image/png
-  ✔ api/hackathons endpoint returns valid JSON with hackathon list
-  ✔ api/hackathons/[slug] endpoint returns specific sprint details
-  ✔ api/leaderboard endpoint returns rankings
-  ✔ api/squads endpoint returns squad listings
-  ✔ api/comments endpoint returns comments listings
 ▶ useCountdown timer calculations (4 tests) - PASS
 ▶ mock data schema contract (6 tests) - PASS
-▶ database query repositories (13 tests) - PASS
+▶ database query repositories (15 tests) - PASS
   ✔ getHackathons returns all hackathons by default
   ✔ getHackathons filters by upcoming status
   ✔ getHackathons filters by high prize bounties
@@ -80,8 +75,10 @@ $ npm test
   ✔ social queries handle likes, comments, and bookmarks
   ✔ user queries manage user accounts
   ✔ evaluations calculate z-scores for scoring normalization
+  ✔ direct message queries support conversations and messages
+  ✔ audit logging captures platform events and actor actions
 ▶ Drizzle ORM schema tables and enums (5 tests) - PASS
-  ✔ exports all expected tables (11 tables)
+  ✔ exports all expected tables (15 tables)
   ✔ exports all enum types (4 enums)
   ✔ hackathons table contains required columns
   ✔ users table contains required columns
@@ -91,7 +88,7 @@ $ npm test
 ▶ i18n dictionaries parity (3 tests) - PASS
 ▶ offline-drafts storage engine (5 tests) - PASS
 
-ℹ tests 62 | suites 8 | pass 62 | fail 0
+ℹ tests 64 | suites 8 | pass 64 | fail 0
 ```
 
 ---

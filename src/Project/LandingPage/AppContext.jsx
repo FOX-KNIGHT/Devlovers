@@ -28,6 +28,10 @@ export const AppProvider = ({ children }) => {
     const [notifications, setNotifications] = useState(data.notifications);
     const [toastState, setToastState] = useState({ message: '', show: false });
 
+    // Live Database / API State with offline fallback
+    const [hackathons, setHackathons] = useState(data.hackathons);
+    const [feedPosts, setFeedPosts] = useState(data.feedPosts);
+
     // Active Hackathon Channel
     const [activeHackathon, setActiveHackathonState] = useState(data.hackathons[0]);
     const [activeSort, setActiveSortState] = useState('Newest');
@@ -37,6 +41,26 @@ export const AppProvider = ({ children }) => {
     const [currency, setCurrencyState] = useState('USD');
     const [useUTC, setUseUTC] = useState(false);
     const [bookmarkedSprints, setBookmarkedSprints] = useState([]);
+
+    // Live data loader from Phase 1 REST API
+    const refreshHackathons = useCallback(async () => {
+        try {
+            const res = await fetch('/api/hackathons');
+            if (res.ok) {
+                const json = await res.json();
+                if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+                    setHackathons(json.data);
+                    setFeedPosts(json.data);
+                }
+            }
+        } catch (e) {
+            // Keep fallback dataset
+        }
+    }, []);
+
+    useEffect(() => {
+        refreshHackathons();
+    }, [refreshHackathons]);
 
     // Sync saved preferences from localStorage safely in effect
     useEffect(() => {
@@ -227,6 +251,9 @@ export const AppProvider = ({ children }) => {
         setIsMobileSidebarVisible,
         activeHackathon,
         setActiveHackathon: selectHackathon,
+        hackathons,
+        feedPosts,
+        refreshHackathons,
         activeSort,
         setActiveSort: setActiveSortState,
         activeTechFilter,
@@ -255,7 +282,7 @@ export const AppProvider = ({ children }) => {
         markNotificationAsRead,
     }), [
         isDarkMode, isLoggedIn, user, isSidebarDesktopCollapsed, isMobileSidebarVisible,
-        setIsMobileSidebarVisible, activeHackathon, selectHackathon, activeSort, activeTechFilter,
+        setIsMobileSidebarVisible, activeHackathon, selectHackathon, hackathons, feedPosts, refreshHackathons, activeSort, activeTechFilter,
         isSignInModalOpen, isMobileSearchOpen, toastState, notifications, unreadCount,
         currency, setCurrency, useUTC, toggleUTC, bookmarkedSprints, toggleBookmark,
         toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, showToast,

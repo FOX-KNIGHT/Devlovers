@@ -6,6 +6,8 @@ import { submissions } from './submissions.js';
 import { evaluations } from './evaluations.js';
 import { likes, comments, bookmarks } from './social.js';
 import { sponsorCredits } from './sponsors.js';
+import { conversations, conversationMembers, messages } from './messages.js';
+import { auditLogs } from './audit.js';
 
 export const hackathonsRelations = relations(hackathons, ({ many }) => ({
   squads: many(squads),
@@ -23,6 +25,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   likes: many(likes),
   comments: many(comments),
   bookmarks: many(bookmarks),
+  sentMessages: many(messages),
+  conversationMemberships: many(conversationMembers),
+  auditLogs: many(auditLogs),
 }));
 
 export const squadsRelations = relations(squads, ({ one, many }) => ({
@@ -120,6 +125,40 @@ export const sponsorCreditsRelations = relations(sponsorCredits, ({ one }) => ({
   }),
   claimedByUser: one(users, {
     fields: [sponsorCredits.claimedBy],
+    references: [users.id],
+  }),
+}));
+
+export const conversationsRelations = relations(conversations, ({ many }) => ({
+  members: many(conversationMembers),
+  messages: many(messages),
+}));
+
+export const conversationMembersRelations = relations(conversationMembers, ({ one }) => ({
+  conversation: one(conversations, {
+    fields: [conversationMembers.conversationId],
+    references: [conversations.id],
+  }),
+  user: one(users, {
+    fields: [conversationMembers.userId],
+    references: [users.id],
+  }),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  conversation: one(conversations, {
+    fields: [messages.conversationId],
+    references: [conversations.id],
+  }),
+  sender: one(users, {
+    fields: [messages.senderId],
+    references: [users.id],
+  }),
+}));
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  actor: one(users, {
+    fields: [auditLogs.actorId],
     references: [users.id],
   }),
 }));

@@ -8,10 +8,12 @@ import { Sparkles } from 'lucide-react';
 import { useAppContext } from './AppContext.jsx';
 
 function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
-  const { activeSort, activeHackathon, activeTechFilter, bookmarkedSprints } = useAppContext();
+  const { activeSort, activeHackathon, activeTechFilter, bookmarkedSprints, feedPosts } = useAppContext();
+
+  const postsList = feedPosts || data.feedPosts;
 
   const filteredPosts = useMemo(() => {
-    const list = data.feedPosts.filter(post => {
+    const list = postsList.filter(post => {
       // Channel filtering
       if (activeHackathon && activeHackathon.id && activeHackathon.id !== 0) {
         if (post.hackathonId && post.hackathonId !== activeHackathon.id) {

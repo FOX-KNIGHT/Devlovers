@@ -7,4 +7,6 @@ export * from './evaluations.js';
 export * from './social.js';
 export * from './sponsors.js';
 export * from './analytics.js';
+export * from './messages.js';
+export * from './audit.js';
 export * from './relations.js';

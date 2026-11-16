@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Medal, Sparkles, Search, ShieldCheck, Flame, Users } from 'lucide-react';
 import data from '@/Project/LandingPage/data.js';
@@ -11,8 +11,28 @@ import { soundFx } from '@/lib/audio/sound-fx';
 export function LeaderboardView() {
   const { currency } = useAppContext();
   const [searchQuery, setSearchQuery] = useState('');
+  const [leaderboardData, setLeaderboardData] = useState(data.leaderboard || []);
 
-  const leaderboardData = data.leaderboard || [];
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch('/api/leaderboard');
+        if (res.ok) {
+          const json = await res.json();
+          if (isMounted && json.success && Array.isArray(json.data) && json.data.length > 0) {
+            setLeaderboardData(json.data);
+          }
+        }
+      } catch (e) {
+        // Fall back gracefully
+      }
+    }
+    loadLeaderboard();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filteredData = useMemo(() => {
     if (!searchQuery.trim()) return leaderboardData;
