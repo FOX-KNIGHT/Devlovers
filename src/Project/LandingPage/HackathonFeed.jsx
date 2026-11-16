@@ -8,10 +8,17 @@ import { Sparkles } from 'lucide-react';
 import { useAppContext } from './AppContext.jsx';
 
 function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
-  const { activeSort } = useAppContext();
+  const { activeSort, activeHackathon } = useAppContext();
 
   const filteredPosts = useMemo(() => {
     const list = data.feedPosts.filter(post => {
+      // Channel filtering
+      if (activeHackathon && activeHackathon.id && activeHackathon.id !== 0) {
+        if (post.hackathonId && post.hackathonId !== activeHackathon.id) {
+          return false;
+        }
+      }
+
       if (currentFilter === 'all') return true;
       const statusUpper = post.status?.toUpperCase();
       if (currentFilter === 'upcoming') return statusUpper === 'UPCOMING';
@@ -39,7 +46,7 @@ function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
       }
       return 0;
     });
-  }, [currentFilter, activeSort]);
+  }, [currentFilter, activeSort, activeHackathon]);
 
   if (filteredPosts.length === 0) {
     return (

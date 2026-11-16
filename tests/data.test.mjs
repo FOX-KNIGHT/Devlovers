@@ -22,6 +22,8 @@ describe('mock data schema contract', () => {
 
     for (const post of data.feedPosts) {
       assert.strictEqual(typeof post.id, 'number');
+      assert.strictEqual(typeof post.hackathonId, 'number');
+      assert.strictEqual(typeof post.hackathonSlug, 'string');
       assert.strictEqual(typeof post.slug, 'string');
       assert.strictEqual(typeof post.title, 'string');
       assert.strictEqual(typeof post.status, 'string');
@@ -36,6 +38,10 @@ describe('mock data schema contract', () => {
       assert.ok(Array.isArray(post.tags), 'tags is an array');
       assert.ok(Array.isArray(post.tech_stack), 'tech_stack is an array');
       assert.strictEqual(typeof post.criteria_scores, 'object');
+
+      // Criteria scores sum to 100%
+      const totalScore = Object.values(post.criteria_scores).reduce((a, b) => a + b, 0);
+      assert.strictEqual(totalScore, 100, `Criteria scores for ${post.title} must sum to 100%`);
     }
   });
 

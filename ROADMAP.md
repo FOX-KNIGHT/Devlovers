@@ -50,7 +50,9 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 - [x] **Synthesized Web Audio Engine**: Zero-asset procedural UI audio effects (sine and triangle oscillator synthesis for click and success chimes).
 - [x] **PWA Application Badging API**: Native OS dock / taskbar badge synchronization based on real-time unread notifications count.
 - [x] **Modular Notification Dropdown**: Dedicated Radix UI popover with unread indicator pings, single-item read toggles, and batch clear actions.
-- [x] **Reactive Feed Sorting & Channel Filtering**: Dynamic sorting by Newest, Oldest, High Bounty, and Deadline Soon, plus active sprint channel telemetry banners.
+- [x] **Reactive Feed Sorting & Track Channel Filtering**: Dynamic sorting by Newest, Oldest, High Bounty, and Deadline Soon, plus bidirectional channel filters and active sprint telemetry banners.
+- [x] **Evaluation Rubric Breakdown**: Real-time visualization of 100% weighted judging criteria (Innovation, Technical Depth, Execution, Impact) on challenge cards.
+- [x] **Relational Schema Contract**: Explicit `hackathonId` and `hackathonSlug` relations across mock datasets, verified by contract tests.
 - [x] **Offline Draft Persistence**: Robust LocalStorage draft serialization with JSON error recovery for offline hackathon registrations and pitches.
 - [x] **Responsive Mobile Drawer**: Seamless slide-out navigation sheet on viewport `<= 768px` with quick page links and live sprint channels.
 

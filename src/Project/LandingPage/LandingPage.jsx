@@ -67,7 +67,7 @@ function LandingPage({ setCurrentPage }) {
                         </div>
                     </div>
 
-                    {activeHackathon && (
+                    {activeHackathon && activeHackathon.id !== 0 && (
                         <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-cyan-950/40 to-violet-950/30 border border-cyan-500/20 text-xs text-cyan-300">
                             <div className="flex items-center gap-2.5">
                                 <span className="radar-ping">
@@ -79,9 +79,18 @@ function LandingPage({ setCurrentPage }) {
                                 </span>
                                 <span className="hud-tag text-[9px] uppercase tracking-wider">{activeHackathon.status}</span>
                             </div>
-                            <span className="text-[11px] text-slate-400 font-mono hidden sm:inline">
-                                Category: {activeHackathon.category}
-                            </span>
+                            <div className="flex items-center gap-3">
+                                <span className="text-[11px] text-slate-400 font-mono hidden sm:inline">
+                                    Track: {activeHackathon.category}
+                                </span>
+                                <button
+                                    onClick={() => setActiveHackathon({ id: 0, slug: 'all', name: 'All Sprints (Global)', status: 'ALL', category: 'all' })}
+                                    className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 hover:underline cursor-pointer"
+                                    title="Clear channel filter"
+                                >
+                                    View All ×
+                                </button>
+                            </div>
                         </div>
                     )}
 

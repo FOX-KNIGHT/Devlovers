@@ -100,6 +100,28 @@ function SidebarLeft({
 
       {/* Hackathons List */}
       <div className="flex-1 overflow-y-auto p-2 space-y-1">
+        <button
+          onClick={() => handleHackathonClick({ id: 0, slug: 'all', name: 'All Sprints (Global)', status: 'ALL', category: 'all' })}
+          title="All Sprints"
+          className={`w-full flex items-center gap-3 p-2.5 rounded-xl text-left text-xs transition-all ${
+            !activeHackathon || activeHackathon.id === 0
+              ? 'bg-gradient-to-r from-cyan-500/20 to-violet-500/10 border border-cyan-400/40 text-cyan-300 shadow-[0_0_15px_rgba(0,245,255,0.1)]'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
+          }`}
+        >
+          <div className="relative flex items-center justify-center shrink-0">
+            <Radio className="h-3 w-3 text-cyan-400" />
+          </div>
+          {!isCollapsed && (
+            <div className="flex-1 truncate">
+              <div className="font-medium truncate text-white">All Sprints</div>
+              <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">
+                GLOBAL FEED
+              </div>
+            </div>
+          )}
+        </button>
+
         {data.hackathons.map((h) => {
           const isActive = activeHackathon?.id === h.id;
           const isLive = h.status?.toUpperCase() === 'ACTIVE';

@@ -88,6 +88,21 @@ export function MobileDrawer({
               <span>Live Sprints</span>
             </div>
             <div className="space-y-1">
+              <button
+                onClick={() => {
+                  onSelectHackathon({ id: 0, slug: 'all', name: 'All Sprints (Global)', status: 'ALL', category: 'all' });
+                  onOpenChange(false);
+                }}
+                className={`w-full flex items-center justify-between p-2 rounded-lg text-xs transition ${
+                  !activeHackathon || activeHackathon.id === 0
+                    ? 'bg-cyan-500/20 text-cyan-300 font-medium'
+                    : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                }`}
+              >
+                <span className="truncate">All Sprints (Global)</span>
+                <span className="h-2 w-2 rounded-full bg-cyan-400" />
+              </button>
+
               {hackathons.map((h) => (
                 <button
                   key={h.id}

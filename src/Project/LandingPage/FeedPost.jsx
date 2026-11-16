@@ -116,7 +116,7 @@ function FeedPost({ post, showSignInModal }) {
 
         {/* Tags */}
         {post.tags && (
-          <div className="flex flex-wrap gap-1.5 mb-5" aria-label="Tags">
+          <div className="flex flex-wrap gap-1.5 mb-4" aria-label="Tags">
             {post.tags.map((tag, idx) => (
               <span
                 key={idx}
@@ -125,6 +125,31 @@ function FeedPost({ post, showSignInModal }) {
                 #{tag}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* Judging Rubric Evaluation Weights */}
+        {post.criteria_scores && (
+          <div className="mb-5 rounded-xl border border-white/5 bg-[#141A2E]/40 p-3">
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase text-slate-400 mb-2">
+              <span className="flex items-center gap-1.5 text-cyan-400 font-semibold tracking-wider">
+                <Sparkles className="h-3 w-3" />
+                Evaluation Rubric
+              </span>
+              <span className="text-slate-500">100% weighted score</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {Object.entries(post.criteria_scores).map(([criterion, weight]) => (
+                <div key={criterion} className="rounded-lg bg-[#0C0F1D]/80 border border-white/5 p-2 text-center">
+                  <div className="text-[10px] text-slate-400 capitalize truncate">
+                    {criterion.replace(/_/g, ' ')}
+                  </div>
+                  <div className="text-xs font-mono font-bold text-cyan-300 mt-0.5">
+                    {weight}%
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
