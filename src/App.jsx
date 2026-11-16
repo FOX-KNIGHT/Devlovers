@@ -62,7 +62,7 @@ const AppContent = () => {
   }, [currentPage, handlePageChange]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#06080F] text-slate-100">
+    <div className="flex min-h-screen flex-col bg-[var(--color-void)] text-[hsl(var(--foreground))]">
       <Header setCurrentPage={handlePageChange} />
       <SubNav currentPage={currentPage} setCurrentPage={handlePageChange} />
       <div className="flex flex-1 overflow-hidden" id="page-layout">

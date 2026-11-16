@@ -24,7 +24,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-[#06080F] text-slate-100 antialiased selection:bg-[#00F5FF]/30 selection:text-[#00F5FF]">
+      <body className="min-h-screen bg-[var(--color-void)] text-[hsl(var(--foreground))] antialiased selection:bg-[#00F5FF]/30 selection:text-[#00F5FF]">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

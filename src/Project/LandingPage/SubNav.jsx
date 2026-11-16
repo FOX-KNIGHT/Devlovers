@@ -21,7 +21,7 @@ function SubNav({ currentPage, setCurrentPage }) {
   };
 
   return (
-    <div className="w-full border-b border-white/10 bg-[#06080F]/90 backdrop-blur-md sticky top-16 z-30 px-4 sm:px-6">
+    <div className="w-full border-b border-white/10 bg-[var(--color-void)]/90 backdrop-blur-md sticky top-16 z-30 px-4 sm:px-6">
       <nav className="flex items-center gap-1.5 h-12 overflow-x-auto no-scrollbar" role="tablist">
         {navItems.map((item) => {
           const isActive = currentPage === item.pageName;
