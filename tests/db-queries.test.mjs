@@ -15,6 +15,11 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
 } from '../src/db/queries/notifications.js';
+import {
+  registerUserForHackathon,
+  getHackathonRegistrations,
+  isUserRegistered,
+} from '../src/db/queries/registrations.js';
 
 test('database query repositories', async (t) => {
   await t.test('getHackathons returns all hackathons by default', async () => {
@@ -206,5 +211,18 @@ test('database query repositories', async (t) => {
 
     const markAllRes = await markAllNotificationsRead();
     assert.equal(markAllRes.success, true);
+  });
+
+  await t.test('registrations queries manage participant registrations', async () => {
+    const reg = await registerUserForHackathon({ hackathonId: '1', userId: 'user-2' });
+    assert.ok(reg.id);
+    assert.equal(reg.hackathonId, '1');
+
+    const regs = await getHackathonRegistrations('1');
+    assert.ok(Array.isArray(regs));
+    assert.ok(regs.length >= 1);
+
+    const isReg = await isUserRegistered({ hackathonId: '1', userId: 'user-2' });
+    assert.equal(isReg, true);
   });
 });

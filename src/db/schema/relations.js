@@ -9,6 +9,8 @@ import { sponsorCredits } from './sponsors.js';
 import { conversations, conversationMembers, messages } from './messages.js';
 import { auditLogs } from './audit.js';
 import { notifications } from './notifications.js';
+import { tracks } from './tracks.js';
+import { hackathonRegistrations } from './registrations.js';
 
 export const hackathonsRelations = relations(hackathons, ({ many }) => ({
   squads: many(squads),
@@ -17,6 +19,8 @@ export const hackathonsRelations = relations(hackathons, ({ many }) => ({
   comments: many(comments),
   bookmarks: many(bookmarks),
   sponsorCredits: many(sponsorCredits),
+  tracks: many(tracks),
+  registrations: many(hackathonRegistrations),
 }));
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -30,6 +34,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   conversationMemberships: many(conversationMembers),
   auditLogs: many(auditLogs),
   notifications: many(notifications),
+  registrations: many(hackathonRegistrations),
 }));
 
 export const squadsRelations = relations(squads, ({ one, many }) => ({
@@ -168,6 +173,24 @@ export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, {
     fields: [notifications.userId],
+    references: [users.id],
+  }),
+}));
+
+export const tracksRelations = relations(tracks, ({ one }) => ({
+  hackathon: one(hackathons, {
+    fields: [tracks.hackathonId],
+    references: [hackathons.id],
+  }),
+}));
+
+export const hackathonRegistrationsRelations = relations(hackathonRegistrations, ({ one }) => ({
+  hackathon: one(hackathons, {
+    fields: [hackathonRegistrations.hackathonId],
+    references: [hackathons.id],
+  }),
+  user: one(users, {
+    fields: [hackathonRegistrations.userId],
     references: [users.id],
   }),
 }));

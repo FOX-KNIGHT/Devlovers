@@ -22,6 +22,13 @@
       "when": 1794857417793,
       "tag": "0002_abandoned_hawkeye",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794857906290,
+      "tag": "0003_parched_excalibur",
+      "breakpoints": true
     }
   ]
 }

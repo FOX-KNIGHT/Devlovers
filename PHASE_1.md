@@ -1,10 +1,10 @@
 # 🏁 Phase 1: PostgreSQL Data Layer & Drizzle ORM — Complete Tracking Record
 
 > **Status: 100% COMPLETE & VERIFIED**  
-> **Commit Hash**: `abb172a` on branch `main`  
-> **Test Suite**: 69 / 69 Passing across 8 test suites (`npm test`)  
-> **Build Status**: Exit Code 0 with 16 pages and dynamic REST APIs (`npm run build`)  
-> **Live API Endpoints**: 11 active REST API endpoints serving at `http://localhost:3000/api/...`
+> **Commit Hash**: `abb172a` (and working tree clean on `main`)  
+> **Test Suite**: 71 / 71 Passing across 8 test suites (`npm test`)  
+> **Build Status**: Exit Code 0 with 17 pages and dynamic REST APIs (`npm run build`)  
+> **Live API Endpoints**: 12 active REST API endpoints serving at `http://localhost:3000/api/...`
 
 ---
 
@@ -26,8 +26,10 @@
 | **Schema: Messaging**| Conversations & Direct Messages | `src/db/schema/messages.js` | `conversations`, `conversation_members`, and `messages` |
 | **Schema: Audit** | Host & Admin Audit Trail | `src/db/schema/audit.js` | Immutable `audit_logs` tracking actor actions |
 | **Schema: Alerts** | System & User Notifications | `src/db/schema/notifications.js`| Real-time alerts, categories, unread flags |
-| **Relations** | Bidirectional Drizzle Relations Map | `src/db/schema/relations.js` | Many-to-one, one-to-many across all 16 tables |
-| **Migrations** | Drizzle Kit SQL Migration Generator | `drizzle/0000_skinny_shotgun.sql`<br>`drizzle/0001_windy_magdalene.sql`<br>`drizzle/0002_abandoned_hawkeye.sql` | 16 tables, 22 foreign keys, 4 enum types |
+| **Schema: Tracks** | Challenge Tracks & Categories | `src/db/schema/tracks.js` | Distinct prize tracks within hackathons |
+| **Schema: Registrations**| Hackathon Registrations Pipeline | `src/db/schema/registrations.js`| Participant registration ledger |
+| **Relations** | Bidirectional Drizzle Relations Map | `src/db/schema/relations.js` | Many-to-one, one-to-many across all 18 tables |
+| **Migrations** | Drizzle Kit SQL Migration Generator | `drizzle/0000_skinny_shotgun.sql`<br>`drizzle/0001_windy_magdalene.sql`<br>`drizzle/0002_abandoned_hawkeye.sql`<br>`drizzle/0003_parched_excalibur.sql` | 18 tables, 25 foreign keys, 4 enum types |
 | **Migration Runner** | Programmatic Migration Script | `src/db/migrate.js` | `npm run db:migrate` migrates live PostgreSQL |
 | **Database Seeder** | Realistic Seed Population Script | `src/db/seed.js` | `npm run db:seed` seeds users, hackathons, criteria |
 | **Client Fallback** | Hybrid Live / Offline Storage Engine | `src/db/client.js` | Connects to Postgres when live; falls back gracefully offline |
@@ -41,14 +43,15 @@
 | **Queries: Messaging**| Team Chat & DM Repositories | `src/db/queries/messages.js` | `createConversation()`, `sendMessage()`, `getConversationMessages()` |
 | **Queries: Audit** | Audit Logging & Compliance Ledger | `src/db/queries/audit.js` | `logAuditEvent()`, `getAuditLogs()` |
 | **Queries: Alerts** | Notification Registry & Read States | `src/db/queries/notifications.js` | `getNotifications()`, `createNotification()`, `markNotificationRead()` |
-| **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx` | Revalidates `/api/hackathons`, `/api/leaderboard`, `/api/notifications` |
+| **Queries: Registrations**| User Registration Pipeline | `src/db/queries/registrations.js` | `registerUserForHackathon()`, `getHackathonRegistrations()` |
+| **UI Integration** | Reactive Hydration from REST APIs | `src/Project/LandingPage/AppContext.jsx`<br>`src/components/LeaderboardView.jsx`<br>`src/Project/LandingPage/FeedPost.jsx` | Revalidates `/api/hackathons`, `/api/leaderboard`, `/api/notifications`, `/api/registrations` |
 | **REST API** | Sprints, Squads, Rankings | `src/app/api/hackathons/`, `[slug]`, `squads/`, `leaderboard/` | Core challenge directory endpoints |
 | **REST API** | Social, Bookmarks, Likes | `src/app/api/comments/`, `likes/`, `bookmarks/` | Participant social engagement endpoints |
-| **REST API** | Notifications, Submissions, DMs, Users | `src/app/api/notifications/`, `submissions/`, `messages/`, `users/`, `evaluations/` | Complete operational App Router endpoints |
+| **REST API** | Notifications, Submissions, DMs, Users | `src/app/api/notifications/`, `submissions/`, `messages/`, `users/`, `evaluations/`, `registrations/` | Complete operational App Router endpoints |
 
 ---
 
-## 🧪 Automated Test Suite (69 / 69 Tests Passing)
+## 🧪 Automated Test Suite (71 / 71 Tests Passing)
 
 ```bash
 $ npm test
@@ -57,7 +60,7 @@ $ npm test
 > node --test tests/
 
 ▶ PWA Badging API (4 tests) - PASS
-▶ live server browser & visual audit (14 tests) - PASS
+▶ live server browser & visual audit (15 tests) - PASS
   ✔ root page (/) returns 200 and renders full semantic HTML with OpenGraph tags
   ✔ robots.txt returns 200 and allows indexing with sitemap reference
   ✔ sitemap.xml returns 200 with valid XML urlset
@@ -72,9 +75,10 @@ $ npm test
   ✔ api/submissions endpoint returns submission list
   ✔ api/messages endpoint returns conversation history
   ✔ api/users endpoint returns user details
+  ✔ api/registrations endpoint returns registrations list
 ▶ useCountdown timer calculations (4 tests) - PASS
 ▶ mock data schema contract (6 tests) - PASS
-▶ database query repositories (16 tests) - PASS
+▶ database query repositories (17 tests) - PASS
   ✔ getHackathons returns all hackathons by default
   ✔ getHackathons filters by upcoming status
   ✔ getHackathons filters by high prize bounties
@@ -91,8 +95,9 @@ $ npm test
   ✔ direct message queries support conversations and messages
   ✔ audit logging captures platform events and actor actions
   ✔ notifications queries manage notifications and read states
+  ✔ registrations queries manage participant registrations
 ▶ Drizzle ORM schema tables and enums (5 tests) - PASS
-  ✔ exports all expected tables (16 tables)
+  ✔ exports all expected tables (18 tables)
   ✔ exports all enum types (4 enums)
   ✔ hackathons table contains required columns
   ✔ users table contains required columns
@@ -102,7 +107,7 @@ $ npm test
 ▶ i18n dictionaries parity (3 tests) - PASS
 ▶ offline-drafts storage engine (5 tests) - PASS
 
-ℹ tests 69 | suites 8 | pass 69 | fail 0
+ℹ tests 71 | suites 8 | pass 71 | fail 0
 ```
 
 ---
@@ -128,7 +133,9 @@ src/
 │   │   ├── messages.js          # Conversations and messages tables
 │   │   ├── audit.js             # Audit logs table
 │   │   ├── notifications.js     # System & user notifications table
-│   │   ├── relations.js         # Bidirectional Drizzle relations across 16 tables
+│   │   ├── tracks.js            # Challenge tracks table
+│   │   ├── registrations.js     # Participant registrations table
+│   │   ├── relations.js         # Bidirectional Drizzle relations across 18 tables
 │   │   └── index.js             # Unified schema export
 │   └── queries/
 │       ├── hackathons.js        # Sprints listing, filtering, detail
@@ -140,7 +147,8 @@ src/
 │       ├── users.js             # Profiles
 │       ├── messages.js          # Team chat and conversations
 │       ├── audit.js             # Audit logs
-│       └── notifications.js     # Notifications and unread counts
+│       ├── notifications.js     # Notifications and unread counters
+│       └── registrations.js     # User registration pipeline
 └── app/
     └── api/
         ├── hackathons/
@@ -155,5 +163,6 @@ src/
         ├── submissions/route.js # GET / POST submissions
         ├── messages/route.js    # GET / POST messages & conversations
         ├── evaluations/route.js # POST evaluations & Z-scores
-        └── users/route.js       # GET / POST user profiles
+        ├── users/route.js       # GET / POST user profiles
+        └── registrations/route.js # GET / POST hackathon registrations
 ```

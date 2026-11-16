@@ -57,6 +57,11 @@ function FeedPost({ post, showSignInModal }) {
       registered: true,
       hackathonTitle: post.title,
     });
+    fetch('/api/registrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hackathonId: String(post.id || post.hackathonId), userId: 'user-guest' }),
+    }).catch(() => {});
     toast.success(`Registered for ${post.title}!`, {
       description: 'Squad invite code and sponsor API access unlocked (cached offline).',
     });
