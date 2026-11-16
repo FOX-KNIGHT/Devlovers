@@ -8,13 +8,20 @@ import { Sparkles } from 'lucide-react';
 import { useAppContext } from './AppContext.jsx';
 
 function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
-  const { activeSort, activeHackathon } = useAppContext();
+  const { activeSort, activeHackathon, activeTechFilter } = useAppContext();
 
   const filteredPosts = useMemo(() => {
     const list = data.feedPosts.filter(post => {
       // Channel filtering
       if (activeHackathon && activeHackathon.id && activeHackathon.id !== 0) {
         if (post.hackathonId && post.hackathonId !== activeHackathon.id) {
+          return false;
+        }
+      }
+
+      // Tech Stack filter
+      if (activeTechFilter) {
+        if (!post.tech_stack?.some(t => t.toLowerCase() === activeTechFilter.toLowerCase())) {
           return false;
         }
       }
@@ -46,7 +53,7 @@ function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
       }
       return 0;
     });
-  }, [currentFilter, activeSort, activeHackathon]);
+  }, [currentFilter, activeSort, activeHackathon, activeTechFilter]);
 
   if (filteredPosts.length === 0) {
     return (

@@ -12,9 +12,13 @@ import {
   ShieldCheck,
   Globe,
   Code2,
+  Share2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TiltCard } from '@/components/ui/tilt-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { SquadModal } from '@/components/SquadModal';
+import { useCountdown } from '@/hooks/useCountdown';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { formatPrize, formatDeadline } from '@/lib/formatters';
 import { saveOfflineDraft, getOfflineDraft } from '@/lib/storage/offline-drafts';
@@ -23,10 +27,18 @@ import { useI18n } from '@/lib/i18n/context';
 import { toast } from 'sonner';
 
 function FeedPost({ post, showSignInModal }) {
-  const { currency, useUTC } = useAppContext();
+  const { currency, useUTC, setActiveTechFilter } = useAppContext();
   const { t } = useI18n();
   const [registered, setRegistered] = useState(false);
   const [localUTCToggle, setLocalUTCToggle] = useState(false);
+  const [isSquadModalOpen, setIsSquadModalOpen] = useState(false);
+
+  const isOngoing = post.status?.toUpperCase() === 'ACTIVE' || post.status?.toLowerCase() === 'ongoing';
+  const effectiveShowUTC = localUTCToggle || useUTC;
+
+  // Real-time countdown timer
+  const countdownTarget = isOngoing ? post.deadline : post.starts_at;
+  const countdown = useCountdown(countdownTarget);
 
   // Restore saved offline registration draft
   useEffect(() => {
@@ -49,8 +61,16 @@ function FeedPost({ post, showSignInModal }) {
     });
   };
 
-  const isOngoing = post.status?.toUpperCase() === 'ACTIVE' || post.status?.toLowerCase() === 'ongoing';
-  const effectiveShowUTC = localUTCToggle || useUTC;
+  const handleShareClick = (e) => {
+    e.preventDefault();
+    soundFx.playClick();
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(`https://devlovers.com/#sprint-${post.id}`);
+      toast.success('Sprint link copied!', {
+        description: 'Direct deep link copied to clipboard.',
+      });
+    }
+  };
 
   // Format prize using integer cents + current selected currency
   const displayPrize = post.prize_cents
@@ -76,15 +96,56 @@ function FeedPost({ post, showSignInModal }) {
                 VERIFIED COMMITS
               </span>
             )}
+            {!countdown.isExpired && (
+              <span
+                className={`hud-tag text-[9px] font-mono flex items-center gap-1 ${
+                  isOngoing ? 'text-emerald-400 border-emerald-500/30' : 'text-amber-400 border-amber-500/30'
+                }`}
+              >
+                <Clock className="h-2.5 w-2.5" />
+                {isOngoing ? `${countdown.formatted} left` : `Starts in ${countdown.formatted}`}
+              </span>
+            )}
             <span className="text-xs text-slate-400">
               {t('post.by')} <strong className="text-slate-200">{post.hostedBy}</strong>
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 font-mono text-cyan-300 text-xs font-semibold shrink-0">
-            <Trophy className="h-3.5 w-3.5 text-cyan-400" />
-            <span>{displayPrize}</span>
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 font-mono text-cyan-300 text-xs font-semibold shrink-0 hover:bg-cyan-500/20 transition cursor-pointer"
+                title="Click to view prize breakdown"
+              >
+                <Trophy className="h-3.5 w-3.5 text-cyan-400" />
+                <span>{displayPrize}</span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-64 p-3 border-white/10 bg-[#0C0F1D]/98 shadow-2xl backdrop-blur-xl">
+              <div className="text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-2 border-b border-white/5 pb-1">
+                Prize Distribution
+              </div>
+              <div className="space-y-1.5 text-xs font-mono">
+                <div className="flex items-center justify-between text-amber-300">
+                  <span>🥇 1st Place (60%)</span>
+                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.6) / 100, currency)}</span>
+                </div>
+                <div className="flex items-center justify-between text-slate-300">
+                  <span>🥈 2nd Place (25%)</span>
+                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.25) / 100, currency)}</span>
+                </div>
+                <div className="flex items-center justify-between text-slate-400">
+                  <span>🥉 3rd Place (10%)</span>
+                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.1) / 100, currency)}</span>
+                </div>
+                <div className="flex items-center justify-between text-cyan-400 pt-1 border-t border-white/5 text-[11px]">
+                  <span>🌟 Sponsor Track (5%)</span>
+                  <span>{formatPrize(((post.prize_cents || 2500000) * 0.05) / 100, currency)}</span>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
 
         {/* Challenge Title */}
@@ -104,12 +165,18 @@ function FeedPost({ post, showSignInModal }) {
               <Code2 className="h-3 w-3 text-slate-400" /> Stack:
             </span>
             {post.tech_stack.map((tech, idx) => (
-              <span
+              <button
                 key={idx}
-                className="px-2 py-0.5 rounded-md bg-[#141A2E] text-[11px] font-mono text-cyan-300 border border-cyan-500/20 hover:border-cyan-400/40 transition-colors"
+                type="button"
+                onClick={() => {
+                  soundFx.playClick();
+                  setActiveTechFilter(tech);
+                }}
+                className="px-2 py-0.5 rounded-md bg-[#141A2E] text-[11px] font-mono text-cyan-300 border border-cyan-500/20 hover:border-cyan-400/50 hover:bg-cyan-500/10 transition-colors cursor-pointer"
+                title={`Filter challenges by ${tech}`}
               >
                 {tech}
-              </span>
+              </button>
             ))}
           </div>
         )}
@@ -185,24 +252,53 @@ function FeedPost({ post, showSignInModal }) {
             )}
           </div>
 
-          <Button
-            variant={registered ? 'secondary' : 'cyber'}
-            size="sm"
-            onClick={handleRegisterClick}
-            disabled={registered}
-            className="text-xs font-semibold px-4 h-9 shrink-0"
-          >
-            {registered ? (
-              <span className="flex items-center gap-1.5 text-emerald-400">
-                <ShieldCheck className="h-4 w-4" />
-                {t('post.joined')}
-              </span>
-            ) : (
-              t('post.enter')
-            )}
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleShareClick}
+              className="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-cyan-300 hover:border-cyan-500/40 transition cursor-pointer"
+              title="Share Sprint"
+              aria-label="Share Sprint"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                soundFx.playClick();
+                setIsSquadModalOpen(true);
+              }}
+              className="text-xs font-semibold px-3 h-9 border-white/10 hover:border-violet-500/50 hover:bg-violet-500/10 text-violet-300 gap-1.5"
+            >
+              <Users className="h-3.5 w-3.5 text-violet-400" />
+              Squads
+            </Button>
+            <Button
+              variant={registered ? 'secondary' : 'cyber'}
+              size="sm"
+              onClick={handleRegisterClick}
+              disabled={registered}
+              className="text-xs font-semibold px-4 h-9"
+            >
+              {registered ? (
+                <span className="flex items-center gap-1.5 text-emerald-400">
+                  <ShieldCheck className="h-4 w-4" />
+                  {t('post.joined')}
+                </span>
+              ) : (
+                t('post.enter')
+              )}
+            </Button>
+          </div>
         </div>
       </article>
+
+      <SquadModal
+        open={isSquadModalOpen}
+        onOpenChange={setIsSquadModalOpen}
+        post={post}
+      />
     </TiltCard>
   );
 }

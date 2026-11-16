@@ -16,6 +16,8 @@ function LandingPage({ setCurrentPage }) {
         handleSidebarToggle,
         activeHackathon,
         setActiveHackathon,
+        activeTechFilter,
+        setActiveTechFilter,
         setIsSignInModalOpen,
         showToast
     } = useAppContext();
@@ -91,6 +93,22 @@ function LandingPage({ setCurrentPage }) {
                                     View All ×
                                 </button>
                             </div>
+                        </div>
+                    )}
+
+                    {activeTechFilter && (
+                        <div className="flex items-center gap-2 text-xs">
+                            <span className="text-slate-400 font-mono">Tech Stack Filter:</span>
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 font-mono text-xs font-semibold">
+                                {activeTechFilter}
+                                <button
+                                    onClick={() => setActiveTechFilter(null)}
+                                    className="hover:text-white transition ml-1 cursor-pointer"
+                                    title="Clear tech filter"
+                                >
+                                    ×
+                                </button>
+                            </span>
                         </div>
                     )}
 

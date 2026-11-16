@@ -8,7 +8,7 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 
 | Phase | Description | Status | Test Coverage |
 | :--- | :--- | :--- | :--- |
-| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **25 / 25 Passing** |
+| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **29 / 29 Passing** |
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | ⏳ Planned | Pending |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Planned | Pending |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Pending |
@@ -53,11 +53,16 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 - [x] **Reactive Feed Sorting & Track Channel Filtering**: Dynamic sorting by Newest, Oldest, High Bounty, and Deadline Soon, plus bidirectional channel filters and active sprint telemetry banners.
 - [x] **Evaluation Rubric Breakdown**: Real-time visualization of 100% weighted judging criteria (Innovation, Technical Depth, Execution, Impact) on challenge cards.
 - [x] **Relational Schema Contract**: Explicit `hackathonId` and `hackathonSlug` relations across mock datasets, verified by contract tests.
-- [x] **Offline Draft Persistence**: Robust LocalStorage draft serialization with JSON error recovery for offline hackathon registrations and pitches.
+- [x] **Offline Draft Persistence**: Robust LocalStorage draft serialization with JSON error recovery for offline hackathon registrations, squad formations, and pitches.
 - [x] **Responsive Mobile Drawer**: Seamless slide-out navigation sheet on viewport `<= 768px` with quick page links and live sprint channels.
+- [x] **Live Countdown Timer Engine**: Custom `useCountdown` hook with day/hour/minute/second calculations and automatic expiry flags for ongoing and upcoming sprints.
+- [x] **Squad Matchmaker Modal**: Interactive squad matchmaking dialog featuring compatibility ratings, open role badges, one-click squad join requests, and offline squad draft creation.
+- [x] **Active Tech Stack Tag Filtering**: Interactive tech stack chips on challenge cards with global state filtering, active HUD indicator, and instant clear capability.
+- [x] **Prize Pool Distribution Popover**: Interactive prize tier breakdown (1st: 60%, 2nd: 25%, 3rd: 10%, Sponsor: 5%) dynamically formatted in the user's active currency.
+- [x] **Direct Sprint Deep-Link Sharing**: One-click sprint link copy to clipboard with toast notification and audio feedback.
 
 ### 5. Automated Verification & CI/CD
-- [x] **Zero-Dependency Test Suite**: 25 unit tests using Node 20's native `node:test` and `node:assert/strict` covering platform services and schema contracts.
+- [x] **Zero-Dependency Test Suite**: 29 unit tests using Node 20's native `node:test` and `node:assert/strict` covering platform services, timers, formatters, and schema contracts.
 - [x] **ESLint Linting**: Direct `eslint .` command in `package.json`.
 - [x] **GitHub Actions Workflow**: Automated pipeline executing dependency install, linting, unit tests, and production build on every PR and push to `main`.
 - [x] **Metadata & SEO**: Dynamically generated OpenGraph images (`next/og`), `robots.txt`, and XML `sitemap.js`.
