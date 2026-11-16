@@ -1,0 +1,34 @@
+{
+  "nav": {
+    "hackathons": "Hackatones",
+    "community": "Comunidad",
+    "mission": "Misión y Reglas",
+    "search": "Búsqueda rápida...",
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "liveChannels": "Sprints en Vivo",
+    "trending": "Desafíos Populares",
+    "globalDispatch": "Boletín Global",
+    "subscribe": "Suscribirse"
+  },
+  "hero": {
+    "title": "Desafíos de Sprint Activos",
+    "badge": "CANAL GLOBAL EN VIVO",
+    "subtitle": "Compite por premios, crea software real y sé evaluado por jurados asistidos por IA."
+  },
+  "filters": {
+    "all": "Todos los Sprints",
+    "upcoming": "Próximos",
+    "ongoing": "En Curso",
+    "remote": "Solo Remoto",
+    "prize": "Alto Premio ($25k+)"
+  },
+  "post": {
+    "by": "por",
+    "starts": "Comienza",
+    "deadline": "Plazo",
+    "devs": "desarrolladores",
+    "enter": "Participar",
+    "joined": "Inscrito"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "nav": {
+    "hackathons": "Hackathons",
+    "community": "Community",
+    "mission": "Mission & Rules",
+    "search": "Quick search...",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "liveChannels": "Live Sprints",
+    "trending": "Trending Challenges",
+    "globalDispatch": "Global Dispatch",
+    "subscribe": "Subscribe"
+  },
+  "hero": {
+    "title": "Active Sprint Challenges",
+    "badge": "LIVE GLOBAL FEED",
+    "subtitle": "Compete for bounties, build real-world software, and get evaluated by AI-augmented judging."
+  },
+  "filters": {
+    "all": "All Sprints",
+    "upcoming": "Upcoming",
+    "ongoing": "Ongoing",
+    "remote": "Remote Only",
+    "prize": "High Bounty ($25k+)"
+  },
+  "post": {
+    "by": "by",
+    "starts": "Starts",
+    "deadline": "Deadline",
+    "devs": "devs",
+    "enter": "Enter Challenge",
+    "joined": "Joined"
+  }
+}

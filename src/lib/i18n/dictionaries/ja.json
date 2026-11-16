@@ -1,0 +1,34 @@
+{
+  "nav": {
+    "hackathons": "ハッカソン",
+    "community": "コミュニティ",
+    "mission": "ミッションと規約",
+    "search": "クイック検索...",
+    "signIn": "ログイン",
+    "signOut": "ログアウト",
+    "liveChannels": "ライブスプリント",
+    "trending": "トレンドチャレンジ",
+    "globalDispatch": "グローバル速報",
+    "subscribe": "購読する"
+  },
+  "hero": {
+    "title": "アクティブスプリントチャレンジ",
+    "badge": "グローバルライブ配信",
+    "subtitle": "賞金獲得を目指し、実用的なソフトウェアを構築。AI拡張審査システムで評価されます。"
+  },
+  "filters": {
+    "all": "全てのスプリント",
+    "upcoming": "近日開催",
+    "ongoing": "開催中",
+    "remote": "リモートのみ",
+    "prize": "高額賞金 ($25k+)"
+  },
+  "post": {
+    "by": "主催:",
+    "starts": "開始:",
+    "deadline": "締切:",
+    "devs": "名参加",
+    "enter": "チャレンジに参加",
+    "joined": "参加登録済み"
+  }
+}
