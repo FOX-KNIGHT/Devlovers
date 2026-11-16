@@ -8,11 +8,16 @@ import SignInModal from './Project/LandingPage/SignInModal.jsx';
 import { AppProvider, useAppContext } from './Project/LandingPage/AppContext.jsx';
 import { DevloversCommunity } from './components/DevloversCommunity.jsx';
 import { AboutView } from './components/AboutView.jsx';
+import { MobileDrawer } from './components/MobileDrawer.jsx';
+import data from './Project/LandingPage/data.js';
 
 const AppContent = () => {
   const {
     isSidebarCollapsed,
     isMobileSidebarVisible,
+    setIsMobileSidebarVisible,
+    activeHackathon,
+    setActiveHackathon,
     isSignInModalOpen,
     simulateLogin,
     setIsSignInModalOpen,
@@ -67,6 +72,19 @@ const AppContent = () => {
         isVisible={isSignInModalOpen}
         hideModal={() => setIsSignInModalOpen(false)}
         onLogin={simulateLogin}
+      />
+      <MobileDrawer
+        open={isMobileSidebarVisible}
+        onOpenChange={setIsMobileSidebarVisible}
+        hackathons={data.hackathons}
+        activeHackathon={activeHackathon}
+        onSelectHackathon={(h) => {
+          setActiveHackathon(h);
+          handlePageChange('Hackathon');
+        }}
+        trending={data.trending}
+        currentPage={currentPage}
+        onSelectPage={handlePageChange}
       />
     </div>
   );

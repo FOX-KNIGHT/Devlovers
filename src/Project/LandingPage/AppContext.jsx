@@ -4,6 +4,7 @@ import React, { createContext, useState, useContext, useEffect, useMemo, useCall
 import data from './data.js';
 import { useTheme } from 'next-themes';
 import { toast as sonnerToast } from 'sonner';
+import { updateAppBadge, clearAppBadge } from '@/lib/pwa/badge';
 
 const AppContext = createContext();
 
@@ -26,6 +27,9 @@ export const AppProvider = ({ children }) => {
     // Notification state
     const [notifications, setNotifications] = useState(data.notifications);
     const [toastState, setToastState] = useState({ message: '', show: false });
+
+    // Active Hackathon Channel
+    const [activeHackathon, setActiveHackathonState] = useState(data.hackathons[0]);
 
     // Global Internationalization & Preferences
     const [currency, setCurrencyState] = useState('USD');
@@ -75,6 +79,15 @@ export const AppProvider = ({ children }) => {
         notifications.filter(n => n.unread).length,
         [notifications]
     );
+
+    // Sync native PWA badge
+    useEffect(() => {
+        if (unreadCount > 0) {
+            updateAppBadge(unreadCount);
+        } else {
+            clearAppBadge();
+        }
+    }, [unreadCount]);
 
     // Apply classes to body
     useEffect(() => {
@@ -175,6 +188,12 @@ export const AppProvider = ({ children }) => {
         });
     }, [showToast]);
 
+    // Hackathon channel selection
+    const selectHackathon = useCallback((hackathon) => {
+        setActiveHackathonState(hackathon);
+        showToast(`📌 Sprint Channel: ${hackathon.name}`);
+    }, [showToast]);
+
     // Memoized context value
     const contextValue = useMemo(() => ({
         isDarkMode,
@@ -182,6 +201,9 @@ export const AppProvider = ({ children }) => {
         user,
         isSidebarCollapsed: isSidebarDesktopCollapsed,
         isMobileSidebarVisible,
+        setIsMobileSidebarVisible,
+        activeHackathon,
+        setActiveHackathon: selectHackathon,
         isSignInModalOpen,
         isMobileSearchOpen,
         toast: toastState,
@@ -204,6 +226,7 @@ export const AppProvider = ({ children }) => {
         markNotificationAsRead,
     }), [
         isDarkMode, isLoggedIn, user, isSidebarDesktopCollapsed, isMobileSidebarVisible,
+        setIsMobileSidebarVisible, activeHackathon, selectHackathon,
         isSignInModalOpen, isMobileSearchOpen, toastState, notifications, unreadCount,
         currency, setCurrency, useUTC, toggleUTC,
         toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, showToast,

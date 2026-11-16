@@ -26,10 +26,12 @@ import {
 import data from '@/Project/LandingPage/data';
 import { useAppContext } from '@/Project/LandingPage/AppContext';
 import { soundFx } from '@/lib/audio/sound-fx';
+import { useI18n } from '@/lib/i18n/context';
 import { toast } from 'sonner';
 
 export function GlobalCommandPalette({ onSelectPage }) {
   const [open, setOpen] = useState(false);
+  const { t } = useI18n();
   const { theme, setTheme } = useTheme();
   const { toggleUTC, useUTC } = useAppContext();
   const [isMac, setIsMac] = useState(true);
@@ -60,14 +62,14 @@ export function GlobalCommandPalette({ onSelectPage }) {
         className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10 bg-[#0C0F1D]/80 hover:border-cyan-500/40 text-slate-400 hover:text-slate-200 cursor-pointer text-xs font-mono transition-colors"
       >
         <Search className="w-3.5 h-3.5 text-cyan-400" />
-        <span>Quick search...</span>
+        <span>{t('nav.search')}</span>
         <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded bg-white/10 px-1.5 font-mono text-[10px] font-medium text-slate-300">
           <span>{isMac ? '⌘' : 'Ctrl'}</span>K
         </kbd>
       </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search hackathons, community, or commands..." />
+        <CommandInput placeholder={t('nav.search')} />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Navigation">

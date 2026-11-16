@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Radio, ArrowUpDown, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 import data from './data.js';
 import { soundFx } from '@/lib/audio/sound-fx';
+import { useI18n } from '@/lib/i18n/context';
 
 function SidebarLeft({
   isMobileVisible,
@@ -14,6 +15,7 @@ function SidebarLeft({
   setActiveHackathon,
   showToast,
 }) {
+  const { t } = useI18n();
   const [activeSort, setActiveSort] = useState('Newest');
   const [isSortOpen, setIsSortOpen] = useState(false);
 
@@ -47,7 +49,7 @@ function SidebarLeft({
           <div className="flex items-center gap-2">
             <Radio className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono">
-              Live Sprints
+              {t('nav.liveChannels')}
             </span>
           </div>
         )}

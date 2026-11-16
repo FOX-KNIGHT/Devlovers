@@ -71,14 +71,17 @@ function Header({ setCurrentPage }) {
               soundFx.playClick();
               handleSidebarToggle();
             }}
-            aria-label="Toggle sidebar"
+            aria-label="Toggle navigation menu"
             className="text-slate-400 hover:text-cyan-400 hover:bg-white/5"
           >
-            {isSidebarCollapsed ? (
-              <ChevronRight className="h-5 w-5" />
-            ) : (
-              <ChevronLeft className="h-5 w-5" />
-            )}
+            <Menu className="h-5 w-5 md:hidden" />
+            <span className="hidden md:flex">
+              {isSidebarCollapsed ? (
+                <ChevronRight className="h-5 w-5" />
+              ) : (
+                <ChevronLeft className="h-5 w-5" />
+              )}
+            </span>
           </Button>
 
           <div

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Trophy,
@@ -17,20 +17,35 @@ import { Button } from '@/components/ui/button';
 import { TiltCard } from '@/components/ui/tilt-card';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { formatPrize, formatDeadline } from '@/lib/formatters';
+import { saveOfflineDraft, getOfflineDraft } from '@/lib/storage/offline-drafts';
 import { useAppContext } from '@/Project/LandingPage/AppContext';
+import { useI18n } from '@/lib/i18n/context';
 import { toast } from 'sonner';
 
 function FeedPost({ post, showSignInModal }) {
   const { currency, useUTC } = useAppContext();
+  const { t } = useI18n();
   const [registered, setRegistered] = useState(false);
   const [localUTCToggle, setLocalUTCToggle] = useState(false);
+
+  // Restore saved offline registration draft
+  useEffect(() => {
+    const draft = getOfflineDraft(`registration_${post.id}`);
+    if (draft?.registered) {
+      setRegistered(true);
+    }
+  }, [post.id]);
 
   const handleRegisterClick = (e) => {
     e.preventDefault();
     soundFx.playSuccess();
     setRegistered(true);
+    saveOfflineDraft(`registration_${post.id}`, {
+      registered: true,
+      hackathonTitle: post.title,
+    });
     toast.success(`Registered for ${post.title}!`, {
-      description: 'Squad invite code and sponsor API access unlocked.',
+      description: 'Squad invite code and sponsor API access unlocked (cached offline).',
     });
   };
 
@@ -62,7 +77,7 @@ function FeedPost({ post, showSignInModal }) {
               </span>
             )}
             <span className="text-xs text-slate-400">
-              by <strong className="text-slate-200">{post.hostedBy}</strong>
+              {t('post.by')} <strong className="text-slate-200">{post.hostedBy}</strong>
             </span>
           </div>
 
@@ -119,7 +134,7 @@ function FeedPost({ post, showSignInModal }) {
             {post.starts && (
               <span className="flex items-center gap-1.5 text-slate-300">
                 <Calendar className="h-3.5 w-3.5 text-cyan-400" />
-                Starts: {post.starts}
+                {t('post.starts')}: {post.starts}
               </span>
             )}
 
@@ -140,7 +155,7 @@ function FeedPost({ post, showSignInModal }) {
             {post.participants && (
               <span className="flex items-center gap-1.5 text-violet-300">
                 <Users className="h-3.5 w-3.5" />
-                {post.participants} devs
+                {post.participants} {t('post.devs')}
               </span>
             )}
           </div>
@@ -155,10 +170,10 @@ function FeedPost({ post, showSignInModal }) {
             {registered ? (
               <span className="flex items-center gap-1.5 text-emerald-400">
                 <ShieldCheck className="h-4 w-4" />
-                Joined
+                {t('post.joined')}
               </span>
             ) : (
-              'Enter Challenge'
+              t('post.enter')
             )}
           </Button>
         </div>

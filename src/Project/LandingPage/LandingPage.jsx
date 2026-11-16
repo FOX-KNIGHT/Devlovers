@@ -7,45 +7,38 @@ import RightSidebar from './RightSidebar.jsx';
 import HackathonFeed from './HackathonFeed.jsx';
 import { useAppContext } from './AppContext.jsx';
 import { useMediaQuery } from '../../hooks/useMediaQuery.js';
+import { useI18n } from '@/lib/i18n/context';
 
 function LandingPage({ setCurrentPage }) {
     const {
         isSidebarCollapsed,
         isMobileSidebarVisible,
         handleSidebarToggle,
+        activeHackathon,
+        setActiveHackathon,
         setIsSignInModalOpen,
         showToast
     } = useAppContext();
 
+    const { t } = useI18n();
     const isMobile = useMediaQuery('(max-width: 768px)');
     const isTablet = useMediaQuery('(max-width: 1024px)');
 
-    const [activeHackathon, setActiveHackathon] = useState({
-        id: 1,
-        name: 'Hackathon Alpha',
-        status: 'Active'
-    });
     const [filter, setFilter] = useState('all');
 
-    // Memoize filter buttons configuration
+    // Memoize filter buttons configuration using i18n
     const filterButtons = useMemo(() => [
-        { label: 'All Sprints', value: 'all' },
-        { label: 'Upcoming', value: 'upcoming' },
-        { label: 'Ongoing', value: 'ongoing' },
-        { label: 'Remote Only', value: 'remote' },
-        { label: 'High Bounty ($25k+)', value: 'prize' }
-    ], []);
+        { label: t('filters.all'), value: 'all' },
+        { label: t('filters.upcoming'), value: 'upcoming' },
+        { label: t('filters.ongoing'), value: 'ongoing' },
+        { label: t('filters.remote'), value: 'remote' },
+        { label: t('filters.prize'), value: 'prize' }
+    ], [t]);
 
     // Handle filter change
     const handleFilterChange = useCallback((filterValue, filterName) => {
         setFilter(filterValue);
         showToast(`📊 Filter: ${filterName}`);
-    }, [showToast]);
-
-    // Handle hackathon change
-    const handleHackathonChange = useCallback((hackathon) => {
-        setActiveHackathon(hackathon);
-        showToast(`📌 Channel: ${hackathon.name}`);
     }, [showToast]);
 
     return (
@@ -55,7 +48,7 @@ function LandingPage({ setCurrentPage }) {
                 isCollapsed={isSidebarCollapsed}
                 handleSidebarToggle={handleSidebarToggle}
                 activeHackathon={activeHackathon}
-                setActiveHackathon={handleHackathonChange}
+                setActiveHackathon={setActiveHackathon}
                 showToast={showToast}
             />
 
@@ -65,11 +58,11 @@ function LandingPage({ setCurrentPage }) {
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2 m-0 p-0 border-none">
                                 <Flame className="h-6 w-6 text-amber-400" aria-hidden="true" />
-                                Discover Global Hackathons
-                                <span className="hud-tag text-[10px]">LIVE GLOBAL FEED</span>
+                                {t('hero.title')}
+                                <span className="hud-tag text-[10px]">{t('hero.badge')}</span>
                             </h2>
                             <p className="text-xs text-slate-400 mt-1">
-                                High-stakes developer sprints with commit verification and fair judging.
+                                {t('hero.subtitle')}
                             </p>
                         </div>
                     </div>

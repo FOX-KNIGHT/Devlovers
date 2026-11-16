@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { Flame, Mail, Sparkles, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { soundFx } from '@/lib/audio/sound-fx';
+import { useI18n } from '@/lib/i18n/context';
 import data from './data.js';
 import { toast } from 'sonner';
 
 function RightSidebar() {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
 
   const handleTrendingClick = (item) => {
@@ -33,7 +35,7 @@ function RightSidebar() {
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-300 font-mono">
           <Flame className="h-4 w-4 text-amber-400" />
-          <span>Trending Sprints</span>
+          <span>{t('nav.trending')}</span>
         </div>
 
         <div className="space-y-2">
@@ -74,7 +76,7 @@ function RightSidebar() {
 
         <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400 font-mono uppercase">
           <Mail className="h-3.5 w-3.5" />
-          <span>Global Dispatch</span>
+          <span>{t('nav.globalDispatch')}</span>
         </div>
 
         <p className="text-xs text-slate-300 leading-relaxed">
@@ -92,7 +94,7 @@ function RightSidebar() {
           />
           <Button type="submit" variant="cyber" size="sm" className="w-full text-xs font-semibold h-8">
             <Send className="h-3 w-3 mr-1.5" />
-            Subscribe
+            {t('nav.subscribe')}
           </Button>
         </form>
       </div>

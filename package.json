@@ -2,6 +2,7 @@
   "name": "devlovers-platform",
   "version": "1.0.0",
   "description": "Global Hackathon & Developer Hub built with Next.js 16, React 19, and Tailwind v4",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0",
@@ -37,7 +38,8 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "test": "node --test tests/"
   },
   "eslintConfig": {
     "extends": [
