@@ -6,6 +6,7 @@ import { Trophy, Radio, ArrowUpDown, ChevronDown, ChevronUp, Sparkles } from 'lu
 import data from './data.js';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { useI18n } from '@/lib/i18n/context';
+import { useAppContext } from './AppContext.jsx';
 
 function SidebarLeft({
   isMobileVisible,
@@ -16,7 +17,7 @@ function SidebarLeft({
   showToast,
 }) {
   const { t } = useI18n();
-  const [activeSort, setActiveSort] = useState('Newest');
+  const { activeSort, setActiveSort } = useAppContext();
   const [isSortOpen, setIsSortOpen] = useState(false);
 
   const sortOptions = ['Newest', 'Oldest', 'High Bounty', 'Deadline Soon'];

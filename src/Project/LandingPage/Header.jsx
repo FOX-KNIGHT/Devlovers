@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Sun,
   Moon,
-  Bell,
   User,
   LogOut,
   Sparkles,
@@ -21,6 +20,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { GlobalCommandPalette } from '@/components/GlobalCommandPalette';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { CurrencySelector } from '@/components/CurrencySelector';
+import { NotificationDropdown } from './NotificationDropdown.jsx';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { useAppContext } from './AppContext.jsx';
 import { toast } from 'sonner';
@@ -28,15 +28,11 @@ import { toast } from 'sonner';
 function Header({ setCurrentPage }) {
   const {
     isLoggedIn,
-    unreadCount,
     handleSidebarToggle,
     setIsSignInModalOpen,
     simulateLogout,
     isSidebarCollapsed,
     user,
-    notifications,
-    markAllNotificationsAsRead,
-    markNotificationAsRead,
   } = useAppContext();
 
   const { theme, setTheme } = useTheme();
@@ -158,62 +154,8 @@ function Header({ setCurrentPage }) {
             </Button>
           )}
 
-          {/* NotificationDropdown -> Popover/Sheet */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative text-slate-400 hover:text-cyan-400 hover:bg-white/5 h-9 w-9"
-                aria-label="Notifications"
-              >
-                <Bell className="h-4 w-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
-                  </span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 p-0 border-white/10 bg-[#0C0F1D]/98 shadow-2xl backdrop-blur-2xl">
-              <div className="flex items-center justify-between border-b border-white/10 p-3.5">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 font-mono">
-                  Notifications
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="hud-tag text-[10px]">{unreadCount} new</span>
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={markAllNotificationsAsRead}
-                      className="text-[10px] text-cyan-400 hover:underline font-mono"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="divide-y divide-white/5 max-h-72 overflow-y-auto">
-                {notifications.length === 0 ? (
-                  <p className="p-4 text-center text-xs text-slate-500 font-mono">No new alerts.</p>
-                ) : (
-                  notifications.map((n) => (
-                    <div
-                      key={n.id}
-                      onClick={() => markNotificationAsRead(n.id)}
-                      className="p-3 text-xs text-slate-300 hover:bg-white/5 transition cursor-pointer flex items-start gap-2.5"
-                    >
-                      <div className={`mt-0.5 h-2 w-2 rounded-full shrink-0 ${n.unread ? 'bg-cyan-400' : 'bg-slate-600'}`} />
-                      <div>
-                        <p className="font-medium text-slate-200">{n.message}</p>
-                        <span className="text-[10px] text-slate-500 font-mono">{n.time}</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </PopoverContent>
-          </Popover>
+          {/* Notifications Dropdown */}
+          <NotificationDropdown />
 
           {/* Auth State */}
           {isLoggedIn && user ? (

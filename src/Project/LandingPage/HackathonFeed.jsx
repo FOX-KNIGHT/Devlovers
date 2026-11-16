@@ -5,10 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import FeedPost from './FeedPost.jsx';
 import data from './data.js';
 import { Sparkles } from 'lucide-react';
+import { useAppContext } from './AppContext.jsx';
 
 function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
+  const { activeSort } = useAppContext();
+
   const filteredPosts = useMemo(() => {
-    return data.feedPosts.filter(post => {
+    const list = data.feedPosts.filter(post => {
       if (currentFilter === 'all') return true;
       const statusUpper = post.status?.toUpperCase();
       if (currentFilter === 'upcoming') return statusUpper === 'UPCOMING';
@@ -20,7 +23,23 @@ function HackathonFeed({ currentFilter = 'all', showSignInModal }) {
       }
       return post.category?.includes(currentFilter);
     });
-  }, [currentFilter]);
+
+    return [...list].sort((a, b) => {
+      if (activeSort === 'Newest') {
+        return new Date(b.starts_at || b.starts || 0) - new Date(a.starts_at || a.starts || 0);
+      }
+      if (activeSort === 'Oldest') {
+        return new Date(a.starts_at || a.starts || 0) - new Date(b.starts_at || b.starts || 0);
+      }
+      if (activeSort === 'High Bounty') {
+        return (b.prize_cents || 0) - (a.prize_cents || 0);
+      }
+      if (activeSort === 'Deadline Soon') {
+        return new Date(a.deadline || 0) - new Date(b.deadline || 0);
+      }
+      return 0;
+    });
+  }, [currentFilter, activeSort]);
 
   if (filteredPosts.length === 0) {
     return (

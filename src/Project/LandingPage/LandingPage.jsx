@@ -67,6 +67,24 @@ function LandingPage({ setCurrentPage }) {
                         </div>
                     </div>
 
+                    {activeHackathon && (
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-cyan-950/40 to-violet-950/30 border border-cyan-500/20 text-xs text-cyan-300">
+                            <div className="flex items-center gap-2.5">
+                                <span className="radar-ping">
+                                    <span className="radar-ping-ring bg-cyan-400" />
+                                    <span className="radar-ping-dot bg-cyan-400" />
+                                </span>
+                                <span className="font-mono text-slate-300 text-xs">
+                                    Sprint Channel: <strong className="text-white">{activeHackathon.name}</strong>
+                                </span>
+                                <span className="hud-tag text-[9px] uppercase tracking-wider">{activeHackathon.status}</span>
+                            </div>
+                            <span className="text-[11px] text-slate-400 font-mono hidden sm:inline">
+                                Category: {activeHackathon.category}
+                            </span>
+                        </div>
+                    )}
+
                     <div className="filter-buttons flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar" role="group" aria-label="Filter hackathons">
                         {filterButtons.map(({ label, value }) => {
                             const isActive = filter === value;

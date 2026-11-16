@@ -8,7 +8,7 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 
 | Phase | Description | Status | Test Coverage |
 | :--- | :--- | :--- | :--- |
-| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **21 / 21 Passing** |
+| **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **25 / 25 Passing** |
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | ⏳ Planned | Pending |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | ⏳ Planned | Pending |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Planned | Pending |
@@ -49,11 +49,13 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 ### 4. Audio Engine & PWA Native Layer
 - [x] **Synthesized Web Audio Engine**: Zero-asset procedural UI audio effects (sine and triangle oscillator synthesis for click and success chimes).
 - [x] **PWA Application Badging API**: Native OS dock / taskbar badge synchronization based on real-time unread notifications count.
+- [x] **Modular Notification Dropdown**: Dedicated Radix UI popover with unread indicator pings, single-item read toggles, and batch clear actions.
+- [x] **Reactive Feed Sorting & Channel Filtering**: Dynamic sorting by Newest, Oldest, High Bounty, and Deadline Soon, plus active sprint channel telemetry banners.
 - [x] **Offline Draft Persistence**: Robust LocalStorage draft serialization with JSON error recovery for offline hackathon registrations and pitches.
 - [x] **Responsive Mobile Drawer**: Seamless slide-out navigation sheet on viewport `<= 768px` with quick page links and live sprint channels.
 
 ### 5. Automated Verification & CI/CD
-- [x] **Zero-Dependency Test Suite**: 21 unit tests using Node 20's native `node:test` and `node:assert/strict`.
+- [x] **Zero-Dependency Test Suite**: 25 unit tests using Node 20's native `node:test` and `node:assert/strict` covering platform services and schema contracts.
 - [x] **ESLint Linting**: Direct `eslint .` command in `package.json`.
 - [x] **GitHub Actions Workflow**: Automated pipeline executing dependency install, linting, unit tests, and production build on every PR and push to `main`.
 - [x] **Metadata & SEO**: Dynamically generated OpenGraph images (`next/og`), `robots.txt`, and XML `sitemap.js`.

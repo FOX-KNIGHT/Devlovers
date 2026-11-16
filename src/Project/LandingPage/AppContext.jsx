@@ -30,6 +30,7 @@ export const AppProvider = ({ children }) => {
 
     // Active Hackathon Channel
     const [activeHackathon, setActiveHackathonState] = useState(data.hackathons[0]);
+    const [activeSort, setActiveSortState] = useState('Newest');
 
     // Global Internationalization & Preferences
     const [currency, setCurrencyState] = useState('USD');
@@ -204,6 +205,8 @@ export const AppProvider = ({ children }) => {
         setIsMobileSidebarVisible,
         activeHackathon,
         setActiveHackathon: selectHackathon,
+        activeSort,
+        setActiveSort: setActiveSortState,
         isSignInModalOpen,
         isMobileSearchOpen,
         toast: toastState,
@@ -226,7 +229,7 @@ export const AppProvider = ({ children }) => {
         markNotificationAsRead,
     }), [
         isDarkMode, isLoggedIn, user, isSidebarDesktopCollapsed, isMobileSidebarVisible,
-        setIsMobileSidebarVisible, activeHackathon, selectHackathon,
+        setIsMobileSidebarVisible, activeHackathon, selectHackathon, activeSort,
         isSignInModalOpen, isMobileSearchOpen, toastState, notifications, unreadCount,
         currency, setCurrency, useUTC, toggleUTC,
         toggleTheme, handleSidebarToggle, simulateLogin, simulateLogout, showToast,
