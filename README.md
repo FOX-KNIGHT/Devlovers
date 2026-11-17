@@ -60,6 +60,7 @@ npm start
 ## ⌨️ Global Shortcuts
 
 - `⌘K` (macOS) / `Ctrl+K` (Windows/Linux) — Open Universal Command Palette
+- `⌘J` (macOS) / `Ctrl+J` (Windows/Linux) — Toggle Floating AI Copilot Dock
 - `G W` — Open Interactive AI Workspace
 - `G M` — Open AI Agent Protocol & MCP Console Modal
 - `ESC` — Close active modals and dropdown menus
