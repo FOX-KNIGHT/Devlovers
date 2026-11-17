@@ -399,4 +399,18 @@ describe('live server browser & visual audit', () => {
       throw err;
     }
   });
+
+  test('api/health returns 200 with operational telemetry and UP status', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/health`);
+      assert.strictEqual(res.status, 200);
+      assert.strictEqual(res.headers.get('x-health-status'), 'UP');
+      const data = await res.json();
+      assert.strictEqual(data.status, 'healthy');
+      assert.strictEqual(data.services.mcpServer.status, 'online');
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
 });

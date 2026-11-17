@@ -124,6 +124,7 @@ function FeedPost({ post, showSignInModal: _showSignInModal }) {
             )}
             {!countdown.isExpired && (
               <span
+                suppressHydrationWarning
                 className={`hud-tag text-[9px] font-mono flex items-center gap-1 ${
                   isOngoing ? 'text-emerald-400 border-emerald-500/30' : 'text-amber-400 border-amber-500/30'
                 }`}
@@ -283,7 +284,7 @@ function FeedPost({ post, showSignInModal: _showSignInModal }) {
                 className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition cursor-pointer"
               >
                 <Clock className="h-3.5 w-3.5" />
-                <span>
+                <span suppressHydrationWarning>
                   {formatDeadline(post.deadline, effectiveShowUTC)} {effectiveShowUTC ? '(UTC)' : '(Local)'}
                 </span>
               </button>

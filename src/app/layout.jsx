@@ -2,6 +2,8 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { I18nProvider } from '@/lib/i18n/context';
 import { Toaster } from 'sonner';
+import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
+import { WebVitalsTelemetry } from '@/components/WebVitalsTelemetry';
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://devlovers.com'),
@@ -28,18 +30,25 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+      </head>
       <body className="min-h-screen bg-[var(--color-void)] text-[hsl(var(--foreground))] antialiased selection:bg-[#00F5FF]/30 selection:text-[#00F5FF]">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <I18nProvider>
-            {children}
-            <Toaster richColors position="top-right" theme="dark" />
-          </I18nProvider>
-        </ThemeProvider>
+        <GlobalErrorBoundary>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <I18nProvider>
+              {children}
+              <Toaster richColors position="top-right" theme="dark" />
+              <WebVitalsTelemetry />
+            </I18nProvider>
+          </ThemeProvider>
+        </GlobalErrorBoundary>
       </body>
     </html>
   );
