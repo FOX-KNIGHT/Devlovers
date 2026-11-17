@@ -1,15 +1,14 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Flame } from 'lucide-react';
 import SidebarLeft from './SidebarLeft.jsx';
 import RightSidebar from './RightSidebar.jsx';
 import HackathonFeed from './HackathonFeed.jsx';
 import { useAppContext } from './AppContext.jsx';
-import { useMediaQuery } from '../../hooks/useMediaQuery.js';
 import { useI18n } from '@/lib/i18n/context';
 
-function LandingPage({ setCurrentPage }) {
+function LandingPage({ setCurrentPage: _setCurrentPage }) {
     const {
         isSidebarCollapsed,
         isMobileSidebarVisible,
@@ -23,8 +22,6 @@ function LandingPage({ setCurrentPage }) {
     } = useAppContext();
 
     const { t } = useI18n();
-    const isMobile = useMediaQuery('(max-width: 768px)');
-    const isTablet = useMediaQuery('(max-width: 1024px)');
 
     const [filter, setFilter] = useState('all');
 

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Radio, ArrowUpDown, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { Radio, ChevronDown, ChevronUp } from 'lucide-react';
 import data from './data.js';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { useI18n } from '@/lib/i18n/context';
@@ -11,7 +11,7 @@ import { useAppContext } from './AppContext.jsx';
 function SidebarLeft({
   isMobileVisible,
   isCollapsed,
-  handleSidebarToggle,
+  handleSidebarToggle: _handleSidebarToggle,
   activeHackathon,
   setActiveHackathon,
   showToast,

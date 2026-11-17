@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useContext, useEffect, useMemo, useCallback } from 'react';
+import { createContext, useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import data from './data.js';
 import { useTheme } from 'next-themes';
 import { toast as sonnerToast } from 'sonner';
@@ -111,7 +111,7 @@ export const AppProvider = ({ children }) => {
                     setNotifications(notifsJson.data);
                 }
             }
-        } catch (e) {
+        } catch {
             // Keep fallback dataset
         }
     }, []);
