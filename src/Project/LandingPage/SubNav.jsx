@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Users, Info, Award, Code } from 'lucide-react';
+import { Trophy, Users, Info, Award, Code, Sparkles } from 'lucide-react';
 import { soundFx } from '@/lib/audio/sound-fx';
 import { useI18n } from '@/lib/i18n/context';
 import data from './data.js';
@@ -16,6 +16,7 @@ function SubNav({ currentPage, setCurrentPage }) {
     return [
       { label: t('nav.hackathons'), icon: Trophy, pageName: 'Hackathon', count: `${liveCount} Live` },
       { label: t('nav.projects'), icon: Code, pageName: 'Projects', count: `${projCount}+` },
+      { label: t('nav.workspace'), icon: Sparkles, pageName: 'Workspace', count: 'AI Studio' },
       { label: t('nav.leaderboard'), icon: Award, pageName: 'Leaderboard', count: 'Top 5' },
       { label: t('nav.community'), icon: Users, pageName: 'Devlovers', count: '10k+' },
       { label: t('nav.mission'), icon: Info, pageName: 'About' },

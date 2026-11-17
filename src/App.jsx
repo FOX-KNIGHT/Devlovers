@@ -12,6 +12,8 @@ import { LeaderboardView } from './components/LeaderboardView.jsx';
 import { ProjectShowcaseView } from './components/ProjectShowcaseView.jsx';
 import { MobileDrawer } from './components/MobileDrawer.jsx';
 import { McpInspectorModal } from './components/McpInspectorModal.jsx';
+import { WorkspaceView } from './components/workspace/WorkspaceView.jsx';
+import { AiCopilotDock } from './components/AiCopilotDock.jsx';
 import data from './Project/LandingPage/data.js';
 
 const AppContent = () => {
@@ -69,6 +71,14 @@ const AppContent = () => {
             </div>
           </div>
         );
+      case 'Workspace':
+        return (
+          <div className="main-content flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div className="mx-auto max-w-6xl">
+              <WorkspaceView />
+            </div>
+          </div>
+        );
       default:
         return (
           <div className="main-content flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
@@ -110,6 +120,7 @@ const AppContent = () => {
         currentPage={currentPage}
         onSelectPage={handlePageChange}
       />
+      <AiCopilotDock />
     </div>
   );
 };

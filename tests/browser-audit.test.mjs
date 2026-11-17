@@ -365,4 +365,38 @@ describe('live server browser & visual audit', () => {
       throw err;
     }
   });
+
+  test('api/sponsors/dispense GET returns sponsor catalog', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/sponsors/dispense`);
+      assert.strictEqual(res.status, 200);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.strictEqual(data.meta.dispensaryStatus, 'ONLINE');
+      assert.ok(data.data.length >= 6);
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
+
+  test('api/sponsors/dispense POST provisions sandboxed token', async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/sponsors/dispense`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sponsorId: 'sp-gemini',
+          userId: 'hacker-e2e',
+        }),
+      });
+      assert.strictEqual(res.status, 201);
+      const data = await res.json();
+      assert.strictEqual(data.success, true);
+      assert.ok(data.data.token.startsWith('devlovers_gemini_sbx_'));
+    } catch (err) {
+      if (isNetworkBlocked(err)) return;
+      throw err;
+    }
+  });
 });
