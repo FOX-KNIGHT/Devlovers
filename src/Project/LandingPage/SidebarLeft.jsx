@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Radio, ChevronDown, ChevronUp } from 'lucide-react';
 import data from './data.js';
@@ -166,4 +166,4 @@ function SidebarLeft({
   );
 }
 
-export default React.memo(SidebarLeft);
+export default memo(SidebarLeft);
