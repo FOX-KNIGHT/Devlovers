@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
-  Scale,
   Eye,
   EyeOff,
   Play,
   Pause,
-  ExternalLink,
   FileCode,
-  ShieldCheck,
   Send,
-  Zap,
+  Code2,
+  Video,
+  FileText,
+  RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { soundFx } from '@/lib/audio/sound-fx';
@@ -23,19 +23,36 @@ const MOCK_DIFF_FILES = [
     name: 'src/lib/agent/orchestrator.ts',
     additions: 142,
     deletions: 18,
-    preview: `+ export async function dispatchAgenticMesh(payload: MeshTask) {\n+   const router = await selectOptimalModel(payload.priority);\n+   return executeDistributedStep(router, payload.arguments);\n+ }`,
+    lines: [
+      { type: 'context', text: 'import { selectOptimalModel } from "./router.js";' },
+      { type: 'add', text: '+ export async function dispatchAgenticMesh(payload: MeshTask) {' },
+      { type: 'add', text: '+   const router = await selectOptimalModel(payload.priority);' },
+      { type: 'add', text: '+   return executeDistributedStep(router, payload.arguments);' },
+      { type: 'add', text: '+ }' },
+      { type: 'del', text: '- export function runLegacyRunner() { throw new Error("Deprecated"); }' },
+    ],
   },
   {
     name: 'src/db/schema/evaluations.ts',
     additions: 45,
     deletions: 2,
-    preview: `+ export const normalizedScores = real('normalized_z_score');\n+ export const blindEvaluation = boolean('is_blind').default(true);`,
+    lines: [
+      { type: 'context', text: 'import { pgTable, uuid, real, boolean } from "drizzle-orm/pg-core";' },
+      { type: 'add', text: '+ export const normalizedScores = real("normalized_z_score");' },
+      { type: 'add', text: '+ export const blindEvaluation = boolean("is_blind").default(true);' },
+      { type: 'context', text: 'export const evaluations = pgTable("evaluations", { ... });' },
+    ],
   },
   {
     name: 'contracts/Relayer.sol',
     additions: 89,
     deletions: 12,
-    preview: `+ function verifyStateProof(bytes32 root, bytes calldata proof) external view returns (bool) {\n+   return MerkleProof.verify(proof, root, leaf);\n+ }`,
+    lines: [
+      { type: 'context', text: '// SPDX-License-Identifier: MIT' },
+      { type: 'add', text: '+ function verifyStateProof(bytes32 root, bytes calldata proof) external view returns (bool) {' },
+      { type: 'add', text: '+   return MerkleProof.verify(proof, root, leaf);' },
+      { type: 'add', text: '+ }' },
+    ],
   },
 ];
 
@@ -43,19 +60,20 @@ export function JudgingConsole({ submissions = data.submissions }) {
   const [selectedSubIndex, setSelectedSubIndex] = useState(0);
   const [isBlindMode, setIsBlindMode] = useState(true);
   const [activeDiffFile, setActiveDiffFile] = useState(MOCK_DIFF_FILES[0]);
+  const [inspectorTab, setInspectorTab] = useState('diff'); // 'diff' | 'video' | 'readme'
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sliders state (0-100)
+  // 4-Pillar Calibrated Sliders (0-100)
   const [scores, setScores] = useState({
-    innovation: 92,
-    technicalDepth: 94,
-    execution: 88,
-    impact: 90,
+    innovation: 94,
+    technicalDepth: 92,
+    execution: 90,
+    impact: 88,
   });
 
   const [feedback, setFeedback] = useState(
-    'Outstanding architectural separation and commit velocity during the sprint. Clean Drizzle integration and robust error handling.'
+    'Outstanding architectural separation and commit velocity during the sprint. Clean Drizzle integration, zero-latency MCP dispatcher, and robust error handling across edge routes.'
   );
 
   const currentSubmission = submissions[selectedSubIndex] || submissions[0];
@@ -90,317 +108,367 @@ export function JudgingConsole({ submissions = data.submissions }) {
     setSelectedSubIndex(index);
   };
 
+  const toggleBlindMode = () => {
+    soundFx.playClick();
+    const nextState = !isBlindMode;
+    setIsBlindMode(nextState);
+    if (nextState) {
+      toast.info('Anti-Bias Blind Mode Engaged', {
+        description: 'Developer handles and squad codenames are masked to prevent anchoring bias.',
+      });
+    } else {
+      toast.warning('Blind Mode Disabled', {
+        description: 'Original team credentials revealed for administrative audit.',
+      });
+    }
+  };
+
   const handleSubmitEvaluation = async () => {
     soundFx.playClick();
     setIsSubmitting(true);
 
     try {
+      const payload = {
+        submissionId: currentSubmission.id || 'sub-1',
+        judgeId: 'judge-lead-01',
+        criteriaScores: scores,
+        rawScore,
+        normalizedZScore: zScore,
+        feedback,
+        isBlind: isBlindMode,
+      };
+
       const res = await fetch('/api/evaluations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          submissionId: currentSubmission.id,
-          judgeId: 'judge-lead',
-          criteriaScores: scores,
-          rawScore,
-          normalizedZScore: zScore,
-          feedback,
-          isBlind: isBlindMode,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
         soundFx.playSuccess();
-        toast.success(
-          `Evaluation saved: ${rawScore}/100 (Z-Score: +${zScore}σ)`
-        );
+        toast.success(`Judicial Evaluation Certified (Z-Score: ${zScore >= 0 ? '+' : ''}${zScore}σ)`, {
+          description: `Raw weighted score of ${rawScore} locked on platform ledger.`,
+        });
       } else {
-        throw new Error('Server returned non-200');
+        throw new Error('Server error');
       }
     } catch {
       soundFx.playSuccess();
-      toast.success(
-        `Evaluation recorded locally: ${rawScore}/100 (Z-Score: +${zScore}σ)`
-      );
+      toast.success(`Evaluation recorded locally (Z-Score: ${zScore >= 0 ? '+' : ''}${zScore}σ)`, {
+        description: `Raw weighted score of ${rawScore} saved to offline judging storage.`,
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const displayTitle = isBlindMode
+    ? `Project Submission #${selectedSubIndex + 1}`
+    : currentSubmission.title;
+
+  const displayAuthor = isBlindMode
+    ? '0x7f4a...e89b (Cryptographically Anonymized)'
+    : currentSubmission.author || currentSubmission.teamName || '@dev_lead';
+
   return (
     <div className="space-y-6">
-      {/* Telemetry Header */}
-      <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="hud-tag text-[10px] text-violet-400 border-violet-400/40">JUDGING PORTAL</span>
-            <span className="text-xs text-slate-400">Anti-Bias Protocol v3</span>
-          </div>
-          <h3 className="text-lg font-bold text-white mt-1">Interactive Blind Judging Console</h3>
-          <p className="text-xs text-slate-400">
-            Inspect source diffs, review demo proofs, and evaluate submissions with automated z-score normalization.
-          </p>
-        </div>
+      {/* ==============================================================================
+          JUDICIAL TELEMETRY BANNER & BLIND MODE TOGGLE
+          ============================================================================== */}
+      <div className="relative rounded-3xl p-6 sm:p-7 luxury-glass overflow-hidden border border-white/[0.08] shadow-[0_16px_40px_-15px_rgba(0,0,0,0.8)]">
+        <div className="absolute top-0 right-1/4 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Anti-Bias Mode Toggle */}
-        <div className="flex items-center gap-3 bg-black/40 px-3.5 py-2 rounded-xl border border-white/10">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              soundFx.playClick();
-              setIsBlindMode(!isBlindMode);
-              toast(isBlindMode ? 'Blind Mode Disabled: Identity revealed' : 'Blind Mode Enabled: Anti-bias active');
-            }}
-            className={`text-xs h-7 gap-1.5 font-mono ${
-              isBlindMode
-                ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            {isBlindMode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-            {isBlindMode ? 'Anti-Bias: ACTIVE' : 'Anti-Bias: OFF'}
-          </Button>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="hud-tag text-[10px] text-emerald-400 border-emerald-400/30">
+                JUDICIAL SUPREME BENCH
+              </span>
+              <span className="text-xs font-mono text-slate-400">Gaussian Z-Score Normalization</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+              <span>Interactive Evaluation Console</span>
+              <span className="text-xs font-mono font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/25">
+                Zero-Bias Active
+              </span>
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
+              Impartial merit-based judicial review terminal with side-by-side git diff analysis, demo video inspection, and mathematical Z-score calibration.
+            </p>
+          </div>
+
+          {/* Blind Mode Toggle Button & Telemetry */}
+          <div className="flex items-center gap-3 bg-[#080C1A]/90 p-2 sm:p-2.5 rounded-2xl border border-white/[0.08] shrink-0">
+            <button
+              onClick={toggleBlindMode}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all ${
+                isBlindMode
+                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-md shadow-emerald-500/10'
+                  : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+              }`}
+            >
+              {isBlindMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              <span>{isBlindMode ? 'Blind Mode Active' : 'Revealed Mode'}</span>
+            </button>
+
+            <div className="h-8 w-px bg-white/[0.08]" />
+
+            <div className="px-2 text-right">
+              <div className="text-[9px] font-mono uppercase text-slate-500">Z-Score Normal</div>
+              <div className="text-sm font-bold font-mono text-cyan-400">
+                {zScore >= 0 ? `+${zScore}` : zScore}σ
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Submission Selector Tabs */}
+      {/* ==============================================================================
+          SUBMISSION SELECTOR TABS
+          ============================================================================== */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
         {submissions.map((sub, idx) => {
           const isSelected = selectedSubIndex === idx;
-          const displayTitle = isBlindMode ? `Project Submission #${idx + 1}` : sub.title;
+          const label = isBlindMode ? `Entry #${idx + 1}` : sub.title;
 
           return (
             <button
-              key={sub.id}
+              key={sub.id || idx}
               onClick={() => handleSelectSubmission(idx)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-mono transition-all shrink-0 border ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono transition-all shrink-0 border ${
                 isSelected
-                  ? 'bg-violet-500/20 border-violet-500/40 text-violet-300 font-bold'
-                  : 'bg-white/[0.02] border-white/5 text-slate-400 hover:bg-white/5'
+                  ? 'bg-white/[0.1] border-cyan-400/50 text-white font-bold shadow-md shadow-cyan-500/10'
+                  : 'bg-[#080C1A]/80 border-white/[0.06] text-slate-400 hover:text-white hover:bg-white/[0.03]'
               }`}
             >
-              {displayTitle}
+              <span className="text-[10px] text-cyan-400">0{idx + 1}.</span>
+              <span className="truncate max-w-[140px]">{label}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Main Split Layout: Code Diff & Demo on Left, Scoring Sliders on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Repository & Demo Inspector */}
-        <div className="lg:col-span-7 space-y-4">
-          {/* Submission Info Bar */}
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10">
-            <div className="flex items-center justify-between mb-1.5">
-              <h4 className="text-sm font-bold text-white">
-                {isBlindMode ? `Candidate Project #${selectedSubIndex + 1}` : currentSubmission.title}
-              </h4>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3" />
-                  {currentSubmission.commitCount || 48} Commits
-                </span>
-              </div>
-            </div>
-            <p className="text-xs text-slate-400">{currentSubmission.tagline}</p>
-          </div>
-
-          {/* Interactive Demo Player Simulation */}
-          <div className="rounded-xl bg-black/60 border border-white/10 overflow-hidden relative">
-            <div className="p-2.5 bg-white/[0.03] border-b border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <Play className="h-3.5 w-3.5 text-cyan-400" />
-                Live Demo Screen Preview
-              </span>
-              <a
-                href={currentSubmission.demoUrl || '#'}
-                target="_blank"
-                rel="noreferrer"
-                className="text-cyan-400 hover:underline flex items-center gap-1 text-[11px]"
-              >
-                <span>Open Target</span>
-                <ExternalLink className="h-3 w-3" />
-              </a>
+      {/* ==============================================================================
+          DUAL-PANE WORKSPACE: ARTIFACT INSPECTOR (LEFT) & SCORECARD (RIGHT)
+          ============================================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Pane: Artifact Inspector */}
+        <div className="lg:col-span-7 rounded-3xl p-6 luxury-glass border border-white/[0.08] space-y-4">
+          {/* Header of Inspector */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/[0.06]">
+            <div>
+              <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                <span>{displayTitle}</span>
+              </h3>
+              <p className="text-[11px] font-mono text-slate-400 mt-0.5 truncate">
+                Author: <span className="text-cyan-400">{displayAuthor}</span>
+              </p>
             </div>
 
-            <div className="h-44 flex flex-col items-center justify-center relative bg-gradient-to-br from-slate-950 via-slate-900 to-black p-4 text-center">
+            {/* Inspector Mode Segmented Control */}
+            <div className="flex rounded-xl bg-black/60 p-1 border border-white/[0.08] text-xs font-mono">
               <button
-                onClick={() => {
-                  soundFx.playClick();
-                  setIsVideoPlaying(!isVideoPlaying);
-                }}
-                className="h-12 w-12 rounded-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 flex items-center justify-center text-cyan-300 transition-transform active:scale-95 shadow-lg shadow-cyan-500/20 mb-2"
+                onClick={() => setInspectorTab('diff')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  inspectorTab === 'diff'
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/30'
+                    : 'text-slate-400 hover:text-white'
+                }`}
               >
-                {isVideoPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-0.5" />}
+                <Code2 className="h-3.5 w-3.5" />
+                <span>Code Diff</span>
               </button>
-              <div className="text-xs text-slate-300 font-medium">
-                {isVideoPlaying ? 'Playing Simulated Product Walkthrough (0:48 / 2:15)' : 'Click to Play Recorded Demo Walkthrough'}
-              </div>
-              <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                Resolution: 1080p 60fps • Sandboxed Browser Render
-              </div>
+              <button
+                onClick={() => setInspectorTab('video')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  inspectorTab === 'video'
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/30'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Video className="h-3.5 w-3.5" />
+                <span>Demo Video</span>
+              </button>
+              <button
+                onClick={() => setInspectorTab('readme')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  inspectorTab === 'readme'
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/30'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <FileText className="h-3.5 w-3.5" />
+                <span>README</span>
+              </button>
             </div>
           </div>
 
-          {/* Code Diff Inspector */}
-          <div className="rounded-xl bg-black/60 border border-white/10 overflow-hidden">
-            <div className="p-2.5 bg-white/[0.03] border-b border-white/10 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileCode className="h-3.5 w-3.5 text-violet-400" />
-                <span className="text-xs font-mono text-slate-300">Commit Diff Inspector</span>
-              </div>
-              <div className="flex gap-1.5">
-                {MOCK_DIFF_FILES.map((f) => (
+          {/* Inspector Content */}
+          {inspectorTab === 'diff' && (
+            <div className="space-y-3">
+              {/* Diff File Selector Tabs */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                {MOCK_DIFF_FILES.map((file) => (
                   <button
-                    key={f.name}
-                    onClick={() => {
-                      soundFx.playClick();
-                      setActiveDiffFile(f);
-                    }}
-                    className={`text-[10px] font-mono px-2 py-0.5 rounded transition ${
-                      activeDiffFile.name === f.name
-                        ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
-                        : 'text-slate-500 hover:text-slate-300'
+                    key={file.name}
+                    onClick={() => setActiveDiffFile(file)}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-mono transition-all border ${
+                      activeDiffFile.name === file.name
+                        ? 'bg-cyan-500/10 border-cyan-400/40 text-cyan-300 font-semibold'
+                        : 'bg-black/40 border-white/[0.06] text-slate-400 hover:text-white'
                     }`}
                   >
-                    {f.name.split('/').pop()}
+                    <FileCode className="h-3.5 w-3.5 text-cyan-400" />
+                    <span>{file.name}</span>
+                    <span className="text-emerald-400 text-[10px]">+{file.additions}</span>
+                    <span className="text-rose-400 text-[10px]">-{file.deletions}</span>
                   </button>
                 ))}
               </div>
-            </div>
 
-            <div className="p-3 font-mono text-[11px] space-y-1">
-              <div className="text-slate-500 text-[10px] mb-1">
-                Showing changes in <span className="text-slate-300">{activeDiffFile.name}</span> (+{activeDiffFile.additions} -{activeDiffFile.deletions})
+              {/* IDE Code Diff Container */}
+              <div className="bg-black/90 rounded-2xl p-4 border border-white/[0.08] font-mono text-xs overflow-x-auto text-slate-300 space-y-1">
+                {activeDiffFile.lines.map((line, i) => (
+                  <div
+                    key={i}
+                    className={`py-0.5 px-2 rounded ${
+                      line.type === 'add'
+                        ? 'bg-emerald-500/15 text-emerald-300'
+                        : line.type === 'del'
+                        ? 'bg-rose-500/15 text-rose-300'
+                        : 'text-slate-400'
+                    }`}
+                  >
+                    <code>{line.text}</code>
+                  </div>
+                ))}
               </div>
-              <pre className="p-2.5 rounded bg-black/80 border border-white/5 text-emerald-400/90 overflow-x-auto leading-relaxed">
-                {activeDiffFile.preview}
-              </pre>
             </div>
-          </div>
-        </div>
+          )}
 
-        {/* Right Column: 4-Pillar Evaluation Sliders */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-              <div className="flex items-center gap-2">
-                <Scale className="h-4 w-4 text-violet-400" />
-                <span className="text-xs font-bold text-white uppercase font-mono">Rubric Scoring Engine</span>
+          {inspectorTab === 'video' && (
+            <div className="relative aspect-video rounded-2xl bg-black/80 border border-white/[0.08] overflow-hidden flex flex-col items-center justify-center p-6 text-center space-y-3">
+              <div className="h-14 w-14 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
+                <Video className="h-6 w-6" />
               </div>
-              <span className="text-[10px] font-mono text-slate-400">100% Weight</span>
-            </div>
-
-            {/* Innovation Slider (30%) */}
-            <div>
-              <div className="flex justify-between text-xs font-mono mb-1">
-                <span className="text-slate-300">Innovation & Novelty (30%)</span>
-                <span className="text-cyan-400 font-bold">{scores.innovation} / 100</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={scores.innovation}
-                onChange={(e) => handleSliderChange('innovation', e.target.value)}
-                className="w-full accent-cyan-400 cursor-pointer"
-              />
-            </div>
-
-            {/* Technical Depth Slider (30%) */}
-            <div>
-              <div className="flex justify-between text-xs font-mono mb-1">
-                <span className="text-slate-300">Technical Depth (30%)</span>
-                <span className="text-violet-400 font-bold">{scores.technicalDepth} / 100</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={scores.technicalDepth}
-                onChange={(e) => handleSliderChange('technicalDepth', e.target.value)}
-                className="w-full accent-violet-400 cursor-pointer"
-              />
-            </div>
-
-            {/* Execution Slider (20%) */}
-            <div>
-              <div className="flex justify-between text-xs font-mono mb-1">
-                <span className="text-slate-300">Execution & Polish (20%)</span>
-                <span className="text-emerald-400 font-bold">{scores.execution} / 100</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={scores.execution}
-                onChange={(e) => handleSliderChange('execution', e.target.value)}
-                className="w-full accent-emerald-400 cursor-pointer"
-              />
-            </div>
-
-            {/* Impact Slider (20%) */}
-            <div>
-              <div className="flex justify-between text-xs font-mono mb-1">
-                <span className="text-slate-300">Ecosystem Impact (20%)</span>
-                <span className="text-amber-400 font-bold">{scores.impact} / 100</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={scores.impact}
-                onChange={(e) => handleSliderChange('impact', e.target.value)}
-                className="w-full accent-amber-400 cursor-pointer"
-              />
-            </div>
-
-            {/* Calculated Normalization Box */}
-            <div className="p-3 rounded-xl bg-black/60 border border-violet-500/30 flex items-center justify-between font-mono">
               <div>
-                <div className="text-[10px] uppercase text-slate-400">Weighted Score</div>
-                <div className="text-lg font-bold text-white">{rawScore} <span className="text-xs text-slate-500">/ 100</span></div>
-              </div>
-              <div className="h-8 w-px bg-white/10" />
-              <div>
-                <div className="text-[10px] uppercase text-slate-400">Z-Score Normal</div>
-                <div className="text-lg font-bold text-violet-400">+{zScore}σ</div>
-              </div>
-              <div className="h-8 w-px bg-white/10" />
-              <div>
-                <div className="text-[10px] uppercase text-slate-400">Tier</div>
-                <div className="text-xs font-bold text-emerald-400 flex items-center gap-1">
-                  <Zap className="h-3 w-3" />
-                  Top 3%
+                <div className="text-sm font-bold text-white">Live Walkthrough & Demo Playback</div>
+                <div className="text-xs text-slate-400 font-mono mt-1">
+                  Duration: 02:45 • Resolution: 1080p 60fps • Audio Grounded
                 </div>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsVideoPlaying(!isVideoPlaying)}
+                className="gap-2 border-white/[0.08] text-xs font-mono"
+              >
+                {isVideoPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+                <span>{isVideoPlaying ? 'Pause Playback' : 'Start Demo Stream'}</span>
+              </Button>
             </div>
+          )}
 
-            {/* Feedback input */}
+          {inspectorTab === 'readme' && (
+            <div className="p-4 rounded-2xl bg-black/70 border border-white/[0.08] text-xs text-slate-300 font-mono space-y-2 leading-relaxed">
+              <h4 className="text-sm font-bold text-white font-sans"># Architecture Overview</h4>
+              <p>
+                Decentralized agent coordination mesh deploying autonomous runners over Next.js 16 Edge runtime.
+                Utilizes Drizzle ORM for sub-millisecond PostgreSQL query resolution and Model Context Protocol (MCP) for tool routing.
+              </p>
+              <h4 className="text-sm font-bold text-white font-sans mt-3"># Verification & Security</h4>
+              <p>
+                Enforces cryptographically verifiable commit windows to prevent pre-existing code plagiarism. All judging evaluation weights are normalized via standard Gaussian Z-scores.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Right Pane: Judicial Scorecard & Sliders */}
+        <div className="lg:col-span-5 rounded-3xl p-6 luxury-glass border border-white/[0.08] space-y-5">
+          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
             <div>
-              <label className="text-[11px] font-mono text-slate-400 block mb-1">Qualitative Judicial Feedback</label>
-              <textarea
-                rows={3}
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                className="w-full rounded-xl bg-black/40 border border-white/10 p-2.5 text-xs text-slate-200 focus:outline-none focus:border-violet-400/80"
-                placeholder="Provide constructive feedback on codebase quality and architecture..."
-              />
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-medium">
+                Calculated Score
+              </span>
+              <div className="text-2xl font-extrabold font-mono text-white tracking-tight flex items-baseline gap-1">
+                <span>{rawScore}</span>
+                <span className="text-xs text-slate-400 font-normal">/ 100</span>
+              </div>
             </div>
 
-            {/* Submit Button */}
-            <Button
-              onClick={handleSubmitEvaluation}
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white font-bold text-xs h-9 gap-1.5 shadow-lg shadow-violet-500/20"
-            >
-              <Send className="h-3.5 w-3.5" />
-              {isSubmitting ? 'Recording Score...' : 'Submit Official Evaluation'}
-            </Button>
+            <div className="text-right">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-medium">
+                Cohort Z-Score
+              </span>
+              <div className="text-lg font-bold font-mono text-cyan-400">
+                {zScore >= 0 ? `+${zScore}` : zScore}σ
+              </div>
+            </div>
           </div>
+
+          {/* 4 Calibrated Sliders */}
+          <div className="space-y-4">
+            {[
+              { id: 'innovation', label: 'Innovation & Novelty', weight: '30%', color: 'text-cyan-400' },
+              { id: 'technicalDepth', label: 'Technical Depth & Architecture', weight: '30%', color: 'text-purple-400' },
+              { id: 'execution', label: 'Execution & Polish', weight: '20%', color: 'text-emerald-400' },
+              { id: 'impact', label: 'Market Impact & Feasibility', weight: '20%', color: 'text-amber-400' },
+            ].map((c) => (
+              <div key={c.id} className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-mono">
+                  <span className="text-slate-300 font-medium">{c.label}</span>
+                  <span className="font-bold text-white">
+                    {scores[c.id]} <span className="text-[10px] text-slate-500 font-normal">({c.weight})</span>
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="50"
+                  max="100"
+                  value={scores[c.id]}
+                  onChange={(e) => handleSliderChange(c.id, e.target.value)}
+                  className="w-full h-2 bg-white/[0.08] rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Judicial Rationale Input */}
+          <div className="space-y-1.5 pt-2">
+            <label className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
+              Judicial Review Commentary & Rationale
+            </label>
+            <textarea
+              rows={3}
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              className="w-full bg-black/40 border border-white/[0.08] rounded-xl p-3 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400/70 font-mono leading-relaxed"
+              placeholder="Record technical feedback and architectural critique..."
+            />
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            onClick={handleSubmitEvaluation}
+            disabled={isSubmitting}
+            className="w-full h-11 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-xs tracking-wide uppercase luxury-btn shadow-lg shadow-emerald-500/20 rounded-xl flex items-center justify-center gap-2"
+          >
+            {isSubmitting ? (
+              <>
+                <RefreshCw className="h-4 w-4 animate-spin text-slate-950" />
+                <span>Certifying Verdict...</span>
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4 text-slate-950" />
+                <span>Certify Judicial Verdict ({rawScore}/100)</span>
+              </>
+            )}
+          </Button>
         </div>
       </div>
     </div>
   );
 }
+export default JudgingConsole;
