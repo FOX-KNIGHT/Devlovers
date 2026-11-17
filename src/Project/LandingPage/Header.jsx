@@ -13,6 +13,7 @@ import {
   Volume2,
   VolumeX,
   Bot,
+  Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -170,6 +171,21 @@ function Header({ setCurrentPage }) {
             className="text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 h-9 w-9 border border-white/5"
           >
             <Bot className="h-4 w-4 text-cyan-400" />
+          </Button>
+
+          {/* Interactive AI Workspace */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              soundFx.playClick();
+              setCurrentPage?.('Workspace');
+            }}
+            title="Interactive AI Workspace & Matchmaker Studio"
+            aria-label="Interactive AI Workspace"
+            className="text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 h-9 w-9 border border-white/5"
+          >
+            <Sparkles className="h-4 w-4 text-violet-400" />
           </Button>
 
           {/* Auth State */}

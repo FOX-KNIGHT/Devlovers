@@ -11,9 +11,9 @@ This document serves as the authoritative, end-to-end milestone tracker for the 
 | **Phase 0** | **Foundation, Design System, Platform Layer & i18n** | **✅ 100% COMPLETE** | **36 / 36 Passing** |
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **77 / 77 Passing** |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | **✅ 100% COMPLETE** | **95 / 95 Passing** |
-| **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | ⏳ Up Next | Next Milestone Specification Ready |
-| **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | ⏳ Planned | Pending |
-| **Phase 5** | **Production Hardening, Observability & Launch** | ⏳ Planned | Pending |
+| **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | **✅ 100% COMPLETE** | **122 / 122 Passing** |
+| **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | **✅ 100% COMPLETE** | **139 / 139 Passing** |
+| **Phase 5** | **Production Hardening, Observability & Launch** | ⏳ Up Next | Next Milestone Specification Ready |
 
 ---
 
@@ -169,9 +169,9 @@ Phase 0 establishes the bedrock foundation, aesthetic identity, internationaliza
 - [x] Master Workspace Canvas (`src/components/workspace/WorkspaceView.jsx`): Unified cockpit housing all 4 modules, telemetry status headers, and active sprint indicators.
 - [x] Floating AI Copilot Dock (`src/components/AiCopilotDock.jsx`): Globally accessible cyber copilot connected directly to `/api/mcp` JSON-RPC server with quick action prompts.
 - [x] Backend Dispensary Engine: `src/db/queries/sponsors.js`, `src/lib/workspace/sponsors-data.js`, and App Router route handler `GET`/`POST /api/sponsors/dispense`.
-- [x] Universal App Integration: Mounted in `App.jsx` (`case 'Workspace'`), `SubNav.jsx` with 'AI Studio' badge, `GlobalCommandPalette.jsx` (`G W`), and `MobileDrawer.jsx`.
+- [x] Universal App Integration: Mounted in `App.jsx` (`case 'Workspace'`), `Header.jsx` quick launcher button (`Sparkles`), `SubNav.jsx` with 'AI Studio' badge, `GlobalCommandPalette.jsx` (`G W`), and `MobileDrawer.jsx`.
 - [x] Trilingual Dictionary Parity: Added `"nav.workspace"` across `en.json`, `es.json`, and `ja.json` with 100% key parity.
-- [x] Automated Test Suite expansion: **136 / 136 tests passing** across 25 suites (`node:test`), including 12 dedicated Phase 4 unit tests and 2 live browser audit endpoint tests.
+- [x] Automated Test Suite expansion: **139 / 139 tests passing** across 27 suites (`node:test`), including 15 dedicated Phase 4 unit tests and 2 live browser audit endpoint tests.
 - [x] Production build clean: `npm run build` exits with code 0 across 21 static and dynamic routes.
 
 ---

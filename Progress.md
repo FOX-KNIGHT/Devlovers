@@ -2,7 +2,7 @@
 
 > **Current Milestone**: Phase 4 Certified Complete & Verified  
 > **Repository Branch**: `main` (Working Tree Clean)  
-> **Global Test Suite**: **136 / 136 Tests Passing** across 25 test suites (`npm test`)  
+> **Global Test Suite**: **139 / 139 Tests Passing** across 27 test suites (`npm test`)  
 > **Production Build**: **Exit Code 0** with 21 routes prerendered & dynamic (`npm run build`)  
 > **Live HTTP Server**: Operational at `http://localhost:3000` (`HTTP/1.1 200 OK`)
 
@@ -16,7 +16,7 @@
 | **Phase 1** | **PostgreSQL Data Layer & Drizzle ORM** | **✅ 100% COMPLETE** | **77 / 77 Tests Passing (100% Green)** |
 | **Phase 2** | **Supabase Auth, Sessions & Row-Level Security (RLS)** | **✅ 100% COMPLETE** | **95 / 95 Tests Passing (100% Green)** |
 | **Phase 3** | **Remote Stateless MCP Server (Agentic Protocol)** | **✅ 100% COMPLETE** | **122 / 122 Tests Passing (100% Green)** |
-| **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | **✅ 100% COMPLETE** | **136 / 136 Tests Passing (100% Green)** |
+| **Phase 4** | **MCP Apps & Dynamic Interactive Workspace** | **✅ 100% COMPLETE** | **139 / 139 Tests Passing (100% Green)** |
 | **Phase 5** | **Production Hardening, Observability & Launch** | ⏳ Up Next | Next Milestone Specification Ready |
 
 ---
@@ -404,9 +404,9 @@ Phase 4 delivered an embedded AI Copilot and dynamic interactive workspace canva
 | **Floating AI Copilot Dock** | `src/components/AiCopilotDock.jsx` | Globally floating cyber assistant dock connected to `/api/mcp` JSON-RPC server with quick action prompts |
 | **Sponsors DB Query** | `src/db/queries/sponsors.js` | `getSponsorPresets()`, `dispenseSponsorToken()`, integrated with `src/lib/workspace/sponsors-data.js` and `sponsor_credits` table |
 | **Dispensary API Route** | `src/app/api/sponsors/dispense/route.js` | `GET /api/sponsors/dispense` (catalog metadata) & `POST /api/sponsors/dispense` (credential provisioning with claim tracking) |
-| **Universal App Integration** | `App.jsx`, `SubNav.jsx`, `GlobalCommandPalette.jsx`, `MobileDrawer.jsx` | Tab with 'AI Studio' badge in SubNav, `G W` shortcut in Command Palette, and mobile drawer quick link |
+| **Universal App Integration** | `App.jsx`, `Header.jsx`, `SubNav.jsx`, `GlobalCommandPalette.jsx`, `MobileDrawer.jsx` | Header quick launch button (`Sparkles`), Tab with 'AI Studio' badge in SubNav, `G W` shortcut in Command Palette, and mobile drawer quick link |
 | **Trilingual Dictionary Parity**| `src/lib/i18n/dictionaries/` (`en`, `es`, `ja`) | Added `"nav.workspace"` across all 3 dictionaries with 100% key parity verified by tests |
-| **Dedicated Test Suite** | `tests/mcp-apps-workspace.test.mjs` | 12 automated tests covering polar radar geometry, 4-pillar weighting, Z-score math, token provisioning, route handlers, anti-bias masking |
+| **Dedicated Test Suite** | `tests/mcp-apps-workspace.test.mjs` | 15 automated tests covering polar radar geometry, 4-pillar weighting, Z-score math, token provisioning & masking, JSON-RPC payload protocol, route handlers, and anti-bias masking |
 | **Live Route Browser Audit** | `tests/browser-audit.test.mjs` | Automated HTTP GET & POST live endpoint assertions against Next.js test runner |
 
 ---

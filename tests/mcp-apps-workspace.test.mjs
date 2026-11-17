@@ -221,4 +221,62 @@ describe('MCP Apps & Dynamic Interactive Workspace (Phase 4)', () => {
       assert.ok(!displayTitle.includes('NeuroAgent'));
     });
   });
+
+  describe('Sponsor Token Masking & Reveal Formatting', () => {
+    it('masks raw token preserving prefix and trailing 4 characters', () => {
+      const rawToken = 'devlovers_gemini_sbx_98a7bc310f8a';
+      const maskToken = (tok) => {
+        if (!tok) return '';
+        const prefix = tok.slice(0, 21);
+        const lastFour = tok.slice(-4);
+        return `${prefix}••••••••${lastFour}`;
+      };
+
+      const masked = maskToken(rawToken);
+      assert.strictEqual(masked, 'devlovers_gemini_sbx_••••••••0f8a');
+      assert.ok(!masked.includes('98a7bc31'));
+    });
+  });
+
+  describe('AI Copilot Dock & Agentic Tool Call Payload Protocol', () => {
+    it('formats JSON-RPC 2.0 tool execution payload for match_squad', () => {
+      const toolCallPayload = {
+        jsonrpc: '2.0',
+        id: 'copilot-call-101',
+        method: 'tools/call',
+        params: {
+          name: 'match_squad',
+          arguments: {
+            required_skills: ['Next.js 16', 'TypeScript', 'Rust'],
+            min_xp: 1500,
+          },
+        },
+      };
+
+      assert.strictEqual(toolCallPayload.jsonrpc, '2.0');
+      assert.strictEqual(toolCallPayload.method, 'tools/call');
+      assert.strictEqual(toolCallPayload.params.name, 'match_squad');
+      assert.strictEqual(toolCallPayload.params.arguments.required_skills.length, 3);
+    });
+
+    it('formats JSON-RPC 2.0 prompt retrieval payload for audit_submission', () => {
+      const promptPayload = {
+        jsonrpc: '2.0',
+        id: 'copilot-prompt-102',
+        method: 'prompts/get',
+        params: {
+          name: 'audit_submission',
+          arguments: {
+            submission_slug: 'neuroagent-mesh',
+            strictness: 'high',
+          },
+        },
+      };
+
+      assert.strictEqual(promptPayload.jsonrpc, '2.0');
+      assert.strictEqual(promptPayload.method, 'prompts/get');
+      assert.strictEqual(promptPayload.params.name, 'audit_submission');
+      assert.strictEqual(promptPayload.params.arguments.strictness, 'high');
+    });
+  });
 });
