@@ -120,6 +120,18 @@ export function GlobalCommandPalette({ onSelectPage }) {
               <span>Open Model Context Protocol (MCP) Inspector</span>
               <CommandShortcut>G M</CommandShortcut>
             </CommandItem>
+            <CommandItem
+              onSelect={() =>
+                handleSelect(() => {
+                  soundFx.playClick();
+                  window.dispatchEvent(new CustomEvent('devlovers:toggle-copilot'));
+                })
+              }
+            >
+              <Sparkles className="mr-2 h-4 w-4 text-violet-400" />
+              <span>Toggle Floating AI Copilot</span>
+              <CommandShortcut>{isMac ? '⌘J' : 'Ctrl+J'}</CommandShortcut>
+            </CommandItem>
           </CommandGroup>
 
           <CommandGroup heading="Active Sprints & Challenges">

@@ -76,7 +76,7 @@ export function AiCopilotDock() {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
-  // Global ⌘J or Ctrl+J keyboard listener
+  // Global ⌘J or Ctrl+J keyboard listener and custom event listener
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') {
@@ -85,8 +85,17 @@ export function AiCopilotDock() {
         setIsOpen((prev) => !prev);
       }
     };
+    const handleCustomToggle = () => {
+      soundFx.playClick();
+      setIsOpen((prev) => !prev);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('devlovers:toggle-copilot', handleCustomToggle);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('devlovers:toggle-copilot', handleCustomToggle);
+    };
   }, []);
 
   useEffect(() => {
